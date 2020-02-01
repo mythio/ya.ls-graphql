@@ -6,7 +6,7 @@ module.exports = buildSchema(`
     name: String!
     email: String!
     password: String
-    shortUrl: [ShortUrl]
+    shortUrl: [String]
   }
 
   type AuthData {
@@ -26,5 +26,10 @@ module.exports = buildSchema(`
 
   type Mutation {
     createUser(userInput: UserInputData): User!
+  }
+
+  schema {
+    query: Query
+    mutation: Mutation
   }
 `);

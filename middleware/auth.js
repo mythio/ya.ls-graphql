@@ -4,12 +4,12 @@ module.exports = (req, res, next) => {
   const authHeader = req.get("Authorization");
   if (!authHeader) {
     req.isAuth = false;
-    return next;
+    return next();
   }
   const token = authHeader;
   let decodedToken;
   try {
-    decodedToken = jwt.verify(token, "secret");
+    decodedToken = jwt.verify(token, "somesupersecretsecret");
   } catch (err) {
     req.isAuth = false;
     console.log(err);
