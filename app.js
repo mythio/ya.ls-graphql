@@ -30,11 +30,11 @@ app.use(
     schema: graphqlSchema,
     rootValue: graphqlResolver,
     graphiql: true,
-    formatError(err) {
+    customFormatErrorFn(err) {
       if (!err.originalError) {
         return err;
       }
-      const data = err.originalError.data || "lala";
+      const data = err.originalError.data;
       const message = err.message || "An error occurred";
       const code = err.originalError.code || 500;
       return {

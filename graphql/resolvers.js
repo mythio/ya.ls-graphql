@@ -18,6 +18,9 @@ module.exports = {
     if (errors.length > 0) {
       const error = new Error("Invalid input");
       error.data = errors;
+      /**
+       * Custom http error code 422
+       */
       error.code = 422;
       throw error;
     }
@@ -25,13 +28,19 @@ module.exports = {
       email_address: userInput.email
     });
     if (exisitingUser) {
-      throw new Error("User already exists");
+      const error = new Error("User already exists");
+      /**
+       * 409 Conflict
+       */
+      error.code = 409;
+      throw error;
     }
     const hashedPw = await bcrypt.hash(userInput.password, 12);
     const user = new User({
-      email_address: userInput.email,
       name: userInput.name,
-      password: hashedPw
+      email_address: userInput.email,
+      password: hashedPw,
+      short_urls: []
     });
     const createdUser = await user.save();
     return { ...createdUser._doc };

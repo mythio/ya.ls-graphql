@@ -21,7 +21,7 @@ const userSchema = new Schema({
     type: Date,
     default: Date.now()
   },
-  short_url: [
+  short_urls: [
     {
       type: String,
       ref: "ShortUrl"
@@ -36,23 +36,4 @@ userSchema.methods.generateAuthToken = function() {
   );
 };
 
-// function validateUser(user) {
-//   const joi_schema = {
-//     email_address: Joi.string().email(),
-//     password: Joi.string().min(8)
-//   };
-
-//   return Joi.validate(user, joi_schema);
-// }
-
-userSchema.methods.validateUser = function() {
-  const joi_schema = {
-    email_address: Joi.string().email(),
-    password: Joi.string().min(8)
-  };
-
-  return Joi.validate(this, joi_schema);
-};
-
 exports.User = mongoose.model("User", userSchema);
-// exports.validateUser = validateUser;
