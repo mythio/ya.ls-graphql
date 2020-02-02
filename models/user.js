@@ -1,5 +1,4 @@
 const mongoose = require("mongoose");
-const jwt = require("jsonwebtoken");
 
 const Schema = mongoose.Schema;
 
@@ -8,7 +7,7 @@ const userSchema = new Schema({
     type: String,
     required: true
   },
-  email_address: {
+  emailAddress: {
     type: String,
     required: true
   },
@@ -16,23 +15,16 @@ const userSchema = new Schema({
     type: String,
     required: true
   },
-  joining_date: {
+  joiningDate: {
     type: Date,
     default: Date.now()
   },
-  short_urls: [
+  shortUrls: [
     {
       type: Schema.Types.ObjectId,
       ref: "ShortUrl"
     }
   ]
 });
-
-userSchema.methods.generateAuthToken = function() {
-  return jwt.sign(
-    { userId: this._id, emailAddress: this.email_address },
-    "supersecret"
-  );
-};
 
 exports.User = mongoose.model("User", userSchema);

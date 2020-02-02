@@ -13,7 +13,7 @@ module.exports = {
       if (error) {
         throw new Error(error.message);
       }
-      let { email_address: emailAddress, password } = args;
+      let { emailAddress, password } = args;
       const user = await User.findOne({ emailAddress });
       if (!user) {
         throw new Error("User not found!");
@@ -26,7 +26,7 @@ module.exports = {
         {
           userId: user._id,
           name: user.name,
-          email_address: user.emailAddress
+          emailAddress: user.emailAddress
         },
         "secret"
       );
@@ -39,7 +39,7 @@ module.exports = {
       if (error) {
         throw new Error(error.message);
       }
-      let { name, email_address: emailAddress, password } = args;
+      let { name, emailAddress, password } = args;
       const existingUser = await User.findOne({ emailAddress });
       if (existingUser) {
         throw new Error("User already exists!");
@@ -58,25 +58,25 @@ module.exports = {
       if (error) {
         throw new Error(error);
       }
-      let { original_url: originalUrl } = args;
+      let { originalUrl } = args;
       const short = "localhost:4000/" + shortid.generate();
       if (context.user) {
         const { userId } = context.user;
-        const created_by = await User.findById(userId);
+        const user = await User.findOne({ _id: userId });
         const shortUrl = new ShortUrl({
-          short_url: short,
-          original_url: originalUrl,
-          created_by: user,
-          share_with: args.share_with
+          shortUrl: short,
+          originalUrl: originalUrl,
+          createdBy: user,
+          shareWith: args.shareWith
         });
         await shortUrl.save();
-        user.short_urls.push(shortUrl);
+        user.shortUrls.push(shortUrl);
         await user.save();
         return { ...shortUrl._doc };
       } else {
         const shortUrl = new ShortUrl({
-          short_url: short,
-          original_url: originalUrl
+          shortUrl: short,
+          originalUrl: originalUrl
         });
         await shortUrl.save();
         return { ...shortUrl._doc };
