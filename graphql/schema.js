@@ -1,10 +1,10 @@
-const { buildSchema } = require("graphql");
+const { gql } = require("apollo-server-express");
 
-module.exports = buildSchema(`
+module.exports = gql`
   type User {
-    _id: String!
+    _id: ID!
     name: String!
-    email: String!
+    email_address: String!
     password: String
     shortUrl: [String]
   }
@@ -14,22 +14,19 @@ module.exports = buildSchema(`
     userId: ID!
   }
 
-  input UserInputData {
-    email: String!
-    name: String!
-    password: String!
+  type ShortUrl {
+    _id: ID!
+    original_url: String!
+    short_url: String!
+    created_by: User
   }
 
   type Query {
-    login(email: String!, password: String!): AuthData!
+    login(email_address: String!, password: String!): AuthData!
   }
 
   type Mutation {
-    createUser(userInput: UserInputData): User!
+    createUser(name: String!, email_address: String!, password: String!): User!
+    shortenUrl(original_url: String!, share_with: [ID!]): ShortUrl!
   }
-
-  schema {
-    query: Query
-    mutation: Mutation
-  }
-`);
+`;

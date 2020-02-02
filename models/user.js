@@ -1,5 +1,4 @@
 const mongoose = require("mongoose");
-const Joi = require("@hapi/joi");
 const jwt = require("jsonwebtoken");
 
 const Schema = mongoose.Schema;
@@ -23,7 +22,7 @@ const userSchema = new Schema({
   },
   short_urls: [
     {
-      type: String,
+      type: Schema.Types.ObjectId,
       ref: "ShortUrl"
     }
   ]

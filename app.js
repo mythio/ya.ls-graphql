@@ -1,50 +1,22 @@
 const express = require("express");
+const { ApolloServer } = require("apollo-server-express");
 const mongoose = require("mongoose");
-const bodyParser = require("body-parser");
-const graphqlHttp = require("express-graphql");
 
-const graphqlSchema = require("./graphql/schema");
-const graphqlResolver = require("./graphql/resolvers");
-const auth = require("./middleware/auth");
+const typeDefs = require("./graphql/schema");
+const resolvers = require("./graphql/resolvers");
+const context = require("./middleware/auth");
 
 const app = express();
+const port = process.env.PORT || 4000;
+const path = process.env._PATH || "/graphql";
 
-app.use(bodyParser.urlencoded({ extended: false }));
-app.use(express.json());
-
-app.use((req, res, next) => {
-  res.setHeader("Allow-Control-Allow_Origin", "*");
-  res.setHeader("Allow-Control-Allow-Methods", "OPTIONS, GET, POST");
-  res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
-  if (req.method === "OPTIONS") {
-    return res.sendStatus(200);
-  }
-  next();
+const server = new ApolloServer({
+  typeDefs,
+  resolvers,
+  context
 });
 
-app.use(auth);
-
-app.use(
-  "/graphql",
-  graphqlHttp({
-    schema: graphqlSchema,
-    rootValue: graphqlResolver,
-    graphiql: true,
-    customFormatErrorFn(err) {
-      if (!err.originalError) {
-        return err;
-      }
-      const data = err.originalError.data;
-      const message = err.message || "An error occurred";
-      const code = err.originalError.code || 500;
-      return {
-        message,
-        data,
-        code
-      };
-    }
-  })
-);
+server.applyMiddleware({ app, path });
 
 mongoose
   .connect(
@@ -54,10 +26,14 @@ mongoose
       useUnifiedTopology: true
     }
   )
-  .then(result => {
-    console.log("OK");
-    app.listen(process.env.PORT || 3000);
+  .then(() => {
+    app.listen({ port }, () => {
+      console.log(
+        `🚀 Server ready at http://localhost:${port}${server.graphqlPath}`
+      );
+    });
   })
   .catch(err => {
     console.log("Mongoose Error");
+    console.log(err);
   });
