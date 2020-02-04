@@ -1,6 +1,12 @@
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const shortid = require("shortid");
+const {
+  AuthenticationError,
+  UserInputError,
+  ValidationError,
+  ApolloError
+} = require("apollo-server-express");
 
 const { User } = require("../models/user");
 const { ShortUrl } = require("../models/shortUrl");
@@ -11,12 +17,12 @@ module.exports = {
     async login(root, args, context) {
       const { error } = joiSchema.userSignInSchema.validate(args);
       if (error) {
-        throw new Error(error.message);
+        throw new ValidationError(error.message);
       }
       let { emailAddress, password } = args;
       const user = await User.findOne({ emailAddress });
       if (!user) {
-        throw new Error("User not found!");
+        throw new Error("User not found");
       }
       const isEqual = await bcrypt.compare(password, user.password);
       if (!isEqual) {
@@ -31,6 +37,17 @@ module.exports = {
         "secret"
       );
       return { userId: user._id, token };
+    },
+    async expandUrl(root, args, context) {
+      const { error } = joiSchema.expandUrlSchema.validate(args);
+      if (error) {
+        throw new ValidationError(error.message);
+      }
+      let { shortId } = args;
+      const shortUrl = await ShortUrl.findOne({ shortId }).populate(
+        "createdBy"
+      );
+      return { ...shortUrl._doc };
     }
   },
   Mutation: {
@@ -46,40 +63,65 @@ module.exports = {
       }
       password = await bcrypt.hash(password, 10);
       const user = new User({
-        name,
-        emailAddress,
-        password
+        name: name,
+        emailAddress: emailAddress,
+        password: password
       });
       await user.save();
       return { ...user._doc };
     },
     async shortenUrl(root, args, context) {
-      const { error } = joiSchema.shortenUrl.validate(args);
+      const { error } = joiSchema.shortenUrlSchema.validate(args);
       if (error) {
         throw new Error(error);
       }
       let { originalUrl } = args;
-      const short = "localhost:4000/" + shortid.generate();
+      const shortId = shortid.generate();
       if (context.user) {
-        const { userId } = context.user;
-        const user = await User.findOne({ _id: userId });
+        const { _id: userId } = context.user;
+        let user = await User.findOne({ _id: userId });
         const shortUrl = new ShortUrl({
-          shortUrl: short,
+          _id: shortId,
           originalUrl: originalUrl,
-          createdBy: user,
+          createdBy: userId,
           shareWith: args.shareWith
         });
+        await shortUrl.populate("createdBy").execPopulate();
+        await shortUrl.populate("createdBy.shortIds").execPopulate();
+        await shortUrl.populate("createdBy.shortIds");
         await shortUrl.save();
-        user.shortUrls.push(shortUrl);
+        user.shortIds.push(shortUrl);
         await user.save();
-        return { ...shortUrl._doc };
+        p = {
+          ...shortUrl._doc,
+          shortId: shortUrl._id,
+          createdBy: {
+            ...shortUrl._doc.createdBy,
+            shortIds: shortUrl.createdBy.shortIds.map(s => {
+              return { ...s._doc, shortId: s._id };
+            })
+          }
+        };
+        return {
+          ...shortUrl._doc,
+          shortId: shortUrl._id,
+          createdBy: {
+            ...shortUrl._doc.createdBy._doc,
+            shortIds: shortUrl.createdBy.shortIds.map(s => {
+              return { ...s._doc, shortId: s._id };
+            })
+          }
+        };
       } else {
         const shortUrl = new ShortUrl({
-          shortUrl: short,
+          _id: shortId,
           originalUrl: originalUrl
         });
         await shortUrl.save();
-        return { ...shortUrl._doc };
+        return {
+          ...shortUrl._doc,
+          shortId: shortUrl._id
+        };
       }
     }
   }

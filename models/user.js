@@ -19,9 +19,9 @@ const userSchema = new Schema({
     type: Date,
     default: Date.now()
   },
-  shortUrls: [
+  shortIds: [
     {
-      type: Schema.Types.ObjectId,
+      type: String,
       ref: "ShortUrl"
     }
   ]

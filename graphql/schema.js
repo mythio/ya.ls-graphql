@@ -5,7 +5,18 @@ module.exports = gql`
     _id: ID!
     name: String!
     emailAddress: String!
-    shortUrls: [String]
+    shortIds: [ShortUrl!]
+  }
+
+  type ShortUrlDetail {
+    shortId: String!
+    originalUrl: String!
+    createdBy: User
+  }
+
+  type ShortUrl {
+    shortId: String!
+    originalUrl: String!
   }
 
   type AuthData {
@@ -13,15 +24,9 @@ module.exports = gql`
     userId: ID!
   }
 
-  type ShortUrl {
-    _id: ID!
-    originalUrl: String!
-    shortUrl: String!
-    createdBy: User
-  }
-
   type Query {
     login(emailAddress: String!, password: String!): AuthData!
+    expandUrl(shortId: String!): ShortUrl!
   }
 
   type Mutation {
