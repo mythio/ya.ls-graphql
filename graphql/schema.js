@@ -11,12 +11,14 @@ module.exports = gql`
   type ShortUrlDetail {
     shortId: String!
     originalUrl: String!
+    shareWith: [ID!]
     createdBy: User
   }
 
   type ShortUrl {
     shortId: String!
     originalUrl: String!
+    shareWith: [ID!]
   }
 
   type AuthData {
@@ -26,7 +28,7 @@ module.exports = gql`
 
   type Query {
     login(emailAddress: String!, password: String!): AuthData!
-    expandUrl(shortId: String!): ShortUrl!
+    expandUrl(shortId: String!): ShortUrlDetail!
   }
 
   type Mutation {
