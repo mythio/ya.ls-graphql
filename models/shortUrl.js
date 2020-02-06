@@ -17,7 +17,7 @@ const shortUrlSchema = new Schema({
   },
   shareWith: [
     {
-      type: Schema.Types.ObjectId,
+      type: String,
       ref: "User"
     }
   ]
