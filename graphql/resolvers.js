@@ -39,9 +39,24 @@ module.exports = {
         throw new ValidationError(error.message);
       }
       let { shortId } = args;
-      const shortUrl = await ShortUrl.findOne({ _id: shortId }).populate(
-        "createdBy"
-      );
+      const shortUrl = await ShortUrl.findOne({ _id: shortId });
+
+      if (!shortUrl) {
+        throw new Error("Invalid shortId");
+      }
+
+      if (shortUrl.shareWith.length) {
+        const { _id: userId } = context.user;
+        const isShared = shortUrl.shareWith.find(function(uId) {
+          return uId == userId;
+        });
+
+        if (!isShared) {
+          throw new Error("Not authorized to view this URL");
+        }
+      }
+
+      await shortUrl.populate("createdBy").execPopulate();
       await shortUrl.populate("createdBy.shortIds").execPopulate();
 
       return {
