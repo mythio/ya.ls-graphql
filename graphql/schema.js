@@ -1,17 +1,23 @@
 const { gql } = require("apollo-server-express");
 
 module.exports = gql`
-  type User {
+  type UserDetail {
     _id: ID!
     name: String!
     emailAddress: String!
     shortIds: [ShortUrl!]
   }
 
+  type User {
+    _id: ID!
+    name: String!
+    emailAddress: String!
+  }
+
   type ShortUrlDetail {
     shortId: String!
     originalUrl: String!
-    shareWith: [ID!]
+    shareWith: [User!]
     createdBy: User
   }
 

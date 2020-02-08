@@ -5,7 +5,10 @@ module.exports = async ({ req }) => {
   const authHeader = req.headers.authorization;
   if (authHeader) {
     const token = jwt.decode(authHeader, "secret");
-    const user = await User.findOne({ emailAddress: token.emailAddress });
-    return { user };
+    const user = await User.findById(token.userId);
+    if (user) {
+      return { token };
+    }
+    return { token: null };
   }
 };
