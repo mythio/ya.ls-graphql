@@ -5,6 +5,7 @@ const jwt = require("jsonwebtoken");
 const { User } = require("../models/user");
 const { ShortUrl } = require("../models/shortUrl");
 const joiSchema = require("../validation/schema");
+const pick = require("../utils/pick");
 
 module.exports = {
   Query: {
@@ -13,19 +14,26 @@ module.exports = {
       if (error) {
         throw new Error(error.message);
       }
+
       let { emailAddress, password } = args;
-      const user = await User.findOne({ emailAddress });
+      const user = await User.findOne(
+        { emailAddress },
+        { _id: 1, password: 1 }
+      );
       if (!user) {
         throw new Error("User not found");
       }
+
       const isEqual = await bcrypt.compare(password, user.password);
       if (!isEqual) {
         throw new Error("Incorrect password");
       }
+
       const token = jwt.sign({ userId: user._id }, "secret");
 
-      return { userId: user._id, token };
+      return pick.loginResult({ user, token });
     },
+
     async expandUrl(root, args, { token }) {
       const { error } = joiSchema.expandUrlSchema.validate(args);
       if (error) {
@@ -49,15 +57,17 @@ module.exports = {
         }
       }
 
-      await shortUrl.populate("createdBy").execPopulate();
-      await shortUrl.populate("shareWith").execPopulate();
+      await shortUrl
+        .populate({ path: "createdBy", select: "_id name emailAddress" })
+        .execPopulate();
+      await shortUrl
+        .populate({ path: "shareWith", select: "_id name emailAddress" })
+        .execPopulate();
 
-      return {
-        ...shortUrl._doc,
-        shortId: shortId
-      };
+      return pick.expandUrlResult(shortUrl);
     }
   },
+
   Mutation: {
     async createUser(root, args, context) {
       const { error } = joiSchema.userSignUpSchema.validate(args);
@@ -77,8 +87,9 @@ module.exports = {
       });
       await user.save();
 
-      return { ...user._doc };
+      return pick.createUserResult(user._doc);
     },
+
     async shortenUrl(root, args, { token }) {
       const { error } = joiSchema.shortenUrlSchema.validate(args);
       if (error) {

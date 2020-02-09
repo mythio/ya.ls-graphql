@@ -2,14 +2,14 @@ const { gql } = require("apollo-server-express");
 
 module.exports = gql`
   type UserDetail {
-    _id: ID!
+    userId: ID!
     name: String!
     emailAddress: String!
     shortIds: [ShortUrl!]
   }
 
   type User {
-    _id: ID!
+    userId: ID!
     name: String!
     emailAddress: String!
   }
