@@ -95,6 +95,7 @@ module.exports = {
       if (error) {
         throw new Error(error);
       }
+
       let { originalUrl } = args;
       const shortId = shortid.generate();
 
@@ -103,7 +104,6 @@ module.exports = {
         const user = await User.findById(userId);
 
         await user.populate("shortIds").execPopulate();
-        await user.populate("originalUrl").execPopulate();
 
         const existingShortUrl = user.shortIds.find(
           sUrl => sUrl.originalUrl === originalUrl
@@ -119,10 +119,7 @@ module.exports = {
 
           await shortUrl.save();
 
-          return {
-            ...shortUrl._doc,
-            shortId: shortUrl._id
-          };
+          return pick.shortenUrlResult(shortUrl);
         }
 
         const shortUrl = new ShortUrl({
@@ -136,10 +133,7 @@ module.exports = {
         user.shortIds.push(shortUrl);
         await user.save();
 
-        return {
-          ...shortUrl._doc,
-          shortId: shortUrl._id
-        };
+        return pick.shortenUrlResult(shortUrl);
       } else {
         const existingShortUrls = await ShortUrl.findOne({
           originalUrl: originalUrl,
@@ -149,10 +143,7 @@ module.exports = {
         if (existingShortUrls) {
           const shortUrl = existingShortUrls;
 
-          return {
-            ...shortUrl._doc,
-            shortId: shortUrl._id
-          };
+          return pick.shortenUrlResult(shortUrl);
         }
 
         const shortUrl = new ShortUrl({
@@ -162,10 +153,7 @@ module.exports = {
 
         await shortUrl.save();
 
-        return {
-          ...shortUrl._doc,
-          shortId: shortUrl._id
-        };
+        return pick.shortenUrlResult(shortUrl);
       }
     }
   }

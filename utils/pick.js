@@ -49,5 +49,11 @@ module.exports.createUserResult = result => {
 };
 
 module.exports.shortenUrlResult = result => {
-  console.log(result);
+  let { _id: shortId, originalUrl, shareWith } = result;
+
+  return {
+    shortId,
+    originalUrl,
+    shareWith
+  };
 };
