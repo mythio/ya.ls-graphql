@@ -24,7 +24,11 @@ const userSchema = new Schema({
       type: String,
       ref: "ShortUrl"
     }
-  ]
+  ],
+  isAdmin: {
+    type: Boolean,
+    default: false
+  }
 });
 
 exports.User = mongoose.model("User", userSchema);

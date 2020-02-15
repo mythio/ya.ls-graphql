@@ -9,16 +9,13 @@ const userRule = async requestData => {
     return true;
   }
 
-  const { headers } = requestData;
+  const { token } = requestData;
 
-  if (!headers || !headers.authorization) {
+  if (!token) {
     return false;
   }
 
   try {
-    const { authorization } = headers;
-    const token = jwt.verify(authorization, process.env.USER_SECRET);
-
     const user = await User.findById(token.userId);
 
     if (!user) {

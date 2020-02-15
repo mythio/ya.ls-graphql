@@ -1,31 +1,30 @@
+require("dotenv").config();
 const express = require("express");
-const { ApolloServer } = require("apollo-server-express");
 const mongoose = require("mongoose");
-
-const typeDefs = require("./graphql/schema");
-const resolvers = require("./graphql/resolvers");
-const context = require("./middleware/auth");
+const { ApolloServer } = require("apollo-server-express");
+const jwt = require("jsonwebtoken");
 
 const app = express();
-const port = process.env.PORT || 4000;
-const path = process.env._PATH || "/graphql";
+
+const port = process.env.PORT;
+const path = process.env._PATH;
 
 const server = new ApolloServer({
-  typeDefs,
-  resolvers,
-  context
+  typeDefs: require("./utils/gqlLoader")(),
+  resolvers: require("./graphql/resolvers"),
+  schemaDirectives: {
+    objectAuth: require("./graphql/directives/Auth")
+  },
+  context: require("./graphql/context")
 });
 
 server.applyMiddleware({ app, path });
 
 mongoose
-  .connect(
-    process.env.MONGOLAB_URI || "mongodb://localhost:27017/ya-ls-graphql",
-    {
-      useNewUrlParser: true,
-      useUnifiedTopology: true
-    }
-  )
+  .connect(process.env.MONGODB_URI, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true
+  })
   .then(() => {
     app.listen({ port }, () => {
       console.log(

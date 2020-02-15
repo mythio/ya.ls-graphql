@@ -2,14 +2,14 @@ const bcrypt = require("bcrypt");
 const shortid = require("shortid");
 const jwt = require("jsonwebtoken");
 
-const { User } = require("../models/user");
-const { ShortUrl } = require("../models/shortUrl");
-const joiSchema = require("../validation/schema");
 const pick = require("../utils/pick");
+const { User } = require("../models/user");
+const joiSchema = require("../utils/validation/schema");
+const { ShortUrl } = require("../models/shortUrl");
 
-module.exports = {
+const resolvers = {
   Query: {
-    async login(root, args, context) {
+    async login(root, args, ctx) {
       const { error } = joiSchema.userSignInSchema.validate(args);
       if (error) {
         throw new Error(error.message);
@@ -69,7 +69,7 @@ module.exports = {
   },
 
   Mutation: {
-    async createUser(root, args, context) {
+    async createUser(root, args, ctx) {
       const { error } = joiSchema.userSignUpSchema.validate(args);
       if (error) {
         throw new Error(error.message);
@@ -158,3 +158,5 @@ module.exports = {
     }
   }
 };
+
+module.exports = resolvers;
