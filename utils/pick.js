@@ -11,6 +11,11 @@ module.exports.meResult = result => {
     emailAddress
   } = result;
 
+  shortIds = shortIds.map(item => ({
+    shortId: item._id,
+    shareWith: item.shareWith,
+    originalUrl: item.originalUrl
+  }));
   return { userId, name, emailAddress, isAdmin, shortIds, joiningDate };
 };
 
@@ -32,13 +37,11 @@ module.exports.expandUrlResult = result => {
     emailAddress: createdBy.emailAddress
   };
 
-  shareWith = shareWith.map(item => {
-    return {
-      userId: item._id,
-      name: item.name,
-      emailAddress: item.emailAddress
-    };
-  });
+  shareWith = shareWith.map(item => ({
+    userId: item._id,
+    name: item.name,
+    emailAddress: item.emailAddress
+  }));
 
   return {
     shortId,
