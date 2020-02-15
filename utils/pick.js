@@ -1,6 +1,19 @@
 /**
  * QUERY
  */
+module.exports.meResult = result => {
+  let {
+    _id: userId,
+    joiningDate,
+    shortIds,
+    isAdmin,
+    name,
+    emailAddress
+  } = result;
+
+  return { userId, name, emailAddress, isAdmin, shortIds, joiningDate };
+};
+
 module.exports.loginResult = result => {
   let {
     user: { _id: userId },
