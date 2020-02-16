@@ -9,6 +9,12 @@ const { ShortUrl } = require("../models/shortUrl");
 
 const resolvers = {
   Query: {
+    async me(root, args, ctx) {
+      const { user } = ctx;
+      await user.populate({ path: "shortIds" }).execPopulate();
+
+      return pick.meResult(ctx.user._doc);
+    },
     async login(root, args, ctx) {
       const { error } = joiSchema.userSignInSchema.validate(args);
       if (error) {
@@ -90,7 +96,7 @@ const resolvers = {
       return pick.createUserResult(user._doc);
     },
 
-    async shortenUrl(root, args, { token }) {
+    async shortenUrl(root, args, ctx) {
       const { error } = joiSchema.shortenUrlSchema.validate(args);
       if (error) {
         throw new Error(error);
@@ -98,11 +104,9 @@ const resolvers = {
 
       let { originalUrl } = args;
       const shortId = shortid.generate();
+      const { user } = ctx;
 
-      if (token) {
-        const { userId } = token;
-        const user = await User.findById(userId);
-
+      if (user) {
         await user.populate("shortIds").execPopulate();
 
         const existingShortUrl = user.shortIds.find(

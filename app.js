@@ -13,7 +13,7 @@ const server = new ApolloServer({
   typeDefs: require("./utils/gqlLoader")(),
   resolvers: require("./graphql/resolvers"),
   schemaDirectives: {
-    objectAuth: require("./graphql/directives/Auth")
+    auth: require("./graphql/directives/AuthDirective")
   },
   context: require("./graphql/context")
 });
