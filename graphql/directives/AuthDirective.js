@@ -3,9 +3,10 @@ const { defaultFieldResolver } = require("graphql");
 
 const rules = require("../rules");
 
+/** Class definition for @auth directive */
 class AuthDirective extends SchemaDirectiveVisitor {
   /**
-   * @param {*} type
+   * @param {object} type - type of the object from GraphQL
    * @override
    */
   visitObject(type) {
@@ -14,8 +15,8 @@ class AuthDirective extends SchemaDirectiveVisitor {
   }
 
   /**
-   * @param {*} field
-   * @param {*} details
+   * @param {object} field
+   * @param {object} details - type of the object from GraphQL
    * @override
    */
   visitFieldDefinition(field, details) {
@@ -23,6 +24,10 @@ class AuthDirective extends SchemaDirectiveVisitor {
     field._requiredAuthRole = this.args.requires;
   }
 
+  /**
+   * Ensure that the fields and objects are wrapped to be able to traverse the AST generated
+   * @param {object} objectType -
+   */
   ensureFieldsWrapped(objectType) {
     if (objectType._authFieldsWrapped) return;
     objectType._authFieldsWrapped = true;
@@ -50,7 +55,14 @@ class AuthDirective extends SchemaDirectiveVisitor {
     });
   }
 
+  /**
+   * Check if current user is authorized to perform the requested operation(s)
+   * @param {string} role - Role of the current user
+   * @param {object} requestData - Role of the requested operation
+   */
   async execRule(role, requestData) {
+    console.log(typeof role);
+    console.log(typeof requestData);
     const strategyResult = await rules[role.toLowerCase()](requestData);
 
     if (!strategyResult) {
