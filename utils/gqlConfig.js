@@ -4,7 +4,9 @@ const config = {
   schemaDirectives: {
     auth: require("../graphql/directives/AuthDirective")
   },
-  context: require("../graphql/context")
+  context: require("../graphql/context"),
+  introspection: true,
+  playground: true
 };
 
 module.exports = config;
