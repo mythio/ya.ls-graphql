@@ -61,10 +61,9 @@ class AuthDirective extends SchemaDirectiveVisitor {
    * @param {object} requestData - Role of the requested operation
    */
   async execRule(role, requestData) {
-    console.log(typeof role);
-    console.log(typeof requestData);
+    console.log(role);
     const strategyResult = await rules[role.toLowerCase()](requestData);
-
+    console.log("strategy", strategyResult);
     if (!strategyResult) {
       throw new Error("not authorized");
     }

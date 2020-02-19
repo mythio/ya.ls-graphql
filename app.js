@@ -1,22 +1,15 @@
 require("dotenv").config();
 const express = require("express");
 const mongoose = require("mongoose");
+const config = require("./utils/gqlConfig");
 const { ApolloServer } = require("apollo-server-express");
-const jwt = require("jsonwebtoken");
 
 const app = express();
 
 const port = process.env.PORT;
 const path = process.env._PATH;
 
-const server = new ApolloServer({
-  typeDefs: require("./utils/gqlLoader")(),
-  resolvers: require("./graphql/resolvers"),
-  schemaDirectives: {
-    auth: require("./graphql/directives/AuthDirective")
-  },
-  context: require("./graphql/context")
-});
+const server = new ApolloServer(config);
 
 server.applyMiddleware({ app, path });
 

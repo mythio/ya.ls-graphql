@@ -15,7 +15,6 @@ const adminRule = async requestData => {
     if (!user || !user.isAdmin) {
       return false;
     }
-
     requestData.user = user;
   } catch (err) {
     return false;

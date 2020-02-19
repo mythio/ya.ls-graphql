@@ -40,7 +40,7 @@ const resolvers = {
       return pick.loginResult({ user, token });
     },
 
-    async expandUrl(root, args, { token }) {
+    async expandUrl(root, args, ctx) {
       const { error } = joiSchema.expandUrlSchema.validate(args);
       if (error) {
         throw new ValidationError(error.message);
@@ -53,9 +53,9 @@ const resolvers = {
       }
 
       if (shortUrl.shareWith.length) {
-        const { userId } = token;
+        const { user } = ctx;
         const isShared = shortUrl.shareWith.find(function(uId) {
-          return uId == userId;
+          return uId == user._id;
         });
 
         if (!isShared) {
@@ -115,7 +115,11 @@ const resolvers = {
 
         if (existingShortUrl) {
           const shortUrl = await ShortUrl.findById(existingShortUrl._id);
-          const sharedWith = [...shortUrl.shareWith, ...args.shareWith];
+          const sharedWith = [
+            ...shortUrl.shareWith,
+            ...args.shareWith,
+            String(user._id)
+          ];
 
           shortUrl.shareWith = sharedWith.filter(function(item, index) {
             return sharedWith.indexOf(item) == index;

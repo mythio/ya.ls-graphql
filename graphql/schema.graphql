@@ -1,4 +1,4 @@
-directive @auth(requires: Role) on FIELD_DEFINITION | OBJECT
+directive @auth(requires: Role = REVIEWER) on FIELD_DEFINITION | OBJECT
 
 enum Role {
   ADMIN
@@ -23,7 +23,7 @@ type User {
 type ShortUrlDetail {
   shortId: String!
   originalUrl: String!
-  shareWith: [User!] @auth(requires: ADMIN)
+  shareWith: [User!] @auth(requires: USER)
   createdBy: User
 }
 
@@ -40,12 +40,11 @@ type AuthData {
 
 type Query {
   login(emailAddress: String!, password: String!): AuthData!
-  expandUrl(shortId: String!): ShortUrlDetail!
+  expandUrl(shortId: String!): ShortUrlDetail! @auth
   me: UserDetail! @auth(requires: USER)
 }
 
 type Mutation {
   createUser(name: String!, emailAddress: String!, password: String!): User!
-  shortenUrl(originalUrl: String!, shareWith: [ID!]): ShortUrl!
-    @auth(requires: REVIEWER)
+  shortenUrl(originalUrl: String!, shareWith: [ID!]): ShortUrl! @auth
 }
