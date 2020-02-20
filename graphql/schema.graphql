@@ -2,7 +2,6 @@ directive @auth(requires: Role = REVIEWER) on FIELD_DEFINITION | OBJECT
 
 enum Role {
   ADMIN
-  OWNER
   USER
   REVIEWER
 }

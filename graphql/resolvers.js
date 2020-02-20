@@ -15,6 +15,7 @@ const resolvers = {
 
       return pick.meResult(ctx.user._doc);
     },
+
     async login(root, args, ctx) {
       const { error } = joiSchema.userSignInSchema.validate(args);
       if (error) {
@@ -27,15 +28,15 @@ const resolvers = {
         { _id: 1, password: 1 }
       );
       if (!user) {
-        throw new Error("User not found");
+        throw new Error("user not found");
       }
 
       const isEqual = await bcrypt.compare(password, user.password);
       if (!isEqual) {
-        throw new Error("Incorrect password");
+        throw new Error("incorrect password");
       }
 
-      const token = jwt.sign({ userId: user._id }, "secret");
+      const token = jwt.sign({ userId: user._id }, process.env.USER_SECRET);
 
       return pick.loginResult({ user, token });
     },
@@ -59,7 +60,7 @@ const resolvers = {
         });
 
         if (!isShared) {
-          throw new Error("Not authorized to view this URL");
+          throw new Error("not authorized to view this URL");
         }
       }
 
