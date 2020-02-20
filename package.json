@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "start": "node app.js",
-    "start_dev": "nodemon app.js"
+    "start_dev": "nodemon app.js",
+    "test": "jest --watchAll --verbose --runInBand --updateSnapshot"
   },
   "repository": {
     "type": "git",
@@ -27,12 +28,20 @@
     "express": "^4.17.1",
     "graphql": "^14.6.0",
     "graphql-config": "^3.0.0-alpha.17",
+    "jest": "^25.1.0",
     "jsonwebtoken": "^8.5.1",
     "mongoose": "^5.8.10",
     "shortid": "^2.2.15",
     "valid-url": "^1.0.9"
   },
   "devDependencies": {
+    "@types/jest": "^25.1.2",
+    "apollo-server-testing": "^2.10.1",
+    "graphql-tag": "^2.10.3",
+    "graphql-tools": "^4.0.7",
     "nodemon": "^2.0.2"
+  },
+  "jest": {
+    "testEnvironment": "node"
   }
 }
