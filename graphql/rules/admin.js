@@ -1,6 +1,6 @@
 const jwt = require("jsonwebtoken");
 
-const { User } = require("../../models/user");
+const User = require("../../models/user");
 
 const adminRule = async requestData => {
   const { authorization } = requestData;

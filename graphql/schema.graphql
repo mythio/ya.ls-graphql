@@ -2,7 +2,6 @@ directive @auth(requires: Role = REVIEWER) on FIELD_DEFINITION | OBJECT
 
 enum Role {
   ADMIN
-  OWNER
   USER
   REVIEWER
 }
@@ -23,7 +22,7 @@ type User {
 type ShortUrlDetail {
   shortId: String!
   originalUrl: String!
-  shareWith: [User!] @auth(requires: USER)
+  shareWith: [User!]
   createdBy: User
 }
 

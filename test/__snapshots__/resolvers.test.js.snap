@@ -1,0 +1,32 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Resolver query.expandUrl should return expanded url for valid short url 1`] = `
+Object {
+  "expandUrl": Object {
+    "originalUrl": "https://www.example.com/",
+    "shortId": "zPH1DzaY",
+  },
+}
+`;
+
+exports[`Resolver query.expandUrl should return expanded url for valid short url shared with the user 1`] = `
+Object {
+  "expandUrl": Object {
+    "originalUrl": "https://www.example.com/",
+    "shortId": "zPH1DzaY",
+  },
+}
+`;
+
+exports[`Resolver query.login should return token for authenticated user 1`] = `"5e4dcdfcc76d441afd3d29d9"`;
+
+exports[`Resolver query.me should have correct query 1`] = `
+Object {
+  "me": Object {
+    "emailAddress": "email@address.com",
+    "name": "user_name",
+    "shortIds": Array [],
+    "userId": "5e4dcdfcc76d441afd3d29d9",
+  },
+}
+`;

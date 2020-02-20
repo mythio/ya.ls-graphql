@@ -27,3 +27,5 @@ mongoose
     console.log("Mongoose Error");
     console.log(err);
   });
+
+module.exports = server;

@@ -31,17 +31,21 @@ module.exports.loginResult = result => {
 module.exports.expandUrlResult = result => {
   let { _id: shortId, originalUrl, createdBy, shareWith } = result;
 
-  createdBy = {
-    userId: createdBy._id,
-    name: createdBy.name,
-    emailAddress: createdBy.emailAddress
-  };
+  if (createdBy) {
+    createdBy = {
+      userId: createdBy._id,
+      name: createdBy.name,
+      emailAddress: createdBy.emailAddress
+    };
+  }
 
-  shareWith = shareWith.map(item => ({
-    userId: item._id,
-    name: item.name,
-    emailAddress: item.emailAddress
-  }));
+  if (shareWith) {
+    shareWith = shareWith.map(item => ({
+      userId: item._id,
+      name: item.name,
+      emailAddress: item.emailAddress
+    }));
+  }
 
   return {
     shortId,
