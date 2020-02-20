@@ -9,6 +9,7 @@ const GQLquery = require("./utils/query");
 const serverInit = require("./utils/server");
 const ShortUrl = require("../models/shortUrl");
 
+//
 describe("Resolver", () => {
   beforeAll(db.connectToDB);
   afterAll(db.disconnectDB);
