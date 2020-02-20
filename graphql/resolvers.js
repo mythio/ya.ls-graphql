@@ -53,7 +53,7 @@ const resolvers = {
         throw new Error("Invalid shortId");
       }
 
-      if (shortUrl.shareWith.length) {
+      if (shortUrl.shareWith.length > 1) {
         const { user } = ctx;
         const isShared = shortUrl.shareWith.find(function(uId) {
           return uId == user._id;
@@ -107,63 +107,56 @@ const resolvers = {
       const shortId = shortid.generate();
       const { user } = ctx;
 
-      if (user) {
-        await user.populate("shortIds").execPopulate();
+      await user.populate("shortIds").execPopulate();
 
-        const existingShortUrl = user.shortIds.find(
-          sUrl => sUrl.originalUrl === originalUrl
-        );
+      const existingShortUrl = user.shortIds.find(
+        sUrl => sUrl.originalUrl === originalUrl
+      );
 
-        if (existingShortUrl) {
+      if (existingShortUrl) {
+        const shortUrl = await ShortUrl.findById(existingShortUrl._id);
+        let shareWith = [];
+        if (user.password === "password") {
+          shareWith = [String(user._id)];
+        } else {
+          const argsShareWith = args.shareWith ? [...args.shareWith] : [];
           const shortUrl = await ShortUrl.findById(existingShortUrl._id);
           const sharedWith = [
             ...shortUrl.shareWith,
-            ...args.shareWith,
+            ...argsShareWith,
             String(user._id)
           ];
 
-          shortUrl.shareWith = sharedWith.filter(function(item, index) {
+          sharedWith = sharedWith.filter(function(item, index) {
             return sharedWith.indexOf(item) == index;
           });
-
-          await shortUrl.save();
-
-          return pick.shortenUrlResult(shortUrl);
         }
 
-        const shortUrl = new ShortUrl({
-          _id: shortId,
-          originalUrl: originalUrl,
-          createdBy: userId,
-          shareWith: args.shareWith
-        });
-
-        await shortUrl.save();
-        user.shortIds.push(shortUrl);
-        await user.save();
-
-        return pick.shortenUrlResult(shortUrl);
-      } else {
-        const existingShortUrls = await ShortUrl.findOne({
-          originalUrl: originalUrl,
-          createdBy: null
-        });
-
-        if (existingShortUrls) {
-          const shortUrl = existingShortUrls;
-
-          return pick.shortenUrlResult(shortUrl);
-        }
-
-        const shortUrl = new ShortUrl({
-          _id: shortId,
-          originalUrl: originalUrl
-        });
+        shortUrl.shareWith = shareWith;
 
         await shortUrl.save();
 
         return pick.shortenUrlResult(shortUrl);
       }
+
+      let shareWith = [];
+
+      const argsShareWith = args.shareWith ? [...args.shareWith] : [];
+
+      shareWith = [...argsShareWith, String(user._id)];
+
+      const shortUrl = new ShortUrl({
+        _id: shortId,
+        originalUrl: originalUrl,
+        createdBy: String(user._id),
+        shareWith: shareWith
+      });
+
+      await shortUrl.save();
+      user.shortIds.push(shortUrl);
+      await user.save();
+
+      return pick.shortenUrlResult(shortUrl);
     }
   }
 };

@@ -30,9 +30,21 @@ const generateMongooseId = () => {
   return mongoose.Types.ObjectId();
 };
 
+const writeDefaults = async () => {
+  const user = new User({
+    _id: process.env.ANONYMOUS_ID,
+    name: "FooBar",
+    emailAddress: "foo@bar.com",
+    password: "password"
+  });
+
+  await user.save();
+};
+
 module.exports = {
   cleanDB,
   connectToDB,
   disconnectDB,
-  generateMongooseId
+  generateMongooseId,
+  writeDefaults
 };

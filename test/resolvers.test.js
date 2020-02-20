@@ -184,5 +184,23 @@ describe("Resolver", () => {
       expect(res.errors).toBeUndefined();
       expect(res.data).toMatchSnapshot();
     });
+
+    test.skip("should return expanded url for valid short url (authenticated)", async () => {
+      const shortUrl = new ShortUrl({
+        _id: "zPH1DzaY",
+        originalUrl: "https://www.example.com/"
+      });
+
+      await shortUrl.save();
+      const server = serverInit();
+      const { query } = createTestClient(server);
+      const res = await query({
+        query: GQLquery.QUERY_EXPAND_URL,
+        variables: { shortId: "zPH1DzaY" }
+      });
+
+      expect(res.errors).toBeUndefined();
+      expect(res.data).toMatchSnapshot();
+    });
   });
 });
