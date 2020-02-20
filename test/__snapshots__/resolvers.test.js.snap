@@ -1,6 +1,15 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Resolver query.expandUrl should return expanded url for valid short url (un-authenticated) 1`] = `
+exports[`Resolver query.expandUrl should return expanded url for valid short url 1`] = `
+Object {
+  "expandUrl": Object {
+    "originalUrl": "https://www.example.com/",
+    "shortId": "zPH1DzaY",
+  },
+}
+`;
+
+exports[`Resolver query.expandUrl should return expanded url for valid short url shared with the user 1`] = `
 Object {
   "expandUrl": Object {
     "originalUrl": "https://www.example.com/",

@@ -5,8 +5,9 @@
   "main": "index.js",
   "scripts": {
     "start": "node app.js",
-    "start_dev": "nodemon app.js",
-    "test": "jest --watchAll --verbose --runInBand --updateSnapshot"
+    "start-dev": "nodemon app.js",
+    "test": "jest --watchAll --verbose --runInBand --updateSnapshot",
+    "test-cov": "jest --watchAll --verbose --runInBand --coverage"
   },
   "repository": {
     "type": "git",

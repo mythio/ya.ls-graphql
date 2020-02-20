@@ -42,15 +42,11 @@ const resolvers = {
     },
 
     async expandUrl(root, args, ctx) {
-      const { error } = joiSchema.expandUrlSchema.validate(args);
-      if (error) {
-        throw new ValidationError(error.message);
-      }
       let { shortId } = args;
       const shortUrl = await ShortUrl.findById(shortId);
 
       if (!shortUrl) {
-        throw new Error("Invalid shortId");
+        throw new Error("invalid shortId");
       }
 
       if (shortUrl.shareWith.length > 1) {
@@ -60,7 +56,7 @@ const resolvers = {
         });
 
         if (!isShared) {
-          throw new Error("not authorized to view this URL");
+          throw new Error("not authorized");
         }
       }
 

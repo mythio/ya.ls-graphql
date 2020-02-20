@@ -27,7 +27,3 @@ module.exports.shortenUrlSchema = Joi.object({
     .required(),
   shareWith: Joi.array()
 });
-
-module.exports.expandUrlSchema = Joi.object({
-  shortId: Joi.string().required()
-});
