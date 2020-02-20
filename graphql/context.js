@@ -1,12 +1,3 @@
-const jwt = require("jsonwebtoken");
-
-// module.exports = ({ req }) => {
-//   const auth = req.headers.authorization;
-//   if (!auth) {
-//     return;
-//   }
-//   const token = jwt.verify(auth, "secret");
-//   return { token };
-// };
-
-module.exports = ({ req }) => ({ authorization: req.headers.authorization });
+module.exports = ({ req }) => {
+  return { authorization: req.headers.authorization };
+};

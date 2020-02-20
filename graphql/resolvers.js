@@ -2,10 +2,10 @@ const bcrypt = require("bcrypt");
 const shortid = require("shortid");
 const jwt = require("jsonwebtoken");
 
+const User = require("../models/user");
+const ShortUrl = require("../models/shortUrl");
 const pick = require("../utils/pick");
-const { User } = require("../models/user");
 const joiSchema = require("../utils/validation/schema");
-const { ShortUrl } = require("../models/shortUrl");
 
 const resolvers = {
   Query: {
