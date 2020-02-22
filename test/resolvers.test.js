@@ -301,7 +301,7 @@ describe("Resolver", () => {
         expect(res.data).toBeNull();
       });
 
-      test("should return validation error for invalid email address", async () => {
+      test("should return validation error for invalid password", async () => {
         const server = serverInit();
         const { query } = createTestClient(server);
         const res = await query({
