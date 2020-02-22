@@ -256,6 +256,72 @@ describe("Resolver", () => {
           password: expect.any(String)
         });
       });
+
+      test("should return validation error for invalid name", async () => {
+        const server = serverInit();
+        const { query } = createTestClient(server);
+        const res = await query({
+          mutation: GQLmutation.MUTATION_CREATE_USER,
+          variables: {
+            name: "Ami",
+            emailAddress: "mythio.2909@gmail.com",
+            password: "29A64Sept1"
+          }
+        });
+
+        expect(res.errors).toEqual(
+          expect.arrayContaining([
+            expect.objectContaining({
+              message: '"name" length must be at least 4 characters long'
+            })
+          ])
+        );
+        expect(res.data).toBeNull();
+      });
+
+      test("should return validation error for invalid email address", async () => {
+        const server = serverInit();
+        const { query } = createTestClient(server);
+        const res = await query({
+          mutation: GQLmutation.MUTATION_CREATE_USER,
+          variables: {
+            name: "Amit Parameshwar",
+            emailAddress: "mythio.2909@gma",
+            password: "29A64Sept1"
+          }
+        });
+
+        expect(res.errors).toEqual(
+          expect.arrayContaining([
+            expect.objectContaining({
+              message: '"emailAddress" must be a valid email'
+            })
+          ])
+        );
+        expect(res.data).toBeNull();
+      });
+
+      test("should return validation error for invalid email address", async () => {
+        const server = serverInit();
+        const { query } = createTestClient(server);
+        const res = await query({
+          mutation: GQLmutation.MUTATION_CREATE_USER,
+          variables: {
+            name: "Amit Parameshwar",
+            emailAddress: "mythio.2909@gmail.com",
+            password: "29A64S"
+          }
+        });
+
+        expect(res.errors).toEqual(
+          expect.arrayContaining([
+            expect.objectContaining({
+              message: '"password" length must be at least 8 characters long'
+            })
+          ])
+        );
+        expect(res.data).toBeNull();
+      });
     });
   });
 });

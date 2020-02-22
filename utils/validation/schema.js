@@ -2,7 +2,7 @@ const Joi = require("@hapi/joi");
 
 module.exports.userSignUpSchema = Joi.object({
   name: Joi.string()
-    .min(3)
+    .min(4)
     .required(),
   emailAddress: Joi.string()
     .email()
