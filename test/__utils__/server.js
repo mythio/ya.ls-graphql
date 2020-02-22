@@ -1,14 +1,10 @@
 const { ApolloServer } = require("apollo-server-express");
 
-const typeDefs = require("../../utils/gqlLoader")();
-const resolvers = require("../../graphql/resolvers");
-const schemaDirectives = require("../../graphql/schemaDirectives");
+const graphql = require("../../graphql");
 
 const serverInit = (context = {}) => {
   return new ApolloServer({
-    typeDefs,
-    resolvers,
-    schemaDirectives,
+    ...graphql,
     context
   });
 };
