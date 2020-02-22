@@ -80,7 +80,7 @@ const resolvers = {
       let { name, emailAddress, password } = args;
       const existingUser = await User.findOne({ emailAddress });
       if (existingUser) {
-        throw new Error("User already exists!");
+        throw new Error("user already exists!");
       }
       password = await bcrypt.hash(password, 10);
       const user = new User({
