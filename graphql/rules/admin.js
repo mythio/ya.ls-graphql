@@ -9,7 +9,7 @@ const adminRule = async requestData => {
   }
 
   try {
-    const token = jwt.verify(authorization, "secret");
+    const token = jwt.verify(authorization, process.env.USER_SECRET);
     const user = await User.findById(token.userId);
 
     if (!user || !user.isAdmin) {

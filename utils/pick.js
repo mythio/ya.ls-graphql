@@ -77,3 +77,14 @@ module.exports.shortenUrlResult = result => {
     shareWith
   };
 };
+
+module.exports.editPrivilageResult = result => {
+  let { _id: userId, name, emailAddress, isAdmin } = result;
+
+  return {
+    userId,
+    name,
+    emailAddress,
+    isAdmin
+  };
+};

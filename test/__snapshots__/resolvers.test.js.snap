@@ -1,32 +1,54 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Resolver query.expandUrl should return expanded url for valid short url 1`] = `
+exports[`Resolver Mutation createUser should create and return a user 1`] = `
+Object {
+  "__v": 0,
+  "_id": Any<ObjectID>,
+  "emailAddress": "mythio.2909@gmail.com",
+  "isAdmin": false,
+  "joiningDate": Any<Date>,
+  "name": "Amit Parameshwar",
+  "password": Any<String>,
+  "shortIds": CoreMongooseArray [],
+}
+`;
+
+exports[`Resolver Query expandUrl should return expanded url for valid short url 1`] = `
 Object {
   "expandUrl": Object {
-    "originalUrl": "https://www.example.com/",
-    "shortId": "zPH1DzaY",
+    "originalUrl": "https://google.com/1",
+    "shortId": "4AItBPXz",
   },
 }
 `;
 
-exports[`Resolver query.expandUrl should return expanded url for valid short url shared with the user 1`] = `
+exports[`Resolver Query expandUrl should return expanded url for valid short url shared with the user 1`] = `
 Object {
   "expandUrl": Object {
-    "originalUrl": "https://www.example.com/",
-    "shortId": "zPH1DzaY",
+    "originalUrl": "https://google.com/1",
+    "shortId": "4AItBPXz",
   },
 }
 `;
 
-exports[`Resolver query.login should return token for authenticated user 1`] = `"5e4dcdfcc76d441afd3d29d9"`;
+exports[`Resolver Query login should return token for authenticated user 1`] = `"5e4dcdfcc76d441afd3d29d6"`;
 
-exports[`Resolver query.me should have correct query 1`] = `
+exports[`Resolver Query me should have correct query 1`] = `
 Object {
   "me": Object {
-    "emailAddress": "email@address.com",
-    "name": "user_name",
-    "shortIds": Array [],
-    "userId": "5e4dcdfcc76d441afd3d29d9",
+    "emailAddress": "foo@bar.com",
+    "name": "foobar",
+    "shortIds": Array [
+      Object {
+        "originalUrl": "https://google.com/1",
+        "shortId": "4AItBPXz",
+      },
+      Object {
+        "originalUrl": "https://google.com/2",
+        "shortId": "td1sQf8B",
+      },
+    ],
+    "userId": "5e4dcdfcc76d441afd3d29d6",
   },
 }
 `;
