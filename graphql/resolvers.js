@@ -129,17 +129,14 @@ const resolvers = {
         }
 
         shortUrl.shareWith = shareWith;
-
         await shortUrl.save();
 
         return pick.shortenUrlResult(shortUrl);
       }
 
-      let shareWith = [];
-
       const argsShareWith = args.shareWith ? [...args.shareWith] : [];
 
-      shareWith = [...argsShareWith, String(user._id)];
+      const shareWith = [...argsShareWith, String(user._id)];
 
       const shortUrl = new ShortUrl({
         _id: shortId,
@@ -153,6 +150,16 @@ const resolvers = {
       await user.save();
 
       return pick.shortenUrlResult(shortUrl);
+    },
+
+    async editPrivilage(root, args, ctx) {
+      const { userId, isAdmin } = args;
+
+      const user = await User.findByIdAndUpdate({ _id: userId }, { isAdmin });
+      if (!user) {
+        throw new Error("user not found");
+      }
+      return pick.editPrivilageResult(user._doc);
     }
   }
 };
