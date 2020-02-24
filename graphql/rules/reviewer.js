@@ -8,6 +8,7 @@ const reviewRule = async requestData => {
     const user = await User.findById(process.env.ANONYMOUS_ID);
     requestData.user = user;
   }
+
   return true;
 };
 

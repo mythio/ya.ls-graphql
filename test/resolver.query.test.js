@@ -19,7 +19,7 @@ describe("Query", () => {
 
   describe("me", () => {
     test("should have correct query", async () => {
-      const user = await User.findById("5e4dcdfcc76d441afd3d29d6");
+      const user = await User.findById("5e4e6d36d5530637b12283cf");
       const token = jwt.sign({ userId: user._id }, process.env.USER_SECRET);
       const server = serverInit({ authorization: token });
       const { query } = createTestClient(server);
