@@ -10,4 +10,15 @@ const MUTATION_CREATE_USER = gql`
   }
 `;
 
-module.exports = { MUTATION_CREATE_USER };
+const MUTATION_EDIT_PRIVILEGE = gql`
+  mutation($userId: ID!, $isAdmin: Boolean!) {
+    editPrivilage(userId: $userId, isAdmin: $isAdmin) {
+      userId
+      name
+      emailAddress
+      isAdmin
+    }
+  }
+`;
+
+module.exports = { MUTATION_CREATE_USER, MUTATION_EDIT_PRIVILEGE };

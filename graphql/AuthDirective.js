@@ -1,7 +1,7 @@
 const { SchemaDirectiveVisitor } = require("apollo-server-express");
 const { defaultFieldResolver } = require("graphql");
 
-const rules = require("../rules");
+const rules = require("./rules");
 
 /** Class definition for @auth directive */
 class AuthDirective extends SchemaDirectiveVisitor {

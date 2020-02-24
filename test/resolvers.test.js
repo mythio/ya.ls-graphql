@@ -323,5 +323,29 @@ describe("Resolver", () => {
         expect(res.data).toBeNull();
       });
     });
+
+    describe("editPrivilege", () => {
+      test("should elevate the existing users privilege", async () => {
+        const token = jwt.sign(
+          { userId: "5e4dcdfcc76d441afd3d29da" },
+          process.env.USER_SECRET
+        );
+        const server = serverInit({ authorization: token });
+        const { query } = createTestClient(server);
+        const res = await query({
+          mutation: GQLmutation.MUTATION_EDIT_PRIVILEGE,
+          variables: {
+            userId: "5e4dcdfcc76d441afd3d29d7",
+            isAdmin: true
+          }
+        });
+
+        expect(res.errors).toBeUndefined();
+        expect(res.data).toMatchSnapshot();
+        expect(res.data.editPrivilage).toEqual(
+          expect.objectContaining({ isAdmin: true })
+        );
+      });
+    });
   });
 });

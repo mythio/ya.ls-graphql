@@ -1,3 +1,3 @@
 module.exports = {
-  auth: require("./directives/AuthDirective")
+  auth: require("./AuthDirective")
 };
