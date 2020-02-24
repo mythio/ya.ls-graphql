@@ -109,8 +109,24 @@ describe("Mutation", () => {
     });
   });
 
+  describe("shortenUrl", () => {
+    test("should return the shortUrl for the original url specified", async () => {
+      const server = serverInit();
+      const { query } = createTestClient(server);
+      const res = await query({
+        mutation: GQLmutation.MUTATITON_SHORTEN_URL,
+        variables: {
+          originalUrl: "https://google.com/301"
+        }
+      });
+
+      expect(res.errors).toBeUndefined();
+      expect(res.data).toMatchSnapshot();
+    });
+  });
+
   describe("editPrivilege", () => {
-    test("should elevate the existing users privilege", async () => {
+    test("should elevate the existing user's privilege", async () => {
       const token = jwt.sign(
         { userId: "5e4dcdfcc76d441afd3d29da" },
         process.env.USER_SECRET
@@ -132,7 +148,7 @@ describe("Mutation", () => {
       );
     });
 
-    test("should drop the existing users privilege", async () => {
+    test("should drop the existing user's privilege", async () => {
       const token = jwt.sign(
         { userId: "5e4dcdfcc76d441afd3d29da" },
         process.env.USER_SECRET
@@ -154,7 +170,7 @@ describe("Mutation", () => {
       );
     });
 
-    test("should throw `not authorized` when non-admin tries to elevate the privilege(s)", async () => {
+    test("should throw `not authorized` if non-admin tries to elevate the privilege(s)", async () => {
       const token = jwt.sign(
         { userId: "5e4dcdfcc76d441afd3d29d8" },
         process.env.USER_SECRET
@@ -172,6 +188,29 @@ describe("Mutation", () => {
       expect(res.errors).toEqual(
         expect.arrayContaining([
           expect.objectContaining({ message: "not authorized" })
+        ])
+      );
+      expect(res.data).toBeNull();
+    });
+
+    test("should throw `user not found` if user is not found", async () => {
+      const token = jwt.sign(
+        { userId: "5e4dcdfcc76d441afd3d29da" },
+        process.env.USER_SECRET
+      );
+      const server = serverInit({ authorization: token });
+      const { query } = createTestClient(server);
+      const res = await query({
+        mutation: GQLmutation.MUTATION_EDIT_PRIVILEGE,
+        variables: {
+          userId: "5e4dcdfcc76d441afd3d2937",
+          isAdmin: true
+        }
+      });
+
+      expect(res.errors).toEqual(
+        expect.arrayContaining([
+          expect.objectContaining({ message: "user not found" })
         ])
       );
       expect(res.data).toBeNull();

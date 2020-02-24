@@ -21,4 +21,18 @@ const MUTATION_EDIT_PRIVILEGE = gql`
   }
 `;
 
-module.exports = { MUTATION_CREATE_USER, MUTATION_EDIT_PRIVILEGE };
+const MUTATITON_SHORTEN_URL = gql`
+  mutation($originalUrl: String!) {
+    shortenUrl(originalUrl: $originalUrl) {
+      shortId
+      originalUrl
+      shareWith
+    }
+  }
+`;
+
+module.exports = {
+  MUTATION_CREATE_USER,
+  MUTATION_EDIT_PRIVILEGE,
+  MUTATITON_SHORTEN_URL
+};
