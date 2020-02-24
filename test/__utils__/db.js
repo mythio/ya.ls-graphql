@@ -17,7 +17,8 @@ const connectToDB = async () => {
     "mongodb://localhost/yals-graphql-test",
     {
       useNewUrlParser: true,
-      useUnifiedTopology: true
+      useUnifiedTopology: true,
+      useFindAndModify: false
     }
   );
   return connection;
