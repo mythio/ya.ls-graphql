@@ -17,8 +17,7 @@ mongoose
   .connect(process.env.MONGODB_URI, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
-    useFindAndModify: true,
-    socketTimeoutMS: 10000
+    useFindAndModify: true
   })
   .then(() => {
     app.listen({ port }, () => {
