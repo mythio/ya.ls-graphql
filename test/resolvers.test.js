@@ -346,6 +346,51 @@ describe("Resolver", () => {
           expect.objectContaining({ isAdmin: true })
         );
       });
+
+      test("should drop the existing users privilege", async () => {
+        const token = jwt.sign(
+          { userId: "5e4dcdfcc76d441afd3d29da" },
+          process.env.USER_SECRET
+        );
+        const server = serverInit({ authorization: token });
+        const { query } = createTestClient(server);
+        const res = await query({
+          mutation: GQLmutation.MUTATION_EDIT_PRIVILEGE,
+          variables: {
+            userId: "5e4dcdfcc76d441afd3d29d7",
+            isAdmin: false
+          }
+        });
+
+        expect(res.errors).toBeUndefined();
+        expect(res.data).toMatchSnapshot();
+        expect(res.data.editPrivilage).toEqual(
+          expect.objectContaining({ isAdmin: false })
+        );
+      });
+
+      test("should throw `not authorized` when non-admin tries to elevate the privilege(s)", async () => {
+        const token = jwt.sign(
+          { userId: "5e4dcdfcc76d441afd3d29d8" },
+          process.env.USER_SECRET
+        );
+        const server = serverInit({ authorization: token });
+        const { query } = createTestClient(server);
+        const res = await query({
+          mutation: GQLmutation.MUTATION_EDIT_PRIVILEGE,
+          variables: {
+            userId: "5e4dcdfcc76d441afd3d29d7",
+            isAdmin: true
+          }
+        });
+
+        expect(res.errors).toEqual(
+          expect.arrayContaining([
+            expect.objectContaining({ message: "not authorized" })
+          ])
+        );
+        expect(res.data).toBeNull();
+      });
     });
   });
 });
