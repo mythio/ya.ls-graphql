@@ -10,22 +10,15 @@ const MUTATION_CREATE_USER = gql`
   }
 `;
 
-// const QUERY_LOGIN = gql`
-//   query LoginQuery($emailAddress: String!, $password: String!) {
-//     login(emailAddress: $emailAddress, password: $password) {
-//       token
-//       userId
-//     }
-//   }
-// `;
+const MUTATION_EDIT_PRIVILEGE = gql`
+  mutation($userId: ID!, $isAdmin: Boolean!) {
+    editPrivilage(userId: $userId, isAdmin: $isAdmin) {
+      userId
+      name
+      emailAddress
+      isAdmin
+    }
+  }
+`;
 
-// const QUERY_EXPAND_URL = gql`
-//   query ExpandUrl($shortId: String!) {
-//     expandUrl(shortId: $shortId) {
-//       shortId
-//       originalUrl
-//     }
-//   }
-// `;
-
-module.exports = { MUTATION_CREATE_USER };
+module.exports = { MUTATION_CREATE_USER, MUTATION_EDIT_PRIVILEGE };

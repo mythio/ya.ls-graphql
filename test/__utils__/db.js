@@ -37,23 +37,38 @@ const writeDefaults = async () => {
     "5e4dcdfcc76d441afd3d29d6",
     "5e4dcdfcc76d441afd3d29d7",
     "5e4dcdfcc76d441afd3d29d8",
-    "5e4dcdfcc76d441afd3d29d9"
+    "5e4dcdfcc76d441afd3d29d9",
+    "5e4dcdfcc76d441afd3d29da"
   ];
-  let names = ["foobar", "user1", "user2", "user3"];
+  let names = ["foobar", "user1", "user2", "user3", "user4"];
   let emails = [
     "foo@bar.com",
     "email@address1.com",
     "email@address2.com",
-    "email@address3.com"
+    "email@address3.com",
+    "email@address4.com"
   ];
-  let shortUrls = [["4AItBPXz", "td1sQf8B"], ["8q2T-dgm", "2BF2S1bc"], [], []];
+  let shortUrls = [
+    ["4AItBPXz", "td1sQf8B"],
+    ["8q2T-dgm", "2BF2S1bc"],
+    [],
+    [],
+    ["LKWPD06A"]
+  ];
   let originalUrls = [
     "https://google.com/1",
     "https://google.com/2",
     "https://google.com/3",
-    "https://google.com/4"
+    "https://google.com/4",
+    "https://google.com/5"
   ];
-  let shortUrlIds = ["4AItBPXz", "td1sQf8B", "8q2T-dgm", "2BF2S1bc"];
+  let shortUrlIds = [
+    "4AItBPXz",
+    "td1sQf8B",
+    "8q2T-dgm",
+    "2BF2S1bc",
+    "LKWPD06A"
+  ];
   let shareWith = [
     ["5e4dcdfcc76d441afd3d29d6"],
     ["5e4dcdfcc76d441afd3d29d6", "5e4dcdfcc76d441afd3d29d7"],
@@ -62,15 +77,18 @@ const writeDefaults = async () => {
       "5e4dcdfcc76d441afd3d29d7",
       "5e4dcdfcc76d441afd3d29d6",
       "5e4dcdfcc76d441afd3d29d8"
-    ]
+    ],
+    ["5e4dcdfcc76d441afd3d29da"]
   ];
-  for (let i = 0; i < 4; ++i) {
+  let isAdmins = [false, false, false, false, true];
+  for (let i = 0; i < 5; ++i) {
     const user = new User({
       _id: userIds[i],
       name: names[i],
       emailAddress: emails[i],
       password: password,
-      shortIds: shortUrls[i]
+      shortIds: shortUrls[i],
+      isAdmin: isAdmins[i]
     });
 
     const shortUrl = new ShortUrl({

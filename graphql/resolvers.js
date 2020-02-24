@@ -155,7 +155,14 @@ const resolvers = {
     async editPrivilage(root, args, ctx) {
       const { userId, isAdmin } = args;
 
-      const user = await User.findByIdAndUpdate({ _id: userId }, { isAdmin });
+      let user = await User.findByIdAndUpdate(userId, {
+        $set: {
+          isAdmin
+        }
+      });
+
+      user = await User.findById(userId);
+
       if (!user) {
         throw new Error("user not found");
       }
