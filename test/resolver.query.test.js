@@ -18,7 +18,7 @@ describe("Query", () => {
   });
 
   describe("me", () => {
-    test("should have correct query", async () => {
+    it("should have correct query", async () => {
       const user = await User.findById("5e4e6d36d5530637b12283cf");
       const token = jwt.sign({ userId: user._id }, process.env.USER_SECRET);
       const server = serverInit({ authorization: token });
@@ -29,7 +29,7 @@ describe("Query", () => {
       expect(res.data).toMatchSnapshot();
     });
 
-    test("should throw `not authorized` for invalid userId", async () => {
+    it("should throw `not authorized` for invalid userId", async () => {
       const token = jwt.sign(
         { userId: "5e4dcdfcc76d441afd3d29d5" },
         process.env.USER_SECRET
@@ -46,7 +46,7 @@ describe("Query", () => {
       expect(res.data).toBeNull();
     });
 
-    test("should throw `not authorized` for invalid token", async () => {
+    it("should throw `not authorized` for invalid token", async () => {
       const token = jwt.sign(
         { userId: "5e4dcdfcc76d441afd3d29d9" },
         "wrongsecret"
@@ -65,7 +65,7 @@ describe("Query", () => {
   });
 
   describe("login", () => {
-    test("should return token for authenticated user", async () => {
+    it("should return token for authenticated user", async () => {
       const server = serverInit();
       const { query } = createTestClient(server);
       const res = await query({
@@ -77,7 +77,7 @@ describe("Query", () => {
       expect(res.data.login.userId).toMatchSnapshot();
     });
 
-    test("should return validation error for invalid email address", async () => {
+    it("should return validation error for invalid email address", async () => {
       const server = serverInit();
       const { query } = createTestClient(server);
       const res = await query({
@@ -95,7 +95,7 @@ describe("Query", () => {
       expect(res.data).toBeNull();
     });
 
-    test("should return validation error for invalid password", async () => {
+    it("should return validation error for invalid password", async () => {
       const server = serverInit();
       const { query } = createTestClient(server);
       const res = await query({
@@ -113,7 +113,7 @@ describe("Query", () => {
       expect(res.data).toBeNull();
     });
 
-    test("should throw `user not found` for incorrect email address", async () => {
+    it("should throw `user not found` for incorrect email address", async () => {
       const server = serverInit();
       const { query } = createTestClient(server);
       const res = await query({
@@ -129,7 +129,7 @@ describe("Query", () => {
       expect(res.data).toBeNull();
     });
 
-    test("should throw `incorrect password` for wrong password", async () => {
+    it("should throw `incorrect password` for wrong password", async () => {
       const server = serverInit();
       const { query } = createTestClient(server);
       const res = await query({
@@ -150,7 +150,7 @@ describe("Query", () => {
   });
 
   describe("expandUrl", () => {
-    test("should return expanded url for valid short url", async () => {
+    it("should return expanded url for valid short url", async () => {
       const server = serverInit();
       const { query } = createTestClient(server);
       const res = await query({
@@ -162,7 +162,7 @@ describe("Query", () => {
       expect(res.data).toMatchSnapshot();
     });
 
-    test("should return expanded url for valid short url shared with the user", async () => {
+    it("should return expanded url for valid short url shared with the user", async () => {
       const token = jwt.sign(
         { userId: "5e4dcdfcc76d441afd3d29d7" },
         process.env.USER_SECRET
@@ -179,7 +179,7 @@ describe("Query", () => {
       expect(res.data).toMatchSnapshot();
     });
 
-    test("should throw `not authorized to view this url` for valid short url not shared with the user", async () => {
+    it("should throw `not authorized to view this url` for valid short url not shared with the user", async () => {
       const token = jwt.sign(
         { userId: "5e4dcdfcc76d441afd3d29d9" },
         process.env.USER_SECRET
@@ -200,7 +200,7 @@ describe("Query", () => {
       expect(res.data).toBeNull();
     });
 
-    test("should throw `invalid shortId` for invalid shortId", async () => {
+    it("should throw `invalid shortId` for invalid shortId", async () => {
       const server = serverInit();
       const { query } = createTestClient(server);
       const res = await query({
