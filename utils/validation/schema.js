@@ -23,7 +23,12 @@ module.exports.userSignInSchema = Joi.object({
 
 module.exports.shortenUrlSchema = Joi.object({
   originalUrl: Joi.string()
-    .uri()
-    .required(),
+    .regex(
+      /^(?:http(s)?:\/\/)?[\w.-]+(?:\.[\w\.-]+)+[\w\-\._~:/?#[\]@!\$&'\(\)\*\+,;=.]+$/
+    )
+    .required()
+    .error(errors => {
+      return new Error('"originalUrl" is not a valid url');
+    }),
   shareWith: Joi.array()
 });

@@ -123,6 +123,26 @@ describe("Mutation", () => {
       expect(res.errors).toBeUndefined();
       expect(res.data).toMatchSnapshot();
     });
+
+    it("should return `error` for wrong url", async () => {
+      const server = serverInit();
+      const { query } = createTestClient(server);
+      const res = await query({
+        mutation: GQLmutation.MUTATITON_SHORTEN_URL,
+        variables: {
+          originalUrl: "htps://google.com/404"
+        }
+      });
+
+      expect(res.errors).toEqual(
+        expect.arrayContaining([
+          expect.objectContaining({
+            message: 'Error: "originalUrl" is not a valid url'
+          })
+        ])
+      );
+      expect(res.data).toBeNull();
+    });
   });
 
   describe("editPrivilege", () => {
