@@ -20,7 +20,7 @@ describe("Mutation", () => {
   });
 
   describe("createUser", () => {
-    test("should create and return a user", async () => {
+    it("should create and return a user", async () => {
       const server = serverInit();
       const { query } = createTestClient(server);
       const res = await query({
@@ -42,7 +42,7 @@ describe("Mutation", () => {
       });
     });
 
-    test("should return validation error for invalid name", async () => {
+    it("should return validation error for invalid name", async () => {
       const server = serverInit();
       const { query } = createTestClient(server);
       const res = await query({
@@ -64,7 +64,7 @@ describe("Mutation", () => {
       expect(res.data).toBeNull();
     });
 
-    test("should return validation error for invalid email address", async () => {
+    it("should return validation error for invalid email address", async () => {
       const server = serverInit();
       const { query } = createTestClient(server);
       const res = await query({
@@ -86,7 +86,7 @@ describe("Mutation", () => {
       expect(res.data).toBeNull();
     });
 
-    test("should return validation error for invalid password", async () => {
+    it("should return validation error for invalid password", async () => {
       const server = serverInit();
       const { query } = createTestClient(server);
       const res = await query({
@@ -110,7 +110,7 @@ describe("Mutation", () => {
   });
 
   describe("shortenUrl", () => {
-    test("should return the shortUrl for the original url specified", async () => {
+    it("should return the shortUrl for the original url specified", async () => {
       const server = serverInit();
       const { query } = createTestClient(server);
       const res = await query({
@@ -122,11 +122,32 @@ describe("Mutation", () => {
 
       expect(res.errors).toBeUndefined();
       expect(res.data).toMatchSnapshot();
+      expect(res.data);
+    });
+
+    it("should return `error` for wrong url", async () => {
+      const server = serverInit();
+      const { query } = createTestClient(server);
+      const res = await query({
+        mutation: GQLmutation.MUTATITON_SHORTEN_URL,
+        variables: {
+          originalUrl: "htps://google.com/404"
+        }
+      });
+
+      expect(res.errors).toEqual(
+        expect.arrayContaining([
+          expect.objectContaining({
+            message: 'Error: "originalUrl" is not a valid url'
+          })
+        ])
+      );
+      expect(res.data).toBeNull();
     });
   });
 
   describe("editPrivilege", () => {
-    test("should elevate the existing user's privilege", async () => {
+    it("should elevate the existing user's privilege", async () => {
       const token = jwt.sign(
         { userId: "5e4dcdfcc76d441afd3d29da" },
         process.env.USER_SECRET
@@ -148,7 +169,7 @@ describe("Mutation", () => {
       );
     });
 
-    test("should drop the existing user's privilege", async () => {
+    it("should drop the existing user's privilege", async () => {
       const token = jwt.sign(
         { userId: "5e4dcdfcc76d441afd3d29da" },
         process.env.USER_SECRET
@@ -170,7 +191,7 @@ describe("Mutation", () => {
       );
     });
 
-    test("should throw `not authorized` if non-admin tries to elevate the privilege(s)", async () => {
+    it("should throw `not authorized` if non-admin tries to elevate the privilege(s)", async () => {
       const token = jwt.sign(
         { userId: "5e4dcdfcc76d441afd3d29d8" },
         process.env.USER_SECRET
@@ -193,7 +214,7 @@ describe("Mutation", () => {
       expect(res.data).toBeNull();
     });
 
-    test("should throw `user not found` if user is not found", async () => {
+    it("should throw `user not found` if user is not found", async () => {
       const token = jwt.sign(
         { userId: "5e4dcdfcc76d441afd3d29da" },
         process.env.USER_SECRET
