@@ -57,7 +57,7 @@ describe("Mutation", () => {
       expect(res.errors).toEqual(
         expect.arrayContaining([
           expect.objectContaining({
-            message: '"name" length must be at least 4 characters long'
+            message: 'Field "name" must be a string of atleast 4 characters'
           })
         ])
       );
@@ -79,7 +79,7 @@ describe("Mutation", () => {
       expect(res.errors).toEqual(
         expect.arrayContaining([
           expect.objectContaining({
-            message: '"emailAddress" must be a valid email'
+            message: 'Field "emailAddress" must be a valid email address'
           })
         ])
       );
@@ -101,7 +101,7 @@ describe("Mutation", () => {
       expect(res.errors).toEqual(
         expect.arrayContaining([
           expect.objectContaining({
-            message: '"password" length must be at least 8 characters long'
+            message: 'Field "password" must be a string of atleast 8 characters'
           })
         ])
       );
@@ -138,7 +138,7 @@ describe("Mutation", () => {
       expect(res.errors).toEqual(
         expect.arrayContaining([
           expect.objectContaining({
-            message: 'Error: "originalUrl" is not a valid url'
+            message: 'Error: Field "originalUrl" must be a valid url'
           })
         ])
       );
