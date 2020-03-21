@@ -42,6 +42,28 @@ describe("Mutation", () => {
       });
     });
 
+    it("should return error for existing mail id", async () => {
+      const server = serverInit();
+      const { query } = createTestClient(server);
+      const res = await query({
+        mutation: GQLmutation.MUTATION_CREATE_USER,
+        variables: {
+          name: "Amit",
+          emailAddress: "email@address1.com",
+          password: "29A64Sept1"
+        }
+      });
+
+      expect(res.errors).toEqual(
+        expect.arrayContaining([
+          expect.objectContaining({
+            message: "User already exists"
+          })
+        ])
+      );
+      expect(res.data).toBeNull();
+    });
+
     it("should return validation error for invalid name", async () => {
       const server = serverInit();
       const { query } = createTestClient(server);
