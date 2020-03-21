@@ -1,6 +1,9 @@
 # ya.ls-graphql
 Yet another link shortener GraphQL backend
 
+![Node.js CI](https://github.com/mythio/ya.ls-graphql/workflows/Node.js%20CI/badge.svg)
+
+
 ## Makes use of `query` and `mutation`
 
 ### Types

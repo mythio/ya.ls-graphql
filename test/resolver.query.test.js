@@ -88,7 +88,7 @@ describe("Query", () => {
       expect(res.errors).toEqual(
         expect.arrayContaining([
           expect.objectContaining({
-            message: '"emailAddress" must be a valid email'
+            message: 'Field "emailAddress" must be a valid email address'
           })
         ])
       );
@@ -106,7 +106,7 @@ describe("Query", () => {
       expect(res.errors).toEqual(
         expect.arrayContaining([
           expect.objectContaining({
-            message: '"password" length must be at least 8 characters long'
+            message: 'Field "password" must be a string of atleast 8 characters'
           })
         ])
       );

@@ -35,10 +35,7 @@ module.exports.shortenUrlSchema = Joi.object({
     .regex(
       /^(?:http(s)?:\/\/)?[\w.-]+(?:\.[\w\.-]+)+[\w\-\._~:/?#[\]@!\$&'\(\)\*\+,;=.]+$/
     )
-    .uri()
     .required()
-    .error(errors => {
-      return new Error('Field "originalUrl" must be a valid url');
-    }),
+    .error(new Error('Field "originalUrl" must be a valid url')),
   shareWith: Joi.array()
 });
