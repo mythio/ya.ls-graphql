@@ -7,7 +7,6 @@ const db = require("./__utils__/db");
 const User = require("../models/user");
 const GQLmutation = require("./__utils__/mutation");
 const serverInit = require("./__utils__/server");
-const ShortUrl = require("../models/shortUrl");
 
 describe("Mutation", () => {
   beforeAll(async () => {
