@@ -27,7 +27,7 @@ describe("Mutation", () => {
         variables: {
           name: "Amit Parameshwar",
           emailAddress: "mythio.2909@gmail.com",
-          password: "29A64Sept1"
+          password: "very_strong_password"
         }
       });
 
@@ -49,7 +49,7 @@ describe("Mutation", () => {
         variables: {
           name: "Amit",
           emailAddress: "email@address1.com",
-          password: "29A64Sept1"
+          password: "very_strong_password"
         }
       });
 
@@ -71,7 +71,7 @@ describe("Mutation", () => {
         variables: {
           name: "Ami",
           emailAddress: "mythio.2909@gmail.com",
-          password: "29A64Sept1"
+          password: "very_strong_password"
         }
       });
 
@@ -93,7 +93,7 @@ describe("Mutation", () => {
         variables: {
           name: "Amit Parameshwar",
           emailAddress: "mythio.2909@gma",
-          password: "29A64Sept1"
+          password: "very_strong_password"
         }
       });
 
@@ -115,7 +115,7 @@ describe("Mutation", () => {
         variables: {
           name: "Amit Parameshwar",
           emailAddress: "mythio.2909@gmail.com",
-          password: "29A64S"
+          password: "weak"
         }
       });
 
