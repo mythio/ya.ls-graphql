@@ -150,7 +150,6 @@ const resolvers = {
           await shortUrl.save();
         }
 
-        console.log(shortUrl._doc);
         return pick.shortenUrlResult(shortUrl._doc);
       }
     },

@@ -19,7 +19,6 @@ const userRule = async requestData => {
     const token = jwt.verify(authorization, process.env.USER_SECRET);
     const user = await User.findById(token.userId);
 
-    console.log(user);
     if (!user) {
       return false;
     }
