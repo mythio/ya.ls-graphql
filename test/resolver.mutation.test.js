@@ -143,7 +143,6 @@ describe("Mutation", () => {
 
       expect(res.errors).toBeUndefined();
       expect(res.data).toMatchSnapshot();
-      expect(res.data);
     });
 
     it("should return `error` for wrong url", async () => {
