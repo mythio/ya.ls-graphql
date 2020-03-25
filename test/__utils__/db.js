@@ -35,7 +35,7 @@ const generateMongooseId = () => {
 const writeDefaults = async () => {
   const password = await bcrypt.hash("password", 10);
   let userIds = [
-    "5e4e6d36d5530637b12283cf",
+    ,
     "5e4dcdfcc76d441afd3d29d7",
     "5e4dcdfcc76d441afd3d29d8",
     "5e4dcdfcc76d441afd3d29d9",
@@ -71,14 +71,10 @@ const writeDefaults = async () => {
     "LKWPD06A"
   ];
   let shareWith = [
-    ["5e4e6d36d5530637b12283cf"],
-    ["5e4e6d36d5530637b12283cf", "5e4dcdfcc76d441afd3d29d7"],
+    [],
+    [, "5e4dcdfcc76d441afd3d29d7"],
     ["5e4dcdfcc76d441afd3d29d7"],
-    [
-      "5e4dcdfcc76d441afd3d29d7",
-      "5e4e6d36d5530637b12283cf",
-      "5e4dcdfcc76d441afd3d29d8"
-    ],
+    ["5e4dcdfcc76d441afd3d29d7", "5e4dcdfcc76d441afd3d29d8"],
     ["5e4dcdfcc76d441afd3d29da"]
   ];
   let isAdmins = [false, false, false, false, true];

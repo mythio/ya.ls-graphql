@@ -26,7 +26,6 @@ mongoose
   })
   .catch(err => {
     console.log("Mongoose Error");
-    console.log(err);
   });
 
 module.exports = server;
