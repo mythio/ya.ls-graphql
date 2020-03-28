@@ -8,8 +8,8 @@ jobs:
 
     strategy:
       matrix:
-        node-version: [13.9.0]
-        mongodb-version: ["4.2"]
+        node-version: ["13.x"]
+        mongodb-version: ["4.2.3"]
 
     steps:
       - name: Launch MongoDB
