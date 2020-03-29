@@ -12,7 +12,7 @@ const MUTATION_CREATE_USER = gql`
 
 const MUTATION_EDIT_PRIVILEGE = gql`
   mutation($userId: ID!, $isAdmin: Boolean!) {
-    editPrivilage(userId: $userId, isAdmin: $isAdmin) {
+    editPrivilege(userId: $userId, isAdmin: $isAdmin) {
       userId
       name
       emailAddress
@@ -31,8 +31,19 @@ const MUTATITON_SHORTEN_URL = gql`
   }
 `;
 
+const MUTATION_DELETE_USER = gql`
+  mutation($userId: ID!) {
+    deleteUser(userId: $userId) {
+      userId
+      name
+      emailAddress
+    }
+  }
+`;
+
 module.exports = {
   MUTATION_CREATE_USER,
   MUTATION_EDIT_PRIVILEGE,
-  MUTATITON_SHORTEN_URL
+  MUTATITON_SHORTEN_URL,
+  MUTATION_DELETE_USER
 };

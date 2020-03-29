@@ -47,6 +47,7 @@ type Query {
 type Mutation {
   createUser(name: String!, emailAddress: String!, password: String!): User!
   shortenUrl(originalUrl: String!, shareWith: [ID!]): ShortUrl! @auth
-  editPrivilage(userId: ID!, isAdmin: Boolean!): UserDetail!
+  editPrivilege(userId: ID!, isAdmin: Boolean!): UserDetail!
     @auth(requires: ADMIN)
+  deleteUser(userId: ID!): User! @auth(requires: USER)
 }

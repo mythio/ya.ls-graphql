@@ -10,8 +10,8 @@ const joiSchema = require("../utils/validation/schema");
 const resolvers = {
   Query: {
     async me(root, args, ctx) {
-      const { user } = ctx;
-      await user.populate({ path: "shortIds" }).execPopulate();
+      let { user } = ctx;
+      user = await user.populate({ path: "shortIds" }).execPopulate();
 
       return pick.meResult(ctx.user._doc);
     },
@@ -43,7 +43,7 @@ const resolvers = {
 
     async expandUrl(root, args, ctx) {
       let { shortId } = args;
-      const shortUrl = await ShortUrl.findById(shortId);
+      let shortUrl = await ShortUrl.findById(shortId);
 
       if (!shortUrl) {
         throw new Error("invalid shortId");
@@ -60,10 +60,10 @@ const resolvers = {
         }
       }
 
-      await shortUrl
+      shortUrl = await shortUrl
         .populate({ path: "createdBy", select: "_id name emailAddress" })
         .execPopulate();
-      await shortUrl
+      shortUrl = await shortUrl
         .populate({ path: "shareWith", select: "_id name emailAddress" })
         .execPopulate();
 
@@ -83,12 +83,12 @@ const resolvers = {
         throw new Error("User already exists");
       }
       password = await bcrypt.hash(password, 10);
-      const user = new User({
+      let user = new User({
         name: name,
         emailAddress: emailAddress,
         password: password
       });
-      await user.save();
+      user = await user.save();
 
       return pick.createUserResult(user._doc);
     },
@@ -99,10 +99,10 @@ const resolvers = {
         throw new Error(error);
       }
       let { originalUrl } = args;
-      const { user } = ctx;
+      let { user } = ctx;
 
       if (user) {
-        await user.populate("shortIds").execPopulate();
+        user = await user.populate("shortIds").execPopulate();
 
         const existingShortUrl = user.shortIds.find(
           sUrl => sUrl.originalUrl === originalUrl
@@ -121,7 +121,7 @@ const resolvers = {
           });
 
           shortUrl.shareWith = shareWith;
-          await shortUrl.save();
+          shortUrl = await shortUrl.save();
         } else {
           shareWith = [...argsShareWith, String(user._id)];
           shortUrl = new ShortUrl({
@@ -131,14 +131,14 @@ const resolvers = {
             shareWith: shareWith
           });
 
-          await shortUrl.save();
+          shortUrl = await shortUrl.save();
           user.shortIds.push(shortUrl);
-          await user.save();
+          user = await user.save();
         }
 
         return pick.shortenUrlResult(shortUrl);
       } else {
-        const shortUrls = await ShortUrl.find({ originalUrl });
+        let shortUrls = await ShortUrl.find({ originalUrl });
         let shortUrl = shortUrls.find(sUrl => sUrl.createdBy === undefined);
 
         if (!shortUrl) {
@@ -147,14 +147,14 @@ const resolvers = {
             originalUrl: originalUrl
           });
 
-          await shortUrl.save();
+          shortUrl = await shortUrl.save();
         }
 
         return pick.shortenUrlResult(shortUrl._doc);
       }
     },
 
-    async editPrivilage(root, args, ctx) {
+    async editPrivilege(root, args, ctx) {
       const { userId, isAdmin } = args;
 
       let user = await User.findByIdAndUpdate(userId, {
@@ -168,7 +168,24 @@ const resolvers = {
       if (!user) {
         throw new Error("user not found");
       }
+
       return pick.editPrivilageResult(user._doc);
+    },
+
+    async deleteUser(root, args, ctx) {
+      let { user } = ctx;
+      let { userId } = args;
+
+      if (!user || (!user.isAdmin && user._id != userId)) {
+        throw new Error(`user not found`);
+      } else {
+        const deleteResp = await User.deleteOne({ _id: userId });
+        if (!deleteResp.ok || deleteResp.deletedCount !== 1) {
+          throw new Error("cannot delete the user");
+        }
+      }
+
+      return pick.createUserResult(user);
     }
   }
 };

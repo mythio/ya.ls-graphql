@@ -181,10 +181,9 @@ describe("Mutation", () => {
           isAdmin: true
         }
       });
-
       expect(res.errors).toBeUndefined();
       expect(res.data).toMatchSnapshot();
-      expect(res.data.editPrivilage).toEqual(
+      expect(res.data.editPrivilege).toEqual(
         expect.objectContaining({ isAdmin: true })
       );
     });
@@ -206,7 +205,7 @@ describe("Mutation", () => {
 
       expect(res.errors).toBeUndefined();
       expect(res.data).toMatchSnapshot();
-      expect(res.data.editPrivilage).toEqual(
+      expect(res.data.editPrivilege).toEqual(
         expect.objectContaining({ isAdmin: false })
       );
     });
@@ -255,6 +254,47 @@ describe("Mutation", () => {
         ])
       );
       expect(res.data).toBeNull();
+    });
+  });
+
+  describe("deleteUser", () => {
+    it("should return 'not authorized for no'", async () => {
+      const token = jwt.sign(
+        { userId: "5e4dcdfcc76d441afd3d29da" },
+        process.env.USER_SECRET
+      );
+      const server = serverInit({ authorization: token });
+      const { query } = createTestClient(server);
+      const res = await query({
+        mutation: GQLmutation.MUTATION_DELETE_USER,
+        variables: {
+          userId: "5e4dcdfcc76d441afd3d29d3"
+        }
+      });
+
+      expect(res.errors).toEqual(
+        expect.arrayContaining([
+          expect.objectContaining({ message: "cannot delete the user" })
+        ])
+      );
+    });
+
+    it("should delete the user for authenticated user", async () => {
+      const token = jwt.sign(
+        { userId: "5e4dcdfcc76d441afd3d29da" },
+        process.env.USER_SECRET
+      );
+      const server = serverInit({ authorization: token });
+      const { query } = createTestClient(server);
+      const res = await query({
+        mutation: GQLmutation.MUTATION_DELETE_USER,
+        variables: {
+          userId: "5e4dcdfcc76d441afd3d29da"
+        }
+      });
+
+      expect(res.errors).toBeUndefined();
+      expect(res.data.deleteUser.userId).toBe("5e4dcdfcc76d441afd3d29da");
     });
   });
 });
