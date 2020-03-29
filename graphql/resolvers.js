@@ -179,13 +179,27 @@ const resolvers = {
       if (!user || (!user.isAdmin && user._id != userId)) {
         throw new Error(`user not found`);
       } else {
-        const deleteResp = await User.deleteOne({ _id: userId });
-        if (!deleteResp.ok || deleteResp.deletedCount !== 1) {
+        const { shortIds } = user;
+
+        const userDeleteResp = await User.deleteOne({ _id: userId });
+
+        if (userDeleteResp.ok !== 1 || userDeleteResp.deletedCount !== 1) {
           throw new Error("cannot delete the user");
         }
-      }
 
-      return pick.createUserResult(user);
+        const shortUrlDeleteResp = await ShortUrl.deleteMany({
+          _id: { $in: shortIds }
+        });
+
+        if (
+          shortUrlDeleteResp.ok !== 1 ||
+          shortUrlDeleteResp.deletedCount !== shortIds.length
+        ) {
+          throw new Error("cannot delete artifacts");
+        }
+
+        return pick.deleteUser({ userDeleteResp, shortUrlDeleteResp });
+      }
     }
   }
 };

@@ -88,3 +88,7 @@ module.exports.editPrivilageResult = result => {
     isAdmin
   };
 };
+
+module.exports.deleteUser = result => {
+  return `Deleted ${result.userDeleteResp.deletedCount} user(s) and cleaned ${result.shortUrlDeleteResp.deletedCount} artifact(s)`;
+};

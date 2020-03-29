@@ -294,7 +294,9 @@ describe("Mutation", () => {
       });
 
       expect(res.errors).toBeUndefined();
-      expect(res.data.deleteUser.userId).toBe("5e4dcdfcc76d441afd3d29da");
+      expect(res.data.deleteUser).toBe(
+        "Deleted 1 user(s) and cleaned 1 artifact(s)"
+      );
     });
   });
 });

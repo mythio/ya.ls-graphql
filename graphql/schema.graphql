@@ -49,5 +49,5 @@ type Mutation {
   shortenUrl(originalUrl: String!, shareWith: [ID!]): ShortUrl! @auth
   editPrivilege(userId: ID!, isAdmin: Boolean!): UserDetail!
     @auth(requires: ADMIN)
-  deleteUser(userId: ID!): User! @auth(requires: USER)
+  deleteUser(userId: ID!): String! @auth(requires: USER)
 }

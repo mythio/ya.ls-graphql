@@ -33,11 +33,7 @@ const MUTATITON_SHORTEN_URL = gql`
 
 const MUTATION_DELETE_USER = gql`
   mutation($userId: ID!) {
-    deleteUser(userId: $userId) {
-      userId
-      name
-      emailAddress
-    }
+    deleteUser(userId: $userId)
   }
 `;
 
