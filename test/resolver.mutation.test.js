@@ -298,9 +298,9 @@ describe("Mutation", () => {
   });
 
   describe("deleteUser", () => {
-    it("should return 'not authorized for no'", async () => {
+    it("[non-admin - missmatch-id] should return 'cannot delete the user'", async () => {
       const token = jwt.sign(
-        { userId: "5e4dcdfcc76d441afd3d29da" },
+        { userId: "5e4dcdfcc76d441afd3d29d7" },
         process.env.USER_SECRET
       );
       const server = serverInit({ authorization: token });
@@ -308,7 +308,7 @@ describe("Mutation", () => {
       const res = await query({
         mutation: GQLmutation.MUTATION_DELETE_USER,
         variables: {
-          userId: "5e4dcdfcc76d441afd3d29d3"
+          userId: "5e4dcdfcc76d441afd3d29d2"
         }
       });
 
@@ -319,7 +319,27 @@ describe("Mutation", () => {
       );
     });
 
-    it("should delete the user for authenticated user", async () => {
+    it("[non-admin - matching-id] should delete the user", async () => {
+      const token = jwt.sign(
+        { userId: "5e4dcdfcc76d441afd3d29d9" },
+        process.env.USER_SECRET
+      );
+      const server = serverInit({ authorization: token });
+      const { query } = createTestClient(server);
+      const res = await query({
+        mutation: GQLmutation.MUTATION_DELETE_USER,
+        variables: {
+          userId: "5e4dcdfcc76d441afd3d29d9"
+        }
+      });
+
+      expect(res.errors).toBeUndefined();
+      expect(res.data.deleteUser).toBe(
+        "Deleted 1 user(s) and cleaned 0 artifact(s)"
+      );
+    });
+
+    it("[admin - missmatch-id] should delete the user", async () => {
       const token = jwt.sign(
         { userId: "5e4dcdfcc76d441afd3d29da" },
         process.env.USER_SECRET
@@ -329,7 +349,7 @@ describe("Mutation", () => {
       const res = await query({
         mutation: GQLmutation.MUTATION_DELETE_USER,
         variables: {
-          userId: "5e4dcdfcc76d441afd3d29da"
+          userId: "5e4dcdfcc76d441afd3d29d7"
         }
       });
 

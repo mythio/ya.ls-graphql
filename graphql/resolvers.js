@@ -109,9 +109,10 @@ const resolvers = {
           .catch(err => {});
       }
 
-      console.log(
-        `localhost:4000/graphql?query=mutation{verifyUser(token:"${token}")}`
-      );
+      if (process.env.NODE_ENV === "development")
+        console.log(
+          `localhost:4000/graphql?query=mutation{verifyUser(token:"${token}")}`
+        );
 
       return pick.createUserResult(user._doc);
     },
@@ -131,7 +132,6 @@ const resolvers = {
           { new: true }
         );
 
-        console.log(user._doc);
         return pick.createUserResult(user._doc);
       } catch (err) {
         throw new Error("invalid signature");
@@ -223,29 +223,33 @@ const resolvers = {
       let { user } = ctx;
       let { userId } = args;
 
-      if (!user || (!user.isAdmin && user._id != userId)) {
+      if (!user) {
         throw new Error(`user not found`);
       } else {
         const { shortIds } = user;
 
-        const userDeleteResp = await User.deleteOne({ _id: userId });
+        if (user.isAdmin || user._id == userId) {
+          const userDeleteResp = await User.deleteOne({ _id: userId });
 
-        if (userDeleteResp.ok !== 1 || userDeleteResp.deletedCount !== 1) {
+          if (userDeleteResp.ok !== 1 || userDeleteResp.deletedCount !== 1) {
+            throw new Error("cannot delete the user");
+          }
+
+          const shortUrlDeleteResp = await ShortUrl.deleteMany({
+            _id: { $in: shortIds }
+          });
+
+          if (
+            shortUrlDeleteResp.ok !== 1 ||
+            shortUrlDeleteResp.deletedCount !== shortIds.length
+          ) {
+            throw new Error("cannot delete artifacts");
+          }
+
+          return pick.deleteUser({ userDeleteResp, shortUrlDeleteResp });
+        } else {
           throw new Error("cannot delete the user");
         }
-
-        const shortUrlDeleteResp = await ShortUrl.deleteMany({
-          _id: { $in: shortIds }
-        });
-
-        if (
-          shortUrlDeleteResp.ok !== 1 ||
-          shortUrlDeleteResp.deletedCount !== shortIds.length
-        ) {
-          throw new Error("cannot delete artifacts");
-        }
-
-        return pick.deleteUser({ userDeleteResp, shortUrlDeleteResp });
       }
     }
   }

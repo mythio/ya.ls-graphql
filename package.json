@@ -6,9 +6,9 @@
   "scripts": {
     "start": "node app.js",
     "start-dev": "nodemon app.js",
-    "test": "jest --watchAll --verbose --runInBand --updateSnapshot",
-    "test-ci": "jest --ci --verbose --forceExit --detectOpenHandles --updateSnapshot",
-    "test-cov": "jest --watchAll --verbose --runInBand --updateSnapshot --coverage"
+    "test": "NODE_ENV=TEST jest --watchAll --verbose --runInBand --updateSnapshot",
+    "test-ci": "NODE_ENV=TEST jest --ci --verbose --forceExit --detectOpenHandles --updateSnapshot",
+    "test-cov": "NODE_ENV=TEST jest --watchAll --verbose --runInBand --updateSnapshot --coverage"
   },
   "repository": {
     "type": "git",
