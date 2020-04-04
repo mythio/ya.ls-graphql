@@ -48,7 +48,7 @@ type Query {
 
 type Mutation {
   createUser(name: String!, emailAddress: String!, password: String!): User!
-  verifyUser(token: String): Boolean
+  verifyUser(token: String): User!
   shortenUrl(originalUrl: String!, shareWith: [ID!]): ShortUrl! @auth
   editPrivilege(userId: ID!, isAdmin: Boolean!): UserDetail!
     @auth(requires: ADMIN)

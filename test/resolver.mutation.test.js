@@ -146,6 +146,36 @@ describe("Mutation", () => {
       expect(res.errors).toBeUndefined();
       expect(user._doc).toHaveProperty("isVerified", true);
     });
+
+    it("should return 'invalid signature' for invalid token in verification link", async () => {
+      const userId = "5e4dcdfcc76d441afd3d29da";
+      let token = jwt.sign(
+        { userId: "5e4dcdfcc76d441afd3d29da" },
+        process.env.USER_SECRET
+      );
+
+      token += "2";
+
+      const server = serverInit();
+      const { query } = createTestClient(server);
+      const res = await query({
+        mutation: GQLmutation.MUTATION_VERIFY_USER,
+        variables: {
+          token
+        }
+      });
+
+      const user = await User.findById(userId);
+
+      expect(res.errors).toEqual(
+        expect.arrayContaining([
+          expect.objectContaining({
+            message: "invalid signature"
+          })
+        ])
+      );
+      expect(res.data).toBeNull();
+    });
   });
 
   describe("shortenUrl", () => {

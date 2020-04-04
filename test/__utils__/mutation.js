@@ -13,7 +13,12 @@ const MUTATION_CREATE_USER = gql`
 
 const MUTATION_VERIFY_USER = gql`
   mutation($token: String!) {
-    verifyUser(token: $token)
+    verifyUser(token: $token) {
+      userId
+      name
+      emailAddress
+      isVerified
+    }
   }
 `;
 

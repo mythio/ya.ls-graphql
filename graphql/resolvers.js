@@ -108,9 +108,9 @@ const resolvers = {
           .then(() => {})
           .catch(err => {});
 
-      // console.log(
-      //   `<strong>localhost:4000/graphql?query=mutation{verifyUser(token:"${token}")} </strong>`
-      // );
+      console.log(
+        `localhost:4000/graphql?query=mutation{verifyUser(token:"${token}")}`
+      );
 
       return pick.createUserResult(user._doc);
     },
@@ -118,17 +118,23 @@ const resolvers = {
     async verifyUser(root, args, ctx) {
       const { token } = args;
 
-      const res = jwt.verify(token, process.env.USER_SECRET);
-      let user = await User.findByIdAndUpdate(
-        res.userId,
-        {
-          $set: {
-            isVerified: true
-          }
-        },
-        { new: true }
-      );
-      return true;
+      try {
+        const res = jwt.verify(token, process.env.USER_SECRET);
+        let user = await User.findByIdAndUpdate(
+          res.userId,
+          {
+            $set: {
+              isVerified: true
+            }
+          },
+          { new: true }
+        );
+
+        console.log(user._doc);
+        return pick.createUserResult(user._doc);
+      } catch (err) {
+        throw new Error("invalid signature");
+      }
     },
 
     async shortenUrl(root, args, ctx) {
