@@ -6,9 +6,9 @@
   "scripts": {
     "start": "node app.js",
     "start-dev": "nodemon app.js",
-    "test": "jest --watchAll --verbose --runInBand --updateSnapshot",
-    "test-ci": "jest --ci --verbose --forceExit --detectOpenHandles --updateSnapshot",
-    "test-cov": "jest --watchAll --verbose --runInBand --updateSnapshot --coverage"
+    "test": "NODE_ENV=TEST jest --watchAll --verbose --runInBand --updateSnapshot",
+    "test-ci": "NODE_ENV=TEST jest --ci --verbose --forceExit --detectOpenHandles --updateSnapshot",
+    "test-cov": "NODE_ENV=TEST jest --watchAll --verbose --runInBand --updateSnapshot --coverage"
   },
   "repository": {
     "type": "git",
@@ -23,6 +23,7 @@
   "homepage": "https://github.com/mythio/ya.ls-graphql#readme",
   "dependencies": {
     "@hapi/joi": "^17.1.1",
+    "@sendgrid/mail": "^7.0.0",
     "apollo-server-express": "^2.11.0",
     "bcrypt": "^3.0.8",
     "body-parser": "^1.19.0",

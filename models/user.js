@@ -28,6 +28,11 @@ const userSchema = new Schema({
   isAdmin: {
     type: Boolean,
     default: false
+  },
+  isVerified: {
+    type: Boolean,
+    required: true,
+    default: false
   }
 });
 

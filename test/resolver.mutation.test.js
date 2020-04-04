@@ -1,6 +1,5 @@
 require("dotenv").config();
 const jwt = require("jsonwebtoken");
-const mongoose = require("mongoose");
 const { createTestClient } = require("apollo-server-testing");
 
 const db = require("./__utils__/db");
@@ -13,6 +12,7 @@ describe("Mutation", () => {
     await db.connectToDB();
     await db.writeDefaults();
   });
+
   afterAll(async () => {
     await db.cleanDB();
     await db.disconnectDB();
@@ -31,14 +31,8 @@ describe("Mutation", () => {
         }
       });
 
-      const user = await User.findById(res.data.createUser.userId);
-
+      expect(res.data).toMatchSnapshot();
       expect(res.errors).toBeUndefined();
-      expect(user._doc).toMatchSnapshot({
-        _id: expect.any(mongoose.Types.ObjectId),
-        joiningDate: expect.any(Date),
-        password: expect.any(String)
-      });
     });
 
     it("should return error for existing mail id", async () => {
@@ -123,6 +117,52 @@ describe("Mutation", () => {
         expect.arrayContaining([
           expect.objectContaining({
             message: 'Field "password" must be a string of atleast 8 characters'
+          })
+        ])
+      );
+      expect(res.data).toBeNull();
+    });
+  });
+
+  describe("verifyUser", () => {
+    it("should set isVerified for the user", async () => {
+      const userId = "5e4dcdfcc76d441afd3d29da";
+      const token = jwt.sign({ userId }, process.env.USER_SECRET);
+
+      const server = serverInit();
+      const { query } = createTestClient(server);
+      const res = await query({
+        mutation: GQLmutation.MUTATION_VERIFY_USER,
+        variables: {
+          token
+        }
+      });
+
+      const user = await User.findById(userId);
+
+      expect(res.errors).toBeUndefined();
+      expect(user._doc).toHaveProperty("isVerified", true);
+    });
+
+    it("should return 'invalid signature' for invalid token in verification link", async () => {
+      const userId = "5e4dcdfcc76d441afd3d29da";
+      let token = jwt.sign({ userId }, process.env.USER_SECRET);
+
+      token += "2";
+
+      const server = serverInit();
+      const { query } = createTestClient(server);
+      const res = await query({
+        mutation: GQLmutation.MUTATION_VERIFY_USER,
+        variables: {
+          token
+        }
+      });
+
+      expect(res.errors).toEqual(
+        expect.arrayContaining([
+          expect.objectContaining({
+            message: "invalid signature"
           })
         ])
       );
@@ -258,9 +298,9 @@ describe("Mutation", () => {
   });
 
   describe("deleteUser", () => {
-    it("should return 'not authorized for no'", async () => {
+    it("[non-admin - missmatch-id] should return 'cannot delete the user'", async () => {
       const token = jwt.sign(
-        { userId: "5e4dcdfcc76d441afd3d29da" },
+        { userId: "5e4dcdfcc76d441afd3d29d7" },
         process.env.USER_SECRET
       );
       const server = serverInit({ authorization: token });
@@ -268,7 +308,7 @@ describe("Mutation", () => {
       const res = await query({
         mutation: GQLmutation.MUTATION_DELETE_USER,
         variables: {
-          userId: "5e4dcdfcc76d441afd3d29d3"
+          userId: "5e4dcdfcc76d441afd3d29d2"
         }
       });
 
@@ -279,7 +319,27 @@ describe("Mutation", () => {
       );
     });
 
-    it("should delete the user for authenticated user", async () => {
+    it("[non-admin - matching-id] should delete the user", async () => {
+      const token = jwt.sign(
+        { userId: "5e4dcdfcc76d441afd3d29d9" },
+        process.env.USER_SECRET
+      );
+      const server = serverInit({ authorization: token });
+      const { query } = createTestClient(server);
+      const res = await query({
+        mutation: GQLmutation.MUTATION_DELETE_USER,
+        variables: {
+          userId: "5e4dcdfcc76d441afd3d29d9"
+        }
+      });
+
+      expect(res.errors).toBeUndefined();
+      expect(res.data.deleteUser).toBe(
+        "Deleted 1 user(s) and cleaned 0 artifact(s)"
+      );
+    });
+
+    it("[admin - missmatch-id] should delete the user", async () => {
       const token = jwt.sign(
         { userId: "5e4dcdfcc76d441afd3d29da" },
         process.env.USER_SECRET
@@ -289,7 +349,7 @@ describe("Mutation", () => {
       const res = await query({
         mutation: GQLmutation.MUTATION_DELETE_USER,
         variables: {
-          userId: "5e4dcdfcc76d441afd3d29da"
+          userId: "5e4dcdfcc76d441afd3d29d7"
         }
       });
 

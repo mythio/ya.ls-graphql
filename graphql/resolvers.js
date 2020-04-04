@@ -1,6 +1,7 @@
 const bcrypt = require("bcrypt");
 const shortid = require("shortid");
 const jwt = require("jsonwebtoken");
+const sgMail = require("@sendgrid/mail");
 
 const User = require("../models/user");
 const ShortUrl = require("../models/shortUrl");
@@ -82,6 +83,7 @@ const resolvers = {
       if (existingUser) {
         throw new Error("User already exists");
       }
+
       password = await bcrypt.hash(password, 10);
       let user = new User({
         name: name,
@@ -90,7 +92,50 @@ const resolvers = {
       });
       user = await user.save();
 
+      const token = jwt.sign({ userId: user._id }, process.env.USER_SECRET);
+
+      const msg = {
+        to: emailAddress,
+        from: "ya.ls@mythio.com",
+        subject: "Email verification",
+        html: `<strong>localhost:4000/graphql?query=mutation{verifyUser(token:"${token}")} </strong>`
+      };
+
+      if (process.env.node_env !== "development") {
+        sgMail.setApiKey(process.env.SENDGRID_API_KEY);
+        sgMail
+          .send(msg)
+          .then(() => {})
+          .catch(err => {});
+      }
+
+      if (process.env.NODE_ENV === "development")
+        console.log(
+          `localhost:4000/graphql?query=mutation{verifyUser(token:"${token}")}`
+        );
+
       return pick.createUserResult(user._doc);
+    },
+
+    async verifyUser(root, args, ctx) {
+      const { token } = args;
+
+      try {
+        const res = jwt.verify(token, process.env.USER_SECRET);
+        let user = await User.findByIdAndUpdate(
+          res.userId,
+          {
+            $set: {
+              isVerified: true
+            }
+          },
+          { new: true }
+        );
+
+        return pick.createUserResult(user._doc);
+      } catch (err) {
+        throw new Error("invalid signature");
+      }
     },
 
     async shortenUrl(root, args, ctx) {
@@ -98,6 +143,7 @@ const resolvers = {
       if (error) {
         throw new Error(error);
       }
+
       let { originalUrl } = args;
       let { user } = ctx;
 
@@ -107,7 +153,6 @@ const resolvers = {
         const existingShortUrl = user.shortIds.find(
           sUrl => sUrl.originalUrl === originalUrl
         );
-
         let shareWith = [];
         let shortUrl = {};
         const argsShareWith = args.shareWith ? [...args.shareWith] : [];
@@ -157,13 +202,15 @@ const resolvers = {
     async editPrivilege(root, args, ctx) {
       const { userId, isAdmin } = args;
 
-      let user = await User.findByIdAndUpdate(userId, {
-        $set: {
-          isAdmin
-        }
-      });
-
-      user = await User.findById(userId);
+      const user = await User.findByIdAndUpdate(
+        userId,
+        {
+          $set: {
+            isAdmin
+          }
+        },
+        { new: true }
+      );
 
       if (!user) {
         throw new Error("user not found");
@@ -176,29 +223,33 @@ const resolvers = {
       let { user } = ctx;
       let { userId } = args;
 
-      if (!user || (!user.isAdmin && user._id != userId)) {
+      if (!user) {
         throw new Error(`user not found`);
       } else {
         const { shortIds } = user;
 
-        const userDeleteResp = await User.deleteOne({ _id: userId });
+        if (user.isAdmin || user._id == userId) {
+          const userDeleteResp = await User.deleteOne({ _id: userId });
 
-        if (userDeleteResp.ok !== 1 || userDeleteResp.deletedCount !== 1) {
+          if (userDeleteResp.ok !== 1 || userDeleteResp.deletedCount !== 1) {
+            throw new Error("cannot delete the user");
+          }
+
+          const shortUrlDeleteResp = await ShortUrl.deleteMany({
+            _id: { $in: shortIds }
+          });
+
+          if (
+            shortUrlDeleteResp.ok !== 1 ||
+            shortUrlDeleteResp.deletedCount !== shortIds.length
+          ) {
+            throw new Error("cannot delete artifacts");
+          }
+
+          return pick.deleteUser({ userDeleteResp, shortUrlDeleteResp });
+        } else {
           throw new Error("cannot delete the user");
         }
-
-        const shortUrlDeleteResp = await ShortUrl.deleteMany({
-          _id: { $in: shortIds }
-        });
-
-        if (
-          shortUrlDeleteResp.ok !== 1 ||
-          shortUrlDeleteResp.deletedCount !== shortIds.length
-        ) {
-          throw new Error("cannot delete artifacts");
-        }
-
-        return pick.deleteUser({ userDeleteResp, shortUrlDeleteResp });
       }
     }
   }

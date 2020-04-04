@@ -1,3 +1,4 @@
 node_modules
 coverage
 test/__snapshots__
+.env

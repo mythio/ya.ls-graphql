@@ -6,6 +6,18 @@ const MUTATION_CREATE_USER = gql`
       userId
       name
       emailAddress
+      isVerified
+    }
+  }
+`;
+
+const MUTATION_VERIFY_USER = gql`
+  mutation($token: String!) {
+    verifyUser(token: $token) {
+      userId
+      name
+      emailAddress
+      isVerified
     }
   }
 `;
@@ -39,6 +51,7 @@ const MUTATION_DELETE_USER = gql`
 
 module.exports = {
   MUTATION_CREATE_USER,
+  MUTATION_VERIFY_USER,
   MUTATION_EDIT_PRIVILEGE,
   MUTATITON_SHORTEN_URL,
   MUTATION_DELETE_USER

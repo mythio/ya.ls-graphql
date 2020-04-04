@@ -8,7 +8,8 @@ module.exports.meResult = result => {
     shortIds,
     isAdmin,
     name,
-    emailAddress
+    emailAddress,
+    isVerified
   } = result;
 
   shortIds = shortIds.map(item => ({
@@ -16,7 +17,16 @@ module.exports.meResult = result => {
     shareWith: item.shareWith,
     originalUrl: item.originalUrl
   }));
-  return { userId, name, emailAddress, isAdmin, shortIds, joiningDate };
+
+  return {
+    userId,
+    name,
+    emailAddress,
+    isAdmin,
+    shortIds,
+    joiningDate,
+    isVerified
+  };
 };
 
 module.exports.loginResult = result => {
@@ -59,12 +69,13 @@ module.exports.expandUrlResult = result => {
  * MUTATION
  */
 module.exports.createUserResult = result => {
-  let { _id: userId, name, emailAddress } = result;
+  let { _id: userId, name, emailAddress, isVerified } = result;
 
   return {
     userId,
     name,
-    emailAddress
+    emailAddress,
+    isVerified
   };
 };
 
