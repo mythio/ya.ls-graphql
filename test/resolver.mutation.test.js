@@ -1,6 +1,5 @@
 require("dotenv").config();
 const jwt = require("jsonwebtoken");
-const mongoose = require("mongoose");
 const { createTestClient } = require("apollo-server-testing");
 
 const db = require("./__utils__/db");
@@ -13,6 +12,7 @@ describe("Mutation", () => {
     await db.connectToDB();
     await db.writeDefaults();
   });
+
   afterAll(async () => {
     await db.cleanDB();
     await db.disconnectDB();
@@ -31,14 +31,8 @@ describe("Mutation", () => {
         }
       });
 
-      const user = await User.findById(res.data.createUser.userId);
-
+      expect(res.data).toMatchSnapshot();
       expect(res.errors).toBeUndefined();
-      expect(user._doc).toMatchSnapshot({
-        _id: expect.any(mongoose.Types.ObjectId),
-        joiningDate: expect.any(Date),
-        password: expect.any(String)
-      });
     });
 
     it("should return error for existing mail id", async () => {
@@ -127,6 +121,30 @@ describe("Mutation", () => {
         ])
       );
       expect(res.data).toBeNull();
+    });
+  });
+
+  describe("verifyUser", () => {
+    it("should set isVerified for the user", async () => {
+      const userId = "5e4dcdfcc76d441afd3d29da";
+      const token = jwt.sign(
+        { userId: "5e4dcdfcc76d441afd3d29da" },
+        process.env.USER_SECRET
+      );
+
+      const server = serverInit();
+      const { query } = createTestClient(server);
+      const res = await query({
+        mutation: GQLmutation.MUTATION_VERIFY_USER,
+        variables: {
+          token
+        }
+      });
+
+      const user = await User.findById(userId);
+
+      expect(res.errors).toBeUndefined();
+      expect(user._doc).toHaveProperty("isVerified", true);
     });
   });
 

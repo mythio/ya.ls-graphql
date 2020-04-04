@@ -11,13 +11,15 @@ type UserDetail {
   name: String!
   emailAddress: String!
   shortIds: [ShortUrl!]
-  isAdmin: Boolean
+  isAdmin: Boolean!
+  isVerified: Boolean!
 }
 
 type User {
   userId: ID!
   name: String!
   emailAddress: String!
+  isVerified: Boolean!
 }
 
 type ShortUrlDetail {
@@ -39,13 +41,14 @@ type AuthData {
 }
 
 type Query {
+  me: UserDetail! @auth(requires: USER)
   login(emailAddress: String!, password: String!): AuthData!
   expandUrl(shortId: String!): ShortUrlDetail! @auth
-  me: UserDetail! @auth(requires: USER)
 }
 
 type Mutation {
   createUser(name: String!, emailAddress: String!, password: String!): User!
+  verifyUser(token: String): Boolean
   shortenUrl(originalUrl: String!, shareWith: [ID!]): ShortUrl! @auth
   editPrivilege(userId: ID!, isAdmin: Boolean!): UserDetail!
     @auth(requires: ADMIN)

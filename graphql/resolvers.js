@@ -1,6 +1,7 @@
 const bcrypt = require("bcrypt");
 const shortid = require("shortid");
 const jwt = require("jsonwebtoken");
+const sgMail = require("@sendgrid/mail");
 
 const User = require("../models/user");
 const ShortUrl = require("../models/shortUrl");
@@ -82,6 +83,7 @@ const resolvers = {
       if (existingUser) {
         throw new Error("User already exists");
       }
+
       password = await bcrypt.hash(password, 10);
       let user = new User({
         name: name,
@@ -90,7 +92,43 @@ const resolvers = {
       });
       user = await user.save();
 
+      const token = jwt.sign({ userId: user._id }, process.env.USER_SECRET);
+
+      sgMail.setApiKey(process.env.SENDGRID_API_KEY);
+      const msg = {
+        to: emailAddress,
+        from: "ya.ls@mythio.com",
+        subject: "Email verification",
+        html: `<strong>localhost:4000/graphql?query=mutation{verifyUser(token:"${token}")} </strong>`
+      };
+
+      if (process.env.node_env !== "development")
+        sgMail
+          .send(msg)
+          .then(() => {})
+          .catch(err => {});
+
+      // console.log(
+      //   `<strong>localhost:4000/graphql?query=mutation{verifyUser(token:"${token}")} </strong>`
+      // );
+
       return pick.createUserResult(user._doc);
+    },
+
+    async verifyUser(root, args, ctx) {
+      const { token } = args;
+
+      const res = jwt.verify(token, process.env.USER_SECRET);
+      let user = await User.findByIdAndUpdate(
+        res.userId,
+        {
+          $set: {
+            isVerified: true
+          }
+        },
+        { new: true }
+      );
+      return true;
     },
 
     async shortenUrl(root, args, ctx) {
@@ -98,6 +136,7 @@ const resolvers = {
       if (error) {
         throw new Error(error);
       }
+
       let { originalUrl } = args;
       let { user } = ctx;
 
@@ -107,7 +146,6 @@ const resolvers = {
         const existingShortUrl = user.shortIds.find(
           sUrl => sUrl.originalUrl === originalUrl
         );
-
         let shareWith = [];
         let shortUrl = {};
         const argsShareWith = args.shareWith ? [...args.shareWith] : [];
@@ -157,13 +195,15 @@ const resolvers = {
     async editPrivilege(root, args, ctx) {
       const { userId, isAdmin } = args;
 
-      let user = await User.findByIdAndUpdate(userId, {
-        $set: {
-          isAdmin
-        }
-      });
-
-      user = await User.findById(userId);
+      const user = await User.findByIdAndUpdate(
+        userId,
+        {
+          $set: {
+            isAdmin
+          }
+        },
+        { new: true }
+      );
 
       if (!user) {
         throw new Error("user not found");

@@ -9,7 +9,7 @@ mongoose.Promise = global.Promise;
 const cleanDB = async done => {
   await User.deleteMany({});
   await ShortUrl.deleteMany({});
-  done();
+  // done();
 };
 
 const connectToDB = async () => {
