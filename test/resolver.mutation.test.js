@@ -127,10 +127,7 @@ describe("Mutation", () => {
   describe("verifyUser", () => {
     it("should set isVerified for the user", async () => {
       const userId = "5e4dcdfcc76d441afd3d29da";
-      const token = jwt.sign(
-        { userId: "5e4dcdfcc76d441afd3d29da" },
-        process.env.USER_SECRET
-      );
+      const token = jwt.sign({ userId }, process.env.USER_SECRET);
 
       const server = serverInit();
       const { query } = createTestClient(server);
@@ -149,10 +146,7 @@ describe("Mutation", () => {
 
     it("should return 'invalid signature' for invalid token in verification link", async () => {
       const userId = "5e4dcdfcc76d441afd3d29da";
-      let token = jwt.sign(
-        { userId: "5e4dcdfcc76d441afd3d29da" },
-        process.env.USER_SECRET
-      );
+      let token = jwt.sign({ userId }, process.env.USER_SECRET);
 
       token += "2";
 
@@ -164,8 +158,6 @@ describe("Mutation", () => {
           token
         }
       });
-
-      const user = await User.findById(userId);
 
       expect(res.errors).toEqual(
         expect.arrayContaining([

@@ -94,7 +94,6 @@ const resolvers = {
 
       const token = jwt.sign({ userId: user._id }, process.env.USER_SECRET);
 
-      sgMail.setApiKey(process.env.SENDGRID_API_KEY);
       const msg = {
         to: emailAddress,
         from: "ya.ls@mythio.com",
@@ -102,11 +101,13 @@ const resolvers = {
         html: `<strong>localhost:4000/graphql?query=mutation{verifyUser(token:"${token}")} </strong>`
       };
 
-      if (process.env.node_env !== "development")
+      if (process.env.node_env !== "development") {
+        sgMail.setApiKey(process.env.SENDGRID_API_KEY);
         sgMail
           .send(msg)
           .then(() => {})
           .catch(err => {});
+      }
 
       console.log(
         `localhost:4000/graphql?query=mutation{verifyUser(token:"${token}")}`
