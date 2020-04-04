@@ -10,6 +10,8 @@ const QUERY_ME = gql`
         shortId
         originalUrl
       }
+      isVerified
+      isAdmin
     }
   }
 `;
