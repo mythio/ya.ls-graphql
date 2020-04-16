@@ -1,15 +1,12 @@
 {
   "compilerOptions": {
-    "target": "es6",
+    "target": "es5",
     "module": "commonjs",
-    "moduleResolution": "node",
-    "outDir": "./dist",
-    "strict": true,
-    "strictPropertyInitialization": false,
-    "sourceMap": false,
-    "esModuleInterop": true,
-    "emitDecoratorMetadata": true,
-    "experimentalDecorators": true
+    "lib": ["dom", "es6"],
+    "outDir": "dist",
+    "rootDir": "src",
+    "removeComments": true
   },
-  "include": ["./src/**/*"]
+  "exclude": ["node_modules"],
+  "include": ["src/**/*.ts"]
 }
