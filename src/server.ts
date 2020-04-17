@@ -2,9 +2,9 @@
 import express from 'express';
 import { ApolloServer } from 'apollo-server-express';
 
-import config from './config';
-import { resolvers } from './resolvers';
-import * as typeDefs from './type-defs.graphql';
+import config from './core/config';
+import { resolvers } from './graphql/resolvers';
+import * as typeDefs from './graphql/type-defs.graphql';
 
 const app = express();
 const server = new ApolloServer({

@@ -1,7 +1,7 @@
 import { createLogger, transports, format } from 'winston';
 import DailyRotateFile from 'winston-daily-rotate-file';
 
-import config from '../config';
+import config from './config';
 
 const logger = createLogger({
   transports: [
