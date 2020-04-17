@@ -1,13 +1,19 @@
-import server from "./server";
-import { logger } from "./core/Logger";
-import { config } from "./config";
+import http from 'http';
 
-server
-  .listen(config.port)
-  .then(({ url }) => logger.info(`Server on ${url}`))
-  .catch((err) => logger.error(err));
+import app from './server';
+import config from './config';
+import logger from './core/Logger';
+
+const server = http.createServer(app);
+let currentApp = app;
+
+server.listen(config.port, () => { logger.info(`🚀 Server ready at ${config.port}`) });
 
 if (module.hot) {
-  module.hot.accept();
-  module.hot.dispose(() => server.stop());
+  module.hot.accept(() => {
+    server.removeListener('request', currentApp);
+    server.on('request', app);
+    currentApp = app;
+  });
+  module.hot.dispose(() => server.close());
 }

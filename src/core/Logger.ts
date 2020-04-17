@@ -1,9 +1,9 @@
 import { createLogger, transports, format } from 'winston';
 import DailyRotateFile from 'winston-daily-rotate-file';
 
-import { config } from '../config';
+import config from '../config';
 
-export const logger = createLogger({
+const logger = createLogger({
   transports: [
     new transports.Console({
       format: format.combine(
@@ -28,3 +28,5 @@ export const logger = createLogger({
   ],
   exitOnError: false,
 });
+
+export default logger;

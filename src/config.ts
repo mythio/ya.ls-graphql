@@ -12,7 +12,7 @@ interface Config {
   port: number | string;
 }
 
-export const config: Config = {
+const config: Config = {
   apollo: {
     introspection: process.env.APOLLO_INTROSPECTION === 'true',
     playground: process.env.APOLLO_PLAYGROUND === 'true'
@@ -25,3 +25,5 @@ export const config: Config = {
   },
   port: process.env.PORT || 4000,
 };
+
+export default config;
