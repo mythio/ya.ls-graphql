@@ -1,7 +1,7 @@
 import { createLogger, transports, format } from 'winston';
 import DailyRotateFile from 'winston-daily-rotate-file';
 
-import config from './config';
+import { loggerConfig } from './config';
 
 const logger = createLogger({
   transports: [
@@ -15,10 +15,10 @@ const logger = createLogger({
   exceptionHandlers: [
     new DailyRotateFile({
       filename: './logs/%DATE%.log',
-      datePattern: config.logger.date,
+      datePattern: loggerConfig.date,
       zippedArchive: true,
-      maxSize: config.logger.maxSize,
-      maxFiles: config.logger.maxFiles,
+      maxSize: loggerConfig.maxSize,
+      maxFiles: loggerConfig.maxFiles,
       format: format.combine(
         format.errors({ stack: true }),
         format.prettyPrint(),

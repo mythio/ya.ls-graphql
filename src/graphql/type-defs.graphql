@@ -1,36 +1,58 @@
-scalar DateTime
-scalar EmailAddress
-scalar UnsignedInt
+directive @auth(requires: Role = REVIEWER) on FIELD_DEFINITION | OBJECT
 
-type User {
-  id: ID!
-  firstName: String!
-  lastName: String!
-  posts: [Post]
-  following: [User]
-  followers: [User]
+enum Role {
+  ADMIN
+  USER
+  REVIEWER
 }
 
-type Post {
-  id: ID!
-  title: String!
-  content: String!
-  author: User!
-  likedBy: [User]
+type UserDetail {
+  userId: ID!
+  name: String!
+  emailAddress: String!
+  shortIds: [ShortUrl!]
+  isAdmin: Boolean!
+  isVerified: Boolean!
+}
+
+type User {
+  userId: ID!
+  name: String!
+  emailAddress: String!
+  isVerified: Boolean!
+}
+
+type ShortUrlDetail {
+  shortId: String!
+  originalUrl: String!
+  shareWith: [User!]
+  createdBy: User
+}
+
+type ShortUrl {
+  shortId: String!
+  originalUrl: String!
+  shareWith: [ID!]
+}
+
+type AuthData {
+  token: String!
+  userId: ID!
 }
 
 type Query {
-  post(id: ID!): Post
-}
+  test: String! @auth(requires: ADMIN)
 
-input PublishPostInput {
-  title: String!
-  content: String!
+  me: UserDetail! @auth(requires: USER)
+  login(emailAddress: String!, password: String!): AuthData!
+  expandUrl(shortId: String!): ShortUrlDetail! @auth
 }
 
 type Mutation {
-  publishPost(input: PublishPostInput!): Post!
-  followUser(userId: ID!): Int!
-  unfollowUser(userId: ID!): Int!
-  likePost(postId: ID!): Int!
+  createUser(name: String!, emailAddress: String!, password: String!): User!
+  verifyUser(token: String): User!
+  shortenUrl(originalUrl: String!, shareWith: [ID!]): ShortUrl! @auth
+  editPrivilege(userId: ID!, isAdmin: Boolean!): UserDetail!
+    @auth(requires: ADMIN)
+  deleteUser(userId: ID!): String! @auth(requires: USER)
 }
