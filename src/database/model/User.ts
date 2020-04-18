@@ -6,7 +6,7 @@ export const COLLECTION_NAME = 'users';
 
 export default interface User extends Document {
   name: string;
-  email: string;
+  emailAddress: string;
   password: string;
   verified: boolean;
   isAdmin: boolean;
@@ -23,7 +23,7 @@ const schema = new Schema(
       trim: true,
       maxlength: 100,
     },
-    email: {
+    emailAddress: {
       type: Schema.Types.String,
       required: true,
       unique: true,
@@ -31,6 +31,7 @@ const schema = new Schema(
     },
     password: {
       type: Schema.Types.String,
+      required: true,
     },
     verified: {
       type: Schema.Types.Boolean,
@@ -43,17 +44,16 @@ const schema = new Schema(
     shortIds: [
       {
         type: Schema.Types.ObjectId,
-        required: false,
         ref: 'ShortUrl',
       }
     ],
     createdAt: {
       type: Date,
-      required: true,
+      default: Date.now(),
     },
     updatedAt: {
       type: Date,
-      required: true,
+      default: Date.now(),
     },
   }
 );
