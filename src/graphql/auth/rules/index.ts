@@ -1,4 +1,4 @@
-const admin = require("./admin");
+import { adminRule } from "./admin";
 // const user = require("./user");
 // const reviewer = require("./reviewer");
 
@@ -7,7 +7,7 @@ interface Rules {
 };
 
 export const rules: Rules = {
-  admin: admin,
+  admin: adminRule,
   // user,
   // reviewer
 };

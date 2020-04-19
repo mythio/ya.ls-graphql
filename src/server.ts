@@ -15,7 +15,8 @@ const server = new ApolloServer({
   resolvers: { Query: queryResolvers, Mutation: mutationResolver },
   introspection: apolloConfig.introspection,
   playground: apolloConfig.playground,
-  schemaDirectives: { auth: AuthDirective }
+  schemaDirectives: { auth: AuthDirective },
+  context: ({ req }) => { return { authorization: req.headers.authorization }; }
 });
 
 server.applyMiddleware({ app });

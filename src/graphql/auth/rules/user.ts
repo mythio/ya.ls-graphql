@@ -1,35 +1,27 @@
-import { adminRule } from "./admin";
+import User, { UserModel } from '../../../database/model/User';
+import { getAccessToken, validateTokenData } from '../authUtils';
+import JWT from '../../../core/JWT';
 
-// const userRule = async requestData => {
-//   try {
-//     const isAdmin = await adminRule(requestData);
-//   } catch (err) {
-//     if (err instanceof )
-//   }
-//   if (isAdmin) {
-//     return true;
-//   }
+export const userRule = async (req: { authorization: string; user: User; }): Promise<boolean> => {
+  const accessToken = getAccessToken(req.authorization);
 
-//   const { authorization } = requestData;
+  if (!accessToken) {
+    return false;
+  }
 
-//   if (!authorization) {
-//     return false;
-//   }
+  try {
+    const payload = await JWT.validate(accessToken);
+    validateTokenData(payload);
 
-//   try {
-//     const token = jwt.verify(authorization, process.env.USER_SECRET);
-//     const user = await User.findById(token.userId);
+    const user = await UserModel.findById(payload.subject);
+    if (!user) {
+      return false;
+    }
 
-//     if (!user) {
-//       return false;
-//     }
-
-//     requestData.user = user;
-//   } catch (err) {
-//     return false;
-//   }
-
-//   return true;
-// };
-
-// module.exports = userRule;
+    if (!user || !user.isAdmin) return false;
+    req.user = user;
+  } catch (err) {
+    return false;
+  }
+  return true;
+};

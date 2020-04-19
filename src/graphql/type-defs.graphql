@@ -39,6 +39,11 @@ type CreateUserResp {
   tokens: Tokens!
 }
 
+type LoginUserResp {
+  user: User!
+  tokens: Tokens!
+}
+
 type Tokens {
   accessToken: String!
   refreshToken: String!
@@ -46,9 +51,8 @@ type Tokens {
 
 type Query {
   test: String! @auth(requires: ADMIN)
-
   me: UserDetail! @auth(requires: USER)
-  login(emailAddress: String!, password: String!): Tokens!
+  login(emailAddress: String!, password: String!): LoginUserResp!
   expandUrl(shortId: String!): ShortUrlDetail! @auth
 }
 

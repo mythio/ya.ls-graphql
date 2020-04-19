@@ -44,7 +44,7 @@ export const createTokens = async (user: User, accessTokenKey: string, refreshTo
   if (!accessToken || !refreshToken) throw new Error()
 
   return {
-    accessToken: accessTokenKey,
+    accessToken: accessToken,
     refreshToken: refreshToken
   }
 }

@@ -1,9 +1,10 @@
-import { UserModel } from '../../../database/model/User';
+import User, { UserModel } from '../../../database/model/User';
 import { getAccessToken, validateTokenData } from '../authUtils';
 import JWT from '../../../core/JWT';
 
-export const adminRule = async req => {
+export const adminRule = async (req: { authorization: string; user: User; }): Promise<boolean> => {
   const accessToken = getAccessToken(req.authorization);
+
   if (!accessToken) {
     return false;
   }
@@ -14,9 +15,10 @@ export const adminRule = async req => {
 
     const user = await UserModel.findById(payload.subject);
     if (!user) {
-      throw new Error('Auth Failure: User not registerd');
+      return false;
     }
-    if (!user || !user.isAdmin) return false;
+
+    if (!user) return false;
     req.user = user;
   } catch (err) {
     return false;
