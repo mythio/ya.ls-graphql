@@ -9,7 +9,7 @@
 		"start": "node dist/server.js",
 		"codegen": "graphql-codegen --config codegen.yml",
 		"test-ci": "jest --forceExit --detectOpenHandles --coverage --verbose",
-		"heroku-postbuild": "npm run build:prod"
+		"heroku-postbuild": "npm run build"
 	},
 	"repository": {
 		"type": "git",
