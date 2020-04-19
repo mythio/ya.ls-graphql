@@ -62,13 +62,6 @@ export class AuthDirective extends SchemaDirectiveVisitor {
    * @param {object} requestData - Role of the requested operation
    */
   async execRule(role: string, requestData) {
-    // logger.info('role ' + typeof (role));
-    // console.log('role ' + typeof (role));
-    console.log(rules);
-    const p = rules[role.toLowerCase()]
-
-    console.log(typeof p);
-    console.log(typeof rules.admin);
     const strategyResult = adminRule(requestData);
     // const strategyResult = await rules[role.toLowerCase()](requestData);
     if (!strategyResult) {

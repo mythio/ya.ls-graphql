@@ -64,7 +64,7 @@
         "description": null,
         "fields": [
           {
-            "name": "userId",
+            "name": "_id",
             "description": null,
             "args": [],
             "type": {
@@ -185,7 +185,7 @@
         "description": null,
         "fields": [
           {
-            "name": "userId",
+            "name": "_id",
             "description": null,
             "args": [],
             "type": {
@@ -231,22 +231,6 @@
             },
             "isDeprecated": false,
             "deprecationReason": null
-          },
-          {
-            "name": "isVerified",
-            "description": null,
-            "args": [],
-            "type": {
-              "kind": "NON_NULL",
-              "name": null,
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Boolean",
-                "ofType": null
-              }
-            },
-            "isDeprecated": false,
-            "deprecationReason": null
           }
         ],
         "inputFields": null,
@@ -260,7 +244,7 @@
         "description": null,
         "fields": [
           {
-            "name": "shortId",
+            "name": "_id",
             "description": null,
             "args": [],
             "type": {
@@ -394,11 +378,54 @@
       },
       {
         "kind": "OBJECT",
-        "name": "AuthData",
+        "name": "CreateUserResp",
         "description": null,
         "fields": [
           {
-            "name": "token",
+            "name": "user",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "OBJECT",
+                "name": "User",
+                "ofType": null
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "tokens",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "OBJECT",
+                "name": "Tokens",
+                "ofType": null
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          }
+        ],
+        "inputFields": null,
+        "interfaces": [],
+        "enumValues": null,
+        "possibleTypes": null
+      },
+      {
+        "kind": "OBJECT",
+        "name": "Tokens",
+        "description": null,
+        "fields": [
+          {
+            "name": "accessToken",
             "description": null,
             "args": [],
             "type": {
@@ -414,7 +441,7 @@
             "deprecationReason": null
           },
           {
-            "name": "userId",
+            "name": "refreshToken",
             "description": null,
             "args": [],
             "type": {
@@ -422,7 +449,7 @@
               "name": null,
               "ofType": {
                 "kind": "SCALAR",
-                "name": "ID",
+                "name": "String",
                 "ofType": null
               }
             },
@@ -510,7 +537,7 @@
               "name": null,
               "ofType": {
                 "kind": "OBJECT",
-                "name": "AuthData",
+                "name": "Tokens",
                 "ofType": null
               }
             },
@@ -611,7 +638,7 @@
               "name": null,
               "ofType": {
                 "kind": "OBJECT",
-                "name": "User",
+                "name": "CreateUserResp",
                 "ofType": null
               }
             },

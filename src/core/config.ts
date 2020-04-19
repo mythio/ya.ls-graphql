@@ -14,9 +14,13 @@ export const loggerConfig = {
   maxFiles: process.env.LOGGER_MAX_FILES
 };
 
-export const tokenInfo = {
+export const tokenConfig = {
   accessTokenValidityDays: parseInt(process.env.ACCESS_TOKEN_VALIDITY_DAYS),
   refreshTokenValidityDays: parseInt(process.env.REFRESH_TOKEN_VALIDITY_DAYS),
   issuer: process.env.TOKEN_ISSUER,
   audience: process.env.TOKEN_AUDIENCE,
 };
+
+export const dbConfig = {
+  dbURI: process.env.MONGODB_URI
+}

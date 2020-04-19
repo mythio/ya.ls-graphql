@@ -7,7 +7,7 @@ enum Role {
 }
 
 type UserDetail {
-  userId: ID!
+  _id: ID!
   name: String!
   emailAddress: String!
   shortIds: [ShortUrl!]
@@ -16,14 +16,13 @@ type UserDetail {
 }
 
 type User {
-  userId: ID!
+  _id: ID!
   name: String!
   emailAddress: String!
-  isVerified: Boolean!
 }
 
 type ShortUrlDetail {
-  shortId: String!
+  _id: String!
   originalUrl: String!
   shareWith: [User!]
   createdBy: User
@@ -35,21 +34,26 @@ type ShortUrl {
   shareWith: [ID!]
 }
 
-type AuthData {
-  token: String!
-  userId: ID!
+type CreateUserResp {
+  user: User!
+  tokens: Tokens!
+}
+
+type Tokens {
+  accessToken: String!
+  refreshToken: String!
 }
 
 type Query {
   test: String! @auth(requires: ADMIN)
 
   me: UserDetail! @auth(requires: USER)
-  login(emailAddress: String!, password: String!): AuthData!
+  login(emailAddress: String!, password: String!): Tokens!
   expandUrl(shortId: String!): ShortUrlDetail! @auth
 }
 
 type Mutation {
-  createUser(name: String!, emailAddress: String!, password: String!): User!
+  createUser(name: String!, emailAddress: String!, password: String!): CreateUserResp!
   verifyUser(token: String): User!
   shortenUrl(originalUrl: String!, shareWith: [ID!]): ShortUrl! @auth
   editPrivilege(userId: ID!, isAdmin: Boolean!): UserDetail!

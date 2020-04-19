@@ -10,14 +10,13 @@ const options = {
   autoIndex: true,
   poolSize: 10,
   bufferMaxEntries: 0,
-  connectTimeoutMs: 10000,
-  socketTimoutMs: 30000
+  // connectTimeoutMs: 10000,
+  // socketTimoutMs: 30000
 };
 
 mongoose.connect(dbConfig.dbURI, options)
   .then(() => { logger.info('Mongoose connected') })
   .catch(err => {
-    mon
     logger.info('Mongoose failed to connect')
     logger.error(err);
   });

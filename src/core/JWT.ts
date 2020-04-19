@@ -1,4 +1,3 @@
-import path from "path";
 import { readFile } from 'fs';
 import { promisify } from "util";
 import { sign, verify } from "jsonwebtoken";
@@ -6,15 +5,15 @@ import logger from "./Logger";
 
 export default class JWT {
   private static readPublicKey(): Promise<string> {
-    return promisify(readFile)(path.join(__dirname, '../../keys/public.pem'), 'utf8');
+    return promisify(readFile)('keys/public.pem', 'utf8');
   }
 
   private static readPrivateKey(): Promise<string> {
-    return promisify(readFile)(path.join(__dirname, '../../keys/private.pem'), 'utf8');
+    return promisify(readFile)('keys/private.pem', 'utf8');
   }
 
   public static async encode(payload: JwtPayload): Promise<string> {
-    const cert = await this.readPublicKey();
+    const cert = await this.readPrivateKey();
     if (!cert)
       throw new Error('Token generation failed');
     // @ts-ignore

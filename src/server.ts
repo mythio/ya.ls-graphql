@@ -2,6 +2,7 @@
 import express from 'express';
 import { ApolloServer } from 'apollo-server-express';
 
+import './database';
 import { apolloConfig } from './core/config';
 import { queryResolvers, mutationResolver } from './graphql/resolvers';
 import * as typeDefs from './graphql/type-defs.graphql';

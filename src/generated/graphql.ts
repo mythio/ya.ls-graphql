@@ -27,7 +27,7 @@ export enum Role {
 
 export type UserDetail = {
    __typename?: 'UserDetail';
-  userId: Scalars['ID'];
+  _id: Scalars['ID'];
   name: Scalars['String'];
   emailAddress: Scalars['String'];
   shortIds?: Maybe<Array<ShortUrl>>;
@@ -37,15 +37,14 @@ export type UserDetail = {
 
 export type User = {
    __typename?: 'User';
-  userId: Scalars['ID'];
+  _id: Scalars['ID'];
   name: Scalars['String'];
   emailAddress: Scalars['String'];
-  isVerified: Scalars['Boolean'];
 };
 
 export type ShortUrlDetail = {
    __typename?: 'ShortUrlDetail';
-  shortId: Scalars['String'];
+  _id: Scalars['String'];
   originalUrl: Scalars['String'];
   shareWith?: Maybe<Array<User>>;
   createdBy?: Maybe<User>;
@@ -58,17 +57,23 @@ export type ShortUrl = {
   shareWith?: Maybe<Array<Scalars['ID']>>;
 };
 
-export type AuthData = {
-   __typename?: 'AuthData';
-  token: Scalars['String'];
-  userId: Scalars['ID'];
+export type CreateUserResp = {
+   __typename?: 'CreateUserResp';
+  user: User;
+  tokens: Tokens;
+};
+
+export type Tokens = {
+   __typename?: 'Tokens';
+  accessToken: Scalars['String'];
+  refreshToken: Scalars['String'];
 };
 
 export type Query = {
    __typename?: 'Query';
   test: Scalars['String'];
   me: UserDetail;
-  login: AuthData;
+  login: Tokens;
   expandUrl: ShortUrlDetail;
 };
 
@@ -85,7 +90,7 @@ export type QueryExpandUrlArgs = {
 
 export type Mutation = {
    __typename?: 'Mutation';
-  createUser: User;
+  createUser: CreateUserResp;
   verifyUser: User;
   shortenUrl: ShortUrl;
   editPrivilege: UserDetail;
@@ -207,7 +212,8 @@ export type ResolversTypes = {
   User: ResolverTypeWrapper<User>,
   ShortUrlDetail: ResolverTypeWrapper<ShortUrlDetail>,
   ShortUrl: ResolverTypeWrapper<ShortUrl>,
-  AuthData: ResolverTypeWrapper<AuthData>,
+  CreateUserResp: ResolverTypeWrapper<CreateUserResp>,
+  Tokens: ResolverTypeWrapper<Tokens>,
   Query: ResolverTypeWrapper<{}>,
   Mutation: ResolverTypeWrapper<{}>,
   AdditionalEntityFields: AdditionalEntityFields,
@@ -223,7 +229,8 @@ export type ResolversParentTypes = {
   User: User,
   ShortUrlDetail: ShortUrlDetail,
   ShortUrl: ShortUrl,
-  AuthData: AuthData,
+  CreateUserResp: CreateUserResp,
+  Tokens: Tokens,
   Query: {},
   Mutation: {},
   AdditionalEntityFields: AdditionalEntityFields,
@@ -269,7 +276,7 @@ export type MapDirectiveArgs = {   path: Scalars['String']; };
 export type MapDirectiveResolver<Result, Parent, ContextType = any, Args = MapDirectiveArgs> = DirectiveResolverFn<Result, Parent, ContextType, Args>;
 
 export type UserDetailResolvers<ContextType = any, ParentType extends ResolversParentTypes['UserDetail'] = ResolversParentTypes['UserDetail']> = {
-  userId?: Resolver<ResolversTypes['ID'], ParentType, ContextType>,
+  _id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>,
   name?: Resolver<ResolversTypes['String'], ParentType, ContextType>,
   emailAddress?: Resolver<ResolversTypes['String'], ParentType, ContextType>,
   shortIds?: Resolver<Maybe<Array<ResolversTypes['ShortUrl']>>, ParentType, ContextType>,
@@ -279,15 +286,14 @@ export type UserDetailResolvers<ContextType = any, ParentType extends ResolversP
 };
 
 export type UserResolvers<ContextType = any, ParentType extends ResolversParentTypes['User'] = ResolversParentTypes['User']> = {
-  userId?: Resolver<ResolversTypes['ID'], ParentType, ContextType>,
+  _id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>,
   name?: Resolver<ResolversTypes['String'], ParentType, ContextType>,
   emailAddress?: Resolver<ResolversTypes['String'], ParentType, ContextType>,
-  isVerified?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>,
   __isTypeOf?: isTypeOfResolverFn<ParentType>,
 };
 
 export type ShortUrlDetailResolvers<ContextType = any, ParentType extends ResolversParentTypes['ShortUrlDetail'] = ResolversParentTypes['ShortUrlDetail']> = {
-  shortId?: Resolver<ResolversTypes['String'], ParentType, ContextType>,
+  _id?: Resolver<ResolversTypes['String'], ParentType, ContextType>,
   originalUrl?: Resolver<ResolversTypes['String'], ParentType, ContextType>,
   shareWith?: Resolver<Maybe<Array<ResolversTypes['User']>>, ParentType, ContextType>,
   createdBy?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType>,
@@ -301,21 +307,27 @@ export type ShortUrlResolvers<ContextType = any, ParentType extends ResolversPar
   __isTypeOf?: isTypeOfResolverFn<ParentType>,
 };
 
-export type AuthDataResolvers<ContextType = any, ParentType extends ResolversParentTypes['AuthData'] = ResolversParentTypes['AuthData']> = {
-  token?: Resolver<ResolversTypes['String'], ParentType, ContextType>,
-  userId?: Resolver<ResolversTypes['ID'], ParentType, ContextType>,
+export type CreateUserRespResolvers<ContextType = any, ParentType extends ResolversParentTypes['CreateUserResp'] = ResolversParentTypes['CreateUserResp']> = {
+  user?: Resolver<ResolversTypes['User'], ParentType, ContextType>,
+  tokens?: Resolver<ResolversTypes['Tokens'], ParentType, ContextType>,
+  __isTypeOf?: isTypeOfResolverFn<ParentType>,
+};
+
+export type TokensResolvers<ContextType = any, ParentType extends ResolversParentTypes['Tokens'] = ResolversParentTypes['Tokens']> = {
+  accessToken?: Resolver<ResolversTypes['String'], ParentType, ContextType>,
+  refreshToken?: Resolver<ResolversTypes['String'], ParentType, ContextType>,
   __isTypeOf?: isTypeOfResolverFn<ParentType>,
 };
 
 export type QueryResolvers<ContextType = any, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = {
   test?: Resolver<ResolversTypes['String'], ParentType, ContextType>,
   me?: Resolver<ResolversTypes['UserDetail'], ParentType, ContextType>,
-  login?: Resolver<ResolversTypes['AuthData'], ParentType, ContextType, RequireFields<QueryLoginArgs, 'emailAddress' | 'password'>>,
+  login?: Resolver<ResolversTypes['Tokens'], ParentType, ContextType, RequireFields<QueryLoginArgs, 'emailAddress' | 'password'>>,
   expandUrl?: Resolver<ResolversTypes['ShortUrlDetail'], ParentType, ContextType, RequireFields<QueryExpandUrlArgs, 'shortId'>>,
 };
 
 export type MutationResolvers<ContextType = any, ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']> = {
-  createUser?: Resolver<ResolversTypes['User'], ParentType, ContextType, RequireFields<MutationCreateUserArgs, 'name' | 'emailAddress' | 'password'>>,
+  createUser?: Resolver<ResolversTypes['CreateUserResp'], ParentType, ContextType, RequireFields<MutationCreateUserArgs, 'name' | 'emailAddress' | 'password'>>,
   verifyUser?: Resolver<ResolversTypes['User'], ParentType, ContextType, RequireFields<MutationVerifyUserArgs, never>>,
   shortenUrl?: Resolver<ResolversTypes['ShortUrl'], ParentType, ContextType, RequireFields<MutationShortenUrlArgs, 'originalUrl'>>,
   editPrivilege?: Resolver<ResolversTypes['UserDetail'], ParentType, ContextType, RequireFields<MutationEditPrivilegeArgs, 'userId' | 'isAdmin'>>,
@@ -327,7 +339,8 @@ export type Resolvers<ContextType = any> = {
   User?: UserResolvers<ContextType>,
   ShortUrlDetail?: ShortUrlDetailResolvers<ContextType>,
   ShortUrl?: ShortUrlResolvers<ContextType>,
-  AuthData?: AuthDataResolvers<ContextType>,
+  CreateUserResp?: CreateUserRespResolvers<ContextType>,
+  Tokens?: TokensResolvers<ContextType>,
   Query?: QueryResolvers<ContextType>,
   Mutation?: MutationResolvers<ContextType>,
 };
