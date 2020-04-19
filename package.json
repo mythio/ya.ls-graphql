@@ -4,8 +4,7 @@
 	"description": "Yet another link shortener GraphQL backend",
 	"main": "index.js",
 	"scripts": {
-		"build:dev": "rm -rf dist && webpack --config webpack.$NODE_ENV.js",
-		"build:prod": "rm -rf dist && webpack --config webpack.production.js",
+		"build": "rm -rf dist && webpack --config webpack.$NODE_ENV.js",
 		"start:dev": "node --require dotenv/config dist/server.js",
 		"start": "node dist/server.js",
 		"codegen": "graphql-codegen --config codegen.yml",
