@@ -9,7 +9,7 @@
 		"start": "node dist/server.js",
 		"codegen": "graphql-codegen --config codegen.yml",
 		"test-ci": "jest --forceExit --detectOpenHandles --coverage --verbose",
-		"heroku-postbuild": "npm run build"
+		"heroku-postbuild": "ssh-keygen -t rsa -b 4096 -m PEM -N \"\" -f keys/jwtRS256.key && openssl rsa -in keys/jwtRS256.key -pubout -outform PEM -out keys/jwtRS256.key.pub && npm run build"
 	},
 	"repository": {
 		"type": "git",
