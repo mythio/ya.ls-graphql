@@ -63,6 +63,12 @@ export type CreateUserResp = {
   tokens: Tokens;
 };
 
+export type LoginUserResp = {
+   __typename?: 'LoginUserResp';
+  user: User;
+  tokens: Tokens;
+};
+
 export type Tokens = {
    __typename?: 'Tokens';
   accessToken: Scalars['String'];
@@ -71,9 +77,8 @@ export type Tokens = {
 
 export type Query = {
    __typename?: 'Query';
-  test: Scalars['String'];
   me: UserDetail;
-  login: Tokens;
+  login: LoginUserResp;
   expandUrl: ShortUrlDetail;
 };
 
@@ -213,6 +218,7 @@ export type ResolversTypes = {
   ShortUrlDetail: ResolverTypeWrapper<ShortUrlDetail>,
   ShortUrl: ResolverTypeWrapper<ShortUrl>,
   CreateUserResp: ResolverTypeWrapper<CreateUserResp>,
+  LoginUserResp: ResolverTypeWrapper<LoginUserResp>,
   Tokens: ResolverTypeWrapper<Tokens>,
   Query: ResolverTypeWrapper<{}>,
   Mutation: ResolverTypeWrapper<{}>,
@@ -230,6 +236,7 @@ export type ResolversParentTypes = {
   ShortUrlDetail: ShortUrlDetail,
   ShortUrl: ShortUrl,
   CreateUserResp: CreateUserResp,
+  LoginUserResp: LoginUserResp,
   Tokens: Tokens,
   Query: {},
   Mutation: {},
@@ -313,6 +320,12 @@ export type CreateUserRespResolvers<ContextType = any, ParentType extends Resolv
   __isTypeOf?: isTypeOfResolverFn<ParentType>,
 };
 
+export type LoginUserRespResolvers<ContextType = any, ParentType extends ResolversParentTypes['LoginUserResp'] = ResolversParentTypes['LoginUserResp']> = {
+  user?: Resolver<ResolversTypes['User'], ParentType, ContextType>,
+  tokens?: Resolver<ResolversTypes['Tokens'], ParentType, ContextType>,
+  __isTypeOf?: isTypeOfResolverFn<ParentType>,
+};
+
 export type TokensResolvers<ContextType = any, ParentType extends ResolversParentTypes['Tokens'] = ResolversParentTypes['Tokens']> = {
   accessToken?: Resolver<ResolversTypes['String'], ParentType, ContextType>,
   refreshToken?: Resolver<ResolversTypes['String'], ParentType, ContextType>,
@@ -320,9 +333,8 @@ export type TokensResolvers<ContextType = any, ParentType extends ResolversParen
 };
 
 export type QueryResolvers<ContextType = any, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = {
-  test?: Resolver<ResolversTypes['String'], ParentType, ContextType>,
   me?: Resolver<ResolversTypes['UserDetail'], ParentType, ContextType>,
-  login?: Resolver<ResolversTypes['Tokens'], ParentType, ContextType, RequireFields<QueryLoginArgs, 'emailAddress' | 'password'>>,
+  login?: Resolver<ResolversTypes['LoginUserResp'], ParentType, ContextType, RequireFields<QueryLoginArgs, 'emailAddress' | 'password'>>,
   expandUrl?: Resolver<ResolversTypes['ShortUrlDetail'], ParentType, ContextType, RequireFields<QueryExpandUrlArgs, 'shortId'>>,
 };
 
@@ -340,6 +352,7 @@ export type Resolvers<ContextType = any> = {
   ShortUrlDetail?: ShortUrlDetailResolvers<ContextType>,
   ShortUrl?: ShortUrlResolvers<ContextType>,
   CreateUserResp?: CreateUserRespResolvers<ContextType>,
+  LoginUserResp?: LoginUserRespResolvers<ContextType>,
   Tokens?: TokensResolvers<ContextType>,
   Query?: QueryResolvers<ContextType>,
   Mutation?: MutationResolvers<ContextType>,
