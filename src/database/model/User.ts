@@ -1,4 +1,6 @@
 import { Schema, model, Document } from "mongoose";
+
+import Role from "./Role";
 import ShortUrl from './ShortUrl';
 
 export const DOCUMENT_NAME = 'User';
@@ -8,8 +10,7 @@ export default interface User extends Document {
   name: string;
   emailAddress: string;
   password: string;
-  verified: boolean;
-  isAdmin: boolean;
+  roles: Role[];
   shortIds: ShortUrl[];
   createdAt: Date;
   updatedAt: Date;
@@ -21,39 +22,39 @@ const schema = new Schema(
       type: Schema.Types.String,
       required: true,
       trim: true,
-      maxlength: 100,
+      maxlength: 100
     },
     emailAddress: {
       type: Schema.Types.String,
       required: true,
       unique: true,
-      trim: true,
+      trim: true
     },
     password: {
       type: Schema.Types.String,
-      required: true,
+      required: true
     },
-    verified: {
-      type: Schema.Types.Boolean,
-      default: false,
-    },
-    isAdmin: {
-      type: Schema.Types.Boolean,
-      default: false,
-    },
-    shortIds: [
-      {
+    roles: {
+      type: [{
         type: Schema.Types.ObjectId,
-        ref: 'ShortUrl',
-      }
-    ],
+        ref: 'Role'
+      }],
+      required: true,
+      select: false
+    },
+    shortIds: {
+      type: [{
+        type: Schema.Types.ObjectId,
+        ref: 'ShortUrl'
+      }],
+    },
     createdAt: {
       type: Date,
-      default: Date.now(),
+      default: Date.now()
     },
     updatedAt: {
       type: Date,
-      default: Date.now(),
+      default: Date.now()
     },
   }
 );

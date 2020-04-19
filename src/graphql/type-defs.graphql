@@ -50,6 +50,7 @@ type Tokens {
 }
 
 type Query {
+  test: String! @auth(requires: ADMIN)
   me: UserDetail! @auth(requires: USER)
   login(emailAddress: String!, password: String!): LoginUserResp!
   expandUrl(shortId: String!): ShortUrlDetail! @auth

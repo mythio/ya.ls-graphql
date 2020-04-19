@@ -23,7 +23,7 @@ mongoose.connect(dbConfig.dbURI, options)
   });
 
 mongoose.connection.on('connected', () => {
-  logger.info(`Mongoose default connection open to ${dbConfig.dbURI}`)
+  logger.info(`Mongoose default connection open to ${dbConfig.dbURI}`);
 });
 
 mongoose.connection.on('error', err => {

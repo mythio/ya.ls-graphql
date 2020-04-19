@@ -9,8 +9,13 @@ import User from '../database/model/User';
 import UserRepo from '../database/repository/UserRepo';
 import KeystoreRepo from '../database/repository/KeystoreRepo';
 import { QueryResolvers, MutationResolvers } from '../generated/graphql';
+import { RoleCode } from '../database/model/Role';
 
 export const queryResolvers: QueryResolvers = {
+  test: async (root, args, context) => {
+    console.log(root);
+    return 'apple';
+  },
   login: async (root, args, context) => {
     const user = await UserRepo.findByEmail(args.emailAddress);
 
@@ -47,7 +52,7 @@ export const mutationResolver: MutationResolvers = {
       name: args.name,
       emailAddress: args.emailAddress,
       password: passwordHash
-    } as User, accessTokenKey, refreshTokenKey);
+    } as User, accessTokenKey, refreshTokenKey, RoleCode.REVIEWER);
 
     const tokens = await createTokens(
       createdUser,

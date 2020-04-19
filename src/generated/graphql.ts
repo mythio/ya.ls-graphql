@@ -77,6 +77,7 @@ export type Tokens = {
 
 export type Query = {
    __typename?: 'Query';
+  test: Scalars['String'];
   me: UserDetail;
   login: LoginUserResp;
   expandUrl: ShortUrlDetail;
@@ -333,6 +334,7 @@ export type TokensResolvers<ContextType = any, ParentType extends ResolversParen
 };
 
 export type QueryResolvers<ContextType = any, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = {
+  test?: Resolver<ResolversTypes['String'], ParentType, ContextType>,
   me?: Resolver<ResolversTypes['UserDetail'], ParentType, ContextType>,
   login?: Resolver<ResolversTypes['LoginUserResp'], ParentType, ContextType, RequireFields<QueryLoginArgs, 'emailAddress' | 'password'>>,
   expandUrl?: Resolver<ResolversTypes['ShortUrlDetail'], ParentType, ContextType, RequireFields<QueryExpandUrlArgs, 'shortId'>>,
