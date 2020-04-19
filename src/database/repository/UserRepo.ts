@@ -1,6 +1,8 @@
 import { Types } from "mongoose";
 
 import User, { UserModel } from '../model/User';
+import Keystore from "../model/Keystore";
+import KeystoreRepo from './KeystoreRepo';
 
 export default class UserRepo {
 
@@ -17,9 +19,15 @@ export default class UserRepo {
       .exec();
   }
 
-  public static async createUser(user: User): Promise<User> {
+  public static async create(user: User, accessTokenKey: string, refreshTokenKey: string): Promise<{ user: User, keystore: Keystore }> {
     const now = new Date();
+    user.createdAt = user.updatedAt = now;
     const createdUser = await UserModel.create(user);
-    return createdUser.toObject();
+    const keystore = await KeystoreRepo.create(createdUser._id, accessTokenKey, refreshTokenKey);
+
+    return {
+      user: createdUser.toObject(),
+      keystore: keystore
+    };
   }
 }
