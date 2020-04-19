@@ -5,3 +5,4 @@ coverage
 .vscode
 .env
 *.pem
+graphql.schema.json
