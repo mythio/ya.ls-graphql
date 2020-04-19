@@ -5,11 +5,11 @@ import logger from "./Logger";
 
 export default class JWT {
   private static readPublicKey(): Promise<string> {
-    return promisify(readFile)('keys/public.pem', 'utf8');
+    return promisify(readFile)('keys/jwtRS256.key.pub', 'utf8');
   }
 
   private static readPrivateKey(): Promise<string> {
-    return promisify(readFile)('keys/private.pem', 'utf8');
+    return promisify(readFile)('keys/jwtRS256.key', 'utf8');
   }
 
   public static async encode(payload: JwtPayload): Promise<string> {
