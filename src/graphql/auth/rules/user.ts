@@ -18,7 +18,7 @@ export const userRule = async (req: { authorization: string; user: User; }): Pro
       return false;
     }
 
-    if (!user || !user.isAdmin) return false;
+    if (!user) return false;
     req.user = user;
   } catch (err) {
     return false;
