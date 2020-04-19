@@ -1,5 +1,6 @@
-import logger from "../core/Logger";
 import mongoose from "mongoose";
+
+import logger from "../core/Logger";
 import { dbConfig } from '../core/config';
 
 const options = {
