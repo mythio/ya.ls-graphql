@@ -4,29 +4,29 @@ export const DOCUMENT_NAME = 'Role';
 export const COLLECTION_NAME = 'roles';
 
 export const enum RoleCode {
-  REVIEWER = 'REVIEWER',
-  USER = 'USER',
-  ADMIN = 'ADMIN',
+	REVIEWER = 'REVIEWER',
+	USER = 'USER',
+	ADMIN = 'ADMIN',
 }
 
 export default interface Role extends Document {
-  code: string;
+	code: string;
 }
 
 const schema = new Schema(
-  {
-    code: {
-      type: Schema.Types.String,
-      required: true,
-      enum: [
-        RoleCode.REVIEWER,
-        RoleCode.USER,
-        RoleCode.ADMIN,
-      ]
-    }
-  },
-  {
-    versionKey: false
-  });
+	{
+		code: {
+			type: Schema.Types.String,
+			required: true,
+			enum: [
+				RoleCode.REVIEWER,
+				RoleCode.USER,
+				RoleCode.ADMIN,
+			]
+		}
+	},
+	{
+		versionKey: false
+	});
 
 export const RoleModel = model<Role>(DOCUMENT_NAME, schema, COLLECTION_NAME);

@@ -1,69 +1,69 @@
 directive @auth(requires: Role = REVIEWER) on FIELD_DEFINITION | OBJECT
 
 enum Role {
-  ADMIN
-  USER
-  REVIEWER
+	ADMIN
+	USER
+	REVIEWER
 }
 
 type UserDetail {
-  _id: ID!
-  name: String!
-  emailAddress: String!
-  shortIds: [ShortUrl!]
-  roles: [String!]
+	_id: ID!
+	name: String!
+	emailAddress: String!
+	shortIds: [ShortUrl!]
+	roles: [String!]
 }
 
 type User {
-  _id: ID!
-  name: String!
-  emailAddress: String!
+	_id: ID!
+	name: String!
+	emailAddress: String!
 }
 
 type ShortUrlDetail {
-  _id: String!
-  originalUrl: String!
-  shareWith: [User!]
-  createdBy: User
+	_id: String!
+	originalUrl: String!
+	shareWith: [User!]
+	createdBy: User
 }
 
 type ShortUrl {
-  shortId: String!
-  originalUrl: String!
-  shareWith: [ID!]
+	shortId: String!
+	originalUrl: String!
+	shareWith: [ID!]
 }
 
 type CreateUserResp {
-  user: User!
-  tokens: Tokens!
+	user: User!
+	tokens: Tokens!
 }
 
 type LoginUserResp {
-  user: User!
-  tokens: Tokens!
+	user: User!
+	tokens: Tokens!
 }
 
 type MeResp {
-  user: UserDetail!
+	user: UserDetail!
 }
 
 type Tokens {
-  accessToken: String!
-  refreshToken: String!
+	accessToken: String!
+	refreshToken: String!
 }
 
 type Query {
-  test: String! @auth(requires: REVIEWER)
-  me: MeResp! @auth(requires: REVIEWER)
-  login(emailAddress: String!, password: String!): LoginUserResp!
-  expandUrl(shortId: String!): ShortUrlDetail! @auth
+	test: String! @auth(requires: REVIEWER)
+	me: MeResp! @auth(requires: REVIEWER)
+	login(emailAddress: String!, password: String!): LoginUserResp!
+	expandUrl(shortId: String!): ShortUrlDetail! @auth
 }
 
 type Mutation {
-  createUser(name: String!, emailAddress: String!, password: String!): CreateUserResp!
-  verifyUser(token: String): User!
-  shortenUrl(originalUrl: String!, shareWith: [ID!]): ShortUrl! @auth
-  editPrivilege(userId: ID!, isAdmin: Boolean!): UserDetail!
-    @auth(requires: ADMIN)
-  deleteUser(userId: ID!): String! @auth(requires: USER)
+	createUser(name: String!, emailAddress: String!, password: String!): CreateUserResp!
+	verifyUser(token: String): User!
+	shortenUrl(originalUrl: String!, shareWith: [ID!]): ShortUrl! @auth
+	editPrivilege(userId: ID!, isAdmin: Boolean!): UserDetail!
+		@auth(requires: ADMIN)
+	deleteUser(userId: ID!): String! @auth(requires: USER)
 }
