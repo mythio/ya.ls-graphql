@@ -7,7 +7,7 @@ import Role, { RoleCode } from '../database/model/Role';
 import { createTokens } from '../auth/authUtils';
 import UserRepo from '../database/repository/UserRepo';
 import KeystoreRepo from '../database/repository/KeystoreRepo';
-import { QueryResolvers, MutationResolvers } from '../generated/graphql';
+import { QueryResolvers, MutationResolvers } from '../graphql/schemaType';
 
 export const queryResolvers: QueryResolvers = {
 	login: async (root, args, context) => {

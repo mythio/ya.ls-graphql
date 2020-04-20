@@ -1,7 +1,7 @@
 import { Types } from "mongoose";
 
 import { tokenConfig } from "../core/config";
-import { Tokens } from '../generated/graphql';
+import { Tokens } from '../graphql/schemaType';
 import JWT, { JwtPayload } from "../core/JWT";
 import User from "../database/model/User";
 import Keystore from '../database/model/Keystore';
