@@ -31,8 +31,7 @@ export type UserDetail = {
   name: Scalars['String'];
   emailAddress: Scalars['String'];
   shortIds?: Maybe<Array<ShortUrl>>;
-  isAdmin: Scalars['Boolean'];
-  isVerified: Scalars['Boolean'];
+  roles?: Maybe<Array<Scalars['String']>>;
 };
 
 export type User = {
@@ -69,6 +68,11 @@ export type LoginUserResp = {
   tokens: Tokens;
 };
 
+export type MeResp = {
+   __typename?: 'MeResp';
+  user: UserDetail;
+};
+
 export type Tokens = {
    __typename?: 'Tokens';
   accessToken: Scalars['String'];
@@ -78,7 +82,7 @@ export type Tokens = {
 export type Query = {
    __typename?: 'Query';
   test: Scalars['String'];
-  me: UserDetail;
+  me: MeResp;
   login: LoginUserResp;
   expandUrl: ShortUrlDetail;
 };
@@ -220,6 +224,7 @@ export type ResolversTypes = {
   ShortUrl: ResolverTypeWrapper<ShortUrl>,
   CreateUserResp: ResolverTypeWrapper<CreateUserResp>,
   LoginUserResp: ResolverTypeWrapper<LoginUserResp>,
+  MeResp: ResolverTypeWrapper<MeResp>,
   Tokens: ResolverTypeWrapper<Tokens>,
   Query: ResolverTypeWrapper<{}>,
   Mutation: ResolverTypeWrapper<{}>,
@@ -238,6 +243,7 @@ export type ResolversParentTypes = {
   ShortUrl: ShortUrl,
   CreateUserResp: CreateUserResp,
   LoginUserResp: LoginUserResp,
+  MeResp: MeResp,
   Tokens: Tokens,
   Query: {},
   Mutation: {},
@@ -288,8 +294,7 @@ export type UserDetailResolvers<ContextType = any, ParentType extends ResolversP
   name?: Resolver<ResolversTypes['String'], ParentType, ContextType>,
   emailAddress?: Resolver<ResolversTypes['String'], ParentType, ContextType>,
   shortIds?: Resolver<Maybe<Array<ResolversTypes['ShortUrl']>>, ParentType, ContextType>,
-  isAdmin?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>,
-  isVerified?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>,
+  roles?: Resolver<Maybe<Array<ResolversTypes['String']>>, ParentType, ContextType>,
   __isTypeOf?: isTypeOfResolverFn<ParentType>,
 };
 
@@ -327,6 +332,11 @@ export type LoginUserRespResolvers<ContextType = any, ParentType extends Resolve
   __isTypeOf?: isTypeOfResolverFn<ParentType>,
 };
 
+export type MeRespResolvers<ContextType = any, ParentType extends ResolversParentTypes['MeResp'] = ResolversParentTypes['MeResp']> = {
+  user?: Resolver<ResolversTypes['UserDetail'], ParentType, ContextType>,
+  __isTypeOf?: isTypeOfResolverFn<ParentType>,
+};
+
 export type TokensResolvers<ContextType = any, ParentType extends ResolversParentTypes['Tokens'] = ResolversParentTypes['Tokens']> = {
   accessToken?: Resolver<ResolversTypes['String'], ParentType, ContextType>,
   refreshToken?: Resolver<ResolversTypes['String'], ParentType, ContextType>,
@@ -335,7 +345,7 @@ export type TokensResolvers<ContextType = any, ParentType extends ResolversParen
 
 export type QueryResolvers<ContextType = any, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = {
   test?: Resolver<ResolversTypes['String'], ParentType, ContextType>,
-  me?: Resolver<ResolversTypes['UserDetail'], ParentType, ContextType>,
+  me?: Resolver<ResolversTypes['MeResp'], ParentType, ContextType>,
   login?: Resolver<ResolversTypes['LoginUserResp'], ParentType, ContextType, RequireFields<QueryLoginArgs, 'emailAddress' | 'password'>>,
   expandUrl?: Resolver<ResolversTypes['ShortUrlDetail'], ParentType, ContextType, RequireFields<QueryExpandUrlArgs, 'shortId'>>,
 };
@@ -355,6 +365,7 @@ export type Resolvers<ContextType = any> = {
   ShortUrl?: ShortUrlResolvers<ContextType>,
   CreateUserResp?: CreateUserRespResolvers<ContextType>,
   LoginUserResp?: LoginUserRespResolvers<ContextType>,
+  MeResp?: MeRespResolvers<ContextType>,
   Tokens?: TokensResolvers<ContextType>,
   Query?: QueryResolvers<ContextType>,
   Mutation?: MutationResolvers<ContextType>,

@@ -21,8 +21,8 @@ jobs:
         uses: actions/setup-node@v1
         with:
           node-version: ${{ matrix.node-version }}
-      - run: cp keys/private.pem.example keys/private.pem
-      - run: cp keys/public.pem.example keys/public.pem
+      - run: cp keys/jwtRS256.key.example keys/jwtRS256.key
+      - run: cp keys/jwtRS256.key.pub.example keys/jwtRS256.key.pub
       - run: npm install
       - run: NODE_ENV=production npm run build
       - run: npm run test-ci

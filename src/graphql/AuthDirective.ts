@@ -1,8 +1,6 @@
 import { SchemaDirectiveVisitor } from "apollo-server-express";
-import { defaultFieldResolver, GraphQLObjectType, GraphQLField } from "graphql";
-import logger from "../core/Logger";
-import { rules } from "./auth/rules";
-import { adminRule } from "./auth/rules/admin";
+import { defaultFieldResolver } from "graphql";
+import { ruleStrategy } from "../auth/authUtils";
 
 /** Class definition for @auth directive */
 export class AuthDirective extends SchemaDirectiveVisitor {
@@ -48,24 +46,10 @@ export class AuthDirective extends SchemaDirectiveVisitor {
         }
 
         const requestData = args[2];
-        await this.execRule(requiredRole, requestData);
+        await ruleStrategy(requestData, requiredRole);
 
         return resolve.apply(this, args);
       }.bind(this);
     });
   }
-
-  /**
-   * Check if current user is authorized to perform the requested operation(s)
-   * @param {string} role - Role of the current user
-   * @param {object} requestData - Role of the requested operation
-   */
-  async execRule(role: string, requestData): Promise<void> {
-    // const strategyResult = await adminRule(requestData);
-    const strategyResult = await rules[role.toLowerCase()](requestData);
-    console.log(strategyResult);
-    if (!strategyResult) {
-      throw new Error("not authorized");
-    }
-  }
-}
+};

@@ -9,7 +9,9 @@ export default class UserRepo {
 
   public static findById(id: Types.ObjectId): Promise<User> {
     return UserModel.findById(id)
-      .select({ emailAddress: 1 })
+      .populate({
+        path: 'roles'
+      })
       .lean<User>()
       .exec();
   }

@@ -1,9 +1,13 @@
 import { Types } from "mongoose";
 
-import JWT, { JwtPayload } from "../../core/JWT";
-import { tokenConfig } from "../../core/config";
-import User from "../../database/model/User";
-import { Tokens } from '../../generated/graphql';
+import { tokenConfig } from "../core/config";
+import { Tokens } from '../generated/graphql';
+import JWT, { JwtPayload } from "../core/JWT";
+import User from "../database/model/User";
+import Keystore from '../database/model/Keystore';
+import UserRepo from '../database/repository/UserRepo';
+import KeystoreRepo from '../database/repository/KeystoreRepo';
+import { ObjectID } from 'mongodb';
 
 export const getAccessToken = (authorization: string) => {
   if (!authorization) return undefined;
@@ -48,3 +52,37 @@ export const createTokens = async (user: User, accessTokenKey: string, refreshTo
     refreshToken: refreshToken
   }
 }
+
+export const ruleStrategy = async (
+  req: {
+    authorization: string;
+    user: User;
+    keystore: Keystore
+  },
+  role: string
+): Promise<void> => {
+  const accessToken = getAccessToken(req.authorization);
+
+  if (!accessToken) {
+    throw new Error('');
+  }
+  try {
+    const payload = await JWT.validate(accessToken);
+    validateTokenData(payload);
+
+    const user = await UserRepo.findById(new ObjectID(payload.subject));
+    if (!user) throw new Error('');
+
+    const userWithRole = user.roles.find((userRole) => userRole.code === role)
+    if (!userWithRole) throw new Error('');
+
+    const keystore = await KeystoreRepo.findforKey(user._id, payload.param);
+    if (!keystore) throw new Error('');
+
+    delete req.authorization;
+    req.user = user;
+    req.keystore = keystore;
+  } catch (err) {
+    throw new Error('');
+  }
+};
