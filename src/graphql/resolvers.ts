@@ -2,20 +2,14 @@ import crypto from 'crypto';
 import bcrypt from 'bcrypt';
 import _ from 'lodash';
 
-
-import CustErr from '../core/ApiError';
-import { createTokens } from './auth/authUtils';
 import User from '../database/model/User';
+import Role, { RoleCode } from '../database/model/Role';
+import { createTokens } from '../auth/authUtils';
 import UserRepo from '../database/repository/UserRepo';
 import KeystoreRepo from '../database/repository/KeystoreRepo';
 import { QueryResolvers, MutationResolvers } from '../generated/graphql';
-import { RoleCode } from '../database/model/Role';
 
 export const queryResolvers: QueryResolvers = {
-  test: async (root, args, context) => {
-    console.log(root);
-    return 'apple';
-  },
   login: async (root, args, context) => {
     const user = await UserRepo.findByEmail(args.emailAddress);
 
@@ -35,8 +29,18 @@ export const queryResolvers: QueryResolvers = {
       user: _.pick(user, ['_id', 'name', 'emailAddress']),
       tokens: tokens
     }
+  },
+  me: async (root, args, context) => {
+    const user = context.user;
+    let roles = user.roles;
+    roles = roles.map((role: Role): string => role.code);
+    user.roles = roles;
+
+    return {
+      user: _.pick(user, ['_id', 'name', 'emailAddress', 'shortIds', 'roles'])
+    };
   }
-}
+};
 
 export const mutationResolver: MutationResolvers = {
   createUser: async (root, args, context) => {
@@ -65,4 +69,4 @@ export const mutationResolver: MutationResolvers = {
       tokens: tokens
     }
   }
-}
+};

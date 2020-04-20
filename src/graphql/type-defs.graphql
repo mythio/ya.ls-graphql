@@ -11,8 +11,7 @@ type UserDetail {
   name: String!
   emailAddress: String!
   shortIds: [ShortUrl!]
-  isAdmin: Boolean!
-  isVerified: Boolean!
+  roles: [String!]
 }
 
 type User {
@@ -44,14 +43,18 @@ type LoginUserResp {
   tokens: Tokens!
 }
 
+type MeResp {
+  user: UserDetail!
+}
+
 type Tokens {
   accessToken: String!
   refreshToken: String!
 }
 
 type Query {
-  test: String! @auth(requires: ADMIN)
-  me: UserDetail! @auth(requires: USER)
+  test: String! @auth(requires: REVIEWER)
+  me: MeResp! @auth(requires: REVIEWER)
   login(emailAddress: String!, password: String!): LoginUserResp!
   expandUrl(shortId: String!): ShortUrlDetail! @auth
 }

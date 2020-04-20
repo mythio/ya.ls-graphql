@@ -11,8 +11,6 @@ export const enum RoleCode {
 
 export default interface Role extends Document {
   code: string;
-  createdAt?: Date;
-  updatedAt?: Date;
 }
 
 const schema = new Schema(
@@ -25,16 +23,6 @@ const schema = new Schema(
         RoleCode.USER,
         RoleCode.ADMIN,
       ]
-    },
-    createdAt: {
-      type: Date,
-      default: Date.now(),
-      select: false
-    },
-    updatedAt: {
-      type: Date,
-      default: Date.now(),
-      select: false
     }
   },
   {

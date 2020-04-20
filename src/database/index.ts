@@ -10,9 +10,7 @@ const options = {
   useFindAndModify: false,
   autoIndex: true,
   poolSize: 10,
-  bufferMaxEntries: 0,
-  // connectTimeoutMs: 10000,
-  // socketTimoutMs: 30000
+  bufferMaxEntries: 0
 };
 
 mongoose.connect(dbConfig.dbURI, options)
