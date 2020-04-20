@@ -2,11 +2,7 @@ overwrite: true
 schema: "./src/graphql/type-defs.graphql"
 documents: null
 generates:
-  src/generated/graphql.ts:
+  src/graphql/schemaType.ts:
     plugins:
       - "typescript"
       - "typescript-resolvers"
-      - "typescript-mongodb"
-  ./graphql.schema.json:
-    plugins:
-      - "introspection"
