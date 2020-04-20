@@ -6,7 +6,8 @@ import './database';
 import { apolloConfig } from './core/config';
 import * as typeDefs from './graphql/type-defs.graphql';
 import { AuthDirective } from './graphql/AuthDirective';
-import { queryResolvers, mutationResolver } from './graphql/resolvers';
+import { queryResolvers } from './graphql/resolvers/queryResolvers';
+import { mutationResolver } from './graphql/resolvers/mutationResolvers';
 
 const app = express();
 

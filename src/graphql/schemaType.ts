@@ -73,7 +73,6 @@ export type Tokens = {
 
 export type Query = {
    __typename?: 'Query';
-  test: Scalars['String'];
   me: MeResp;
   login: LoginUserResp;
   expandUrl: ShortUrlDetail;
@@ -93,9 +92,8 @@ export type QueryExpandUrlArgs = {
 export type Mutation = {
    __typename?: 'Mutation';
   createUser: CreateUserResp;
-  verifyUser: User;
   shortenUrl: ShortUrl;
-  editPrivilege: UserDetail;
+  editRole: UserDetail;
   deleteUser: Scalars['String'];
 };
 
@@ -107,20 +105,15 @@ export type MutationCreateUserArgs = {
 };
 
 
-export type MutationVerifyUserArgs = {
-  token?: Maybe<Scalars['String']>;
-};
-
-
 export type MutationShortenUrlArgs = {
   originalUrl: Scalars['String'];
   shareWith?: Maybe<Array<Scalars['ID']>>;
 };
 
 
-export type MutationEditPrivilegeArgs = {
+export type MutationEditRoleArgs = {
   userId: Scalars['ID'];
-  isAdmin: Scalars['Boolean'];
+  role: Role;
 };
 
 
@@ -294,7 +287,6 @@ export type TokensResolvers<ContextType = any, ParentType extends ResolversParen
 };
 
 export type QueryResolvers<ContextType = any, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = {
-  test?: Resolver<ResolversTypes['String'], ParentType, ContextType>,
   me?: Resolver<ResolversTypes['MeResp'], ParentType, ContextType>,
   login?: Resolver<ResolversTypes['LoginUserResp'], ParentType, ContextType, RequireFields<QueryLoginArgs, 'emailAddress' | 'password'>>,
   expandUrl?: Resolver<ResolversTypes['ShortUrlDetail'], ParentType, ContextType, RequireFields<QueryExpandUrlArgs, 'shortId'>>,
@@ -302,9 +294,8 @@ export type QueryResolvers<ContextType = any, ParentType extends ResolversParent
 
 export type MutationResolvers<ContextType = any, ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']> = {
   createUser?: Resolver<ResolversTypes['CreateUserResp'], ParentType, ContextType, RequireFields<MutationCreateUserArgs, 'name' | 'emailAddress' | 'password'>>,
-  verifyUser?: Resolver<ResolversTypes['User'], ParentType, ContextType, RequireFields<MutationVerifyUserArgs, never>>,
   shortenUrl?: Resolver<ResolversTypes['ShortUrl'], ParentType, ContextType, RequireFields<MutationShortenUrlArgs, 'originalUrl'>>,
-  editPrivilege?: Resolver<ResolversTypes['UserDetail'], ParentType, ContextType, RequireFields<MutationEditPrivilegeArgs, 'userId' | 'isAdmin'>>,
+  editRole?: Resolver<ResolversTypes['UserDetail'], ParentType, ContextType, RequireFields<MutationEditRoleArgs, 'userId' | 'role'>>,
   deleteUser?: Resolver<ResolversTypes['String'], ParentType, ContextType, RequireFields<MutationDeleteUserArgs, 'userId'>>,
 };
 
