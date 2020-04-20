@@ -11,14 +11,6 @@ export type Scalars = {
 };
 
 
-
-
-
-
-
-
-
-
 export enum Role {
   Admin = 'ADMIN',
   User = 'USER',
@@ -136,11 +128,6 @@ export type MutationDeleteUserArgs = {
   userId: Scalars['ID'];
 };
 
-export type AdditionalEntityFields = {
-  path?: Maybe<Scalars['String']>;
-  type?: Maybe<Scalars['String']>;
-};
-
 
 
 export type ResolverTypeWrapper<T> = Promise<T> | T;
@@ -228,7 +215,6 @@ export type ResolversTypes = {
   Tokens: ResolverTypeWrapper<Tokens>,
   Query: ResolverTypeWrapper<{}>,
   Mutation: ResolverTypeWrapper<{}>,
-  AdditionalEntityFields: AdditionalEntityFields,
 };
 
 /** Mapping between all available schema types and the resolvers parents */
@@ -247,47 +233,11 @@ export type ResolversParentTypes = {
   Tokens: Tokens,
   Query: {},
   Mutation: {},
-  AdditionalEntityFields: AdditionalEntityFields,
 };
 
 export type AuthDirectiveArgs = {   requires?: Maybe<Role>; };
 
 export type AuthDirectiveResolver<Result, Parent, ContextType = any, Args = AuthDirectiveArgs> = DirectiveResolverFn<Result, Parent, ContextType, Args>;
-
-export type UnionDirectiveArgs = {   discriminatorField?: Maybe<Scalars['String']>;
-  additionalFields?: Maybe<Array<Maybe<AdditionalEntityFields>>>; };
-
-export type UnionDirectiveResolver<Result, Parent, ContextType = any, Args = UnionDirectiveArgs> = DirectiveResolverFn<Result, Parent, ContextType, Args>;
-
-export type AbstractEntityDirectiveArgs = {   discriminatorField: Scalars['String'];
-  additionalFields?: Maybe<Array<Maybe<AdditionalEntityFields>>>; };
-
-export type AbstractEntityDirectiveResolver<Result, Parent, ContextType = any, Args = AbstractEntityDirectiveArgs> = DirectiveResolverFn<Result, Parent, ContextType, Args>;
-
-export type EntityDirectiveArgs = {   embedded?: Maybe<Scalars['Boolean']>;
-  additionalFields?: Maybe<Array<Maybe<AdditionalEntityFields>>>; };
-
-export type EntityDirectiveResolver<Result, Parent, ContextType = any, Args = EntityDirectiveArgs> = DirectiveResolverFn<Result, Parent, ContextType, Args>;
-
-export type ColumnDirectiveArgs = {   overrideType?: Maybe<Scalars['String']>; };
-
-export type ColumnDirectiveResolver<Result, Parent, ContextType = any, Args = ColumnDirectiveArgs> = DirectiveResolverFn<Result, Parent, ContextType, Args>;
-
-export type IdDirectiveArgs = {  };
-
-export type IdDirectiveResolver<Result, Parent, ContextType = any, Args = IdDirectiveArgs> = DirectiveResolverFn<Result, Parent, ContextType, Args>;
-
-export type LinkDirectiveArgs = {   overrideType?: Maybe<Scalars['String']>; };
-
-export type LinkDirectiveResolver<Result, Parent, ContextType = any, Args = LinkDirectiveArgs> = DirectiveResolverFn<Result, Parent, ContextType, Args>;
-
-export type EmbeddedDirectiveArgs = {  };
-
-export type EmbeddedDirectiveResolver<Result, Parent, ContextType = any, Args = EmbeddedDirectiveArgs> = DirectiveResolverFn<Result, Parent, ContextType, Args>;
-
-export type MapDirectiveArgs = {   path: Scalars['String']; };
-
-export type MapDirectiveResolver<Result, Parent, ContextType = any, Args = MapDirectiveArgs> = DirectiveResolverFn<Result, Parent, ContextType, Args>;
 
 export type UserDetailResolvers<ContextType = any, ParentType extends ResolversParentTypes['UserDetail'] = ResolversParentTypes['UserDetail']> = {
   _id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>,
@@ -379,14 +329,6 @@ export type Resolvers<ContextType = any> = {
 export type IResolvers<ContextType = any> = Resolvers<ContextType>;
 export type DirectiveResolvers<ContextType = any> = {
   auth?: AuthDirectiveResolver<any, any, ContextType>,
-  union?: UnionDirectiveResolver<any, any, ContextType>,
-  abstractEntity?: AbstractEntityDirectiveResolver<any, any, ContextType>,
-  entity?: EntityDirectiveResolver<any, any, ContextType>,
-  column?: ColumnDirectiveResolver<any, any, ContextType>,
-  id?: IdDirectiveResolver<any, any, ContextType>,
-  link?: LinkDirectiveResolver<any, any, ContextType>,
-  embedded?: EmbeddedDirectiveResolver<any, any, ContextType>,
-  map?: MapDirectiveResolver<any, any, ContextType>,
 };
 
 
@@ -395,4 +337,3 @@ export type DirectiveResolvers<ContextType = any> = {
 * Use "DirectiveResolvers" root object instead. If you wish to get "IDirectiveResolvers", add "typesPrefix: I" to your config.
 */
 export type IDirectiveResolvers<ContextType = any> = DirectiveResolvers<ContextType>;
-import { ObjectID } from 'mongodb';
