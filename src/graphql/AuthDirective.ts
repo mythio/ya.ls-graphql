@@ -46,6 +46,7 @@ export class AuthDirective extends SchemaDirectiveVisitor {
 				}
 
 				const requestData = args[2];
+				// console.log(requestData.req.cookies);
 				await ruleStrategy(requestData, requiredRole);
 
 				return resolve.apply(this, args);

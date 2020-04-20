@@ -24,6 +24,9 @@ export const queryResolvers: QueryResolvers = {
 		await KeystoreRepo.create(user._id, accessTokenKey, refreshTokenKey);
 		const tokens = await createTokens(user, accessTokenKey, refreshTokenKey);
 
+		context.res.cookie('refresh-token', tokens.refreshToken, { maxAge: 7 * 24 * 60 * 60 * 1000 });
+		context.res.cookie('access-token', tokens.accessToken, { maxAge: 30 * 24 * 60 * 60 * 1000 });
+
 		return {
 			user: _.pick(user, ['_id', 'name', 'emailAddress']),
 			tokens: tokens

@@ -54,14 +54,20 @@ export const createTokens = async (user: User, accessTokenKey: string, refreshTo
 }
 
 export const ruleStrategy = async (
-	req: {
-		authorization: string;
+	requestData: {
+		req: {
+			cookies: {
+				'refresh-token': string;
+				'access-token': string;
+			};
+		}
 		user: User;
 		keystore: Keystore
 	},
 	role: string
 ): Promise<void> => {
-	const accessToken = getAccessToken(req.authorization);
+	const accessToken = requestData.req.cookies['access-token'];
+	const refreshToken = requestData.req.cookies['refresh-token'];
 
 	if (!accessToken) {
 		throw new Error('');
@@ -71,18 +77,19 @@ export const ruleStrategy = async (
 		validateTokenData(payload);
 
 		const user = await UserRepo.findById(new ObjectID(payload.subject));
-		if (!user) throw new Error('');
+		if (!user) throw new Error('user not found');
+
+		console.log(1);
 
 		const userWithRole = user.roles.find((userRole) => userRole.code === role)
-		if (!userWithRole) throw new Error('');
+		if (!userWithRole) throw new Error('role not authorized');
 
 		const keystore = await KeystoreRepo.findforKey(user._id, payload.param);
-		if (!keystore) throw new Error('');
+		if (!keystore) throw new Error('key not found');
 
-		delete req.authorization;
-		req.user = user;
-		req.keystore = keystore;
+		requestData.user = user;
+		requestData.keystore = keystore;
 	} catch (err) {
-		throw new Error('');
+		throw new Error('bhai kya hua?');
 	}
 };
