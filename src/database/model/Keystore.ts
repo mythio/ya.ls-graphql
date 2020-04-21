@@ -20,17 +20,17 @@ const schema = new Schema(
 			type: Schema.Types.ObjectId,
 			required: true,
 			ref: "User",
-			index: true
+			// index: true
 		},
 		primaryKey: {
 			type: Schema.Types.String,
 			required: true,
-			index: true
+			// index: true
 		},
 		secondaryKey: {
 			type: Schema.Types.String,
 			required: true,
-			index: true
+			// index: true
 		},
 		createdAt: {
 			type: Date,
@@ -44,5 +44,8 @@ const schema = new Schema(
 		}
 	}
 );
+
+schema.index({ client: 1, primaryKey: 1 });
+schema.index({ client: 1, primaryKey: 1, secondaryKey: 1 });
 
 export const KeystoreModel = model<Keystore>(DOCUMENT_NAME, schema, COLLECTION_NAME);

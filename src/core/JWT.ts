@@ -2,6 +2,7 @@ import { readFile } from 'fs';
 import { promisify } from "util";
 import { sign, verify } from "jsonwebtoken";
 import logger from "./Logger";
+import { BadTokenError, TokenExpiredError, InternalError } from './ApiError';
 
 export default class JWT {
 	private static readPublicKey(): Promise<string> {
@@ -15,7 +16,7 @@ export default class JWT {
 	public static async encode(payload: JwtPayload): Promise<string> {
 		const cert = await this.readPrivateKey();
 		if (!cert)
-			throw new Error('Token generation failed');
+			throw new InternalError('Token generation failed');
 		// @ts-ignore
 		return promisify(sign)({ ...payload }, cert, { algorithm: 'RS256' });
 	}
@@ -26,9 +27,8 @@ export default class JWT {
 			// @ts-ignore
 			return await promisify(verify)(token, cert) as JwtPayload;
 		} catch (err) {
-			logger.debug(err);
-			if (err && err.name === 'TokenExpiredError') throw new Error('token expired');
-			throw new Error('bad token');
+			if (err && err.name === 'TokenExpiredError') throw new TokenExpiredError();
+			throw new BadTokenError();
 		}
 	}
 
@@ -39,25 +39,25 @@ export default class JWT {
 			return await promisify(verify)(token, cert, { ignoreExpiration: true }) as JwtPayload;
 		} catch (e) {
 			logger.debug(e);
-			throw new Error('bad token');
+			throw new BadTokenError();
 		}
 	}
 }
 
 export class JwtPayload {
-	audience: string;
-	subject: string;
-	issuer: string;
-	inAt: number;
-	expiry: number;
-	param: string;
+	aud: string;
+	sub: string;
+	iss: string;
+	iat: number;
+	exp: number;
+	prm: string;
 
 	constructor(issuer: string, audience: string, subject: string, param: string, validity: number) {
-		this.issuer = issuer;
-		this.audience = audience;
-		this.subject = subject;
-		this.inAt = Math.floor(Date.now() / 1000);
-		this.expiry = this.inAt + (validity * 24 * 60 * 60);
-		this.param = param;
+		this.iss = issuer;
+		this.aud = audience;
+		this.sub = subject;
+		this.iat = Math.floor(Date.now() / 1000);
+		this.exp = this.iat + (validity * 24 * 60 * 60);
+		this.prm = param;
 	}
 }
