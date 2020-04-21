@@ -1,5 +1,6 @@
 import { readFileSpy } from './mock';
 import JWT, { JwtPayload } from '../../../src/core/JWT';
+import { BadTokenError } from '../../../src/core/ApiError';
 
 describe(`JWT class tests`, () => {
 
@@ -17,7 +18,7 @@ describe(`JWT class tests`, () => {
 		try {
 			await JWT.decode('abc');
 		} catch (err) {
-			expect(err).toBeInstanceOf(Error);
+			expect(err).toBeInstanceOf(BadTokenError);
 		}
 		expect(readFileSpy).toBeCalledTimes(1);
 	});

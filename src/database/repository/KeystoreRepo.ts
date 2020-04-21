@@ -5,6 +5,16 @@ import { Types } from 'mongoose';
 
 export default class KeystoreRepo {
 
+	public static find(client: User, primaryKey: string, secondaryKey: string): Promise<Keystore> {
+		return KeystoreModel.findOne({
+			client: client,
+			primaryKey: primaryKey,
+			secondaryKey: secondaryKey
+		})
+			.lean<Keystore>()
+			.exec();
+	}
+
 	public static findforKey(client: User, key: string): Promise<Keystore> {
 		return KeystoreModel.findOne({ client: client, primaryKey: key })
 			.lean<Keystore>()
@@ -13,16 +23,6 @@ export default class KeystoreRepo {
 
 	public static remove(id: Types.ObjectId): Promise<Keystore> {
 		return KeystoreModel.findByIdAndRemove(id)
-			.lean<Keystore>()
-			.exec();
-	}
-
-	public static find(client: User, primaryKey: string, secondaryKey: string): Promise<Keystore> {
-		return KeystoreModel.findOne({
-			client: client,
-			primaryKey: primaryKey,
-			secondaryKey: secondaryKey
-		})
 			.lean<Keystore>()
 			.exec();
 	}

@@ -2,17 +2,18 @@ import _ from 'lodash';
 import crypto from 'crypto';
 import bcrypt from 'bcrypt';
 
+import { MutationResolvers } from '../schemaType';
 import User from '../../database/model/User';
 import { RoleCode } from '../../database/model/Role';
-import { createTokens } from '../../auth/authUtils';
 import UserRepo from '../../database/repository/UserRepo';
-import { MutationResolvers } from '../schemaType';
+import { createTokens } from '../../auth/authUtils';
+import { BadRequestError } from '../../core/ApiError';
 
 export const mutationResolver: MutationResolvers = {
-  createUser: async (root, args, context) => {
+  createUser: async (_root, args, _context) => {
     const user = await UserRepo.findByEmail(args.emailAddress);
 
-    if (user) throw new Error('BadRequestError: User already registered');
+    if (user) throw new BadRequestError('BadRequestError: User already registered');
 
     const accessTokenKey = crypto.randomBytes(64).toString('hex');
     const refreshTokenKey = crypto.randomBytes(64).toString('hex');

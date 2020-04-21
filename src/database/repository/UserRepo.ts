@@ -1,9 +1,10 @@
 import { Types } from "mongoose";
 
-import User, { UserModel } from '../model/User';
-import Keystore from "../model/Keystore";
 import KeystoreRepo from './KeystoreRepo';
+import Keystore from "../model/Keystore";
+import User, { UserModel } from '../model/User';
 import Role, { RoleModel } from '../model/Role';
+import { InternalError } from "../../core/ApiError";
 
 export default class UserRepo {
 
@@ -31,7 +32,7 @@ export default class UserRepo {
 		const now = new Date();
 
 		const role = await RoleModel.findOne({ code: roleCode }).lean<Role>().exec();
-		if (!role) throw new Error('Internal Error: Role must be defined');
+		if (!role) throw new InternalError('Role must be defined');
 
 		user.roles = [role._id];
 		user.createdAt = user.updatedAt = now;

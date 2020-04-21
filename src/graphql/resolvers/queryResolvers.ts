@@ -2,21 +2,22 @@ import _ from 'lodash';
 import crypto from 'crypto';
 import bcrypt from 'bcrypt';
 
+import { QueryResolvers } from '../schemaType';
 import Role from '../../database/model/Role';
-import { createTokens } from '../../auth/authUtils';
 import UserRepo from '../../database/repository/UserRepo';
 import KeystoreRepo from '../../database/repository/KeystoreRepo';
-import { QueryResolvers } from '../schemaType';
+import { createTokens } from '../../auth/authUtils';
+import { BadRequestError, AuthFailureError } from '../../core/ApiError';
 
 export const queryResolvers: QueryResolvers = {
-	login: async (root, args, context) => {
+	login: async (_root, args, context) => {
 		const user = await UserRepo.findByEmail(args.emailAddress);
 
-		if (!user) throw new Error('BadRequestError: User not registered');
+		if (!user) throw new BadRequestError('User not registered');
 
 		const match = await bcrypt.compare(args.password, user.password);
 
-		if (!match) throw new Error('AuthFailureError: Authentication failure');
+		if (!match) throw new AuthFailureError();
 
 		const accessTokenKey = crypto.randomBytes(64).toString('hex');
 		const refreshTokenKey = crypto.randomBytes(64).toString('hex');
@@ -32,7 +33,7 @@ export const queryResolvers: QueryResolvers = {
 			tokens: tokens
 		}
 	},
-	me: async (root, args, context) => {
+	me: async (_root, _args, context) => {
 		const user = context.user;
 		let roles = user.roles;
 		roles = roles.map((role: Role): string => role.code);
