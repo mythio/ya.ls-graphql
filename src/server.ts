@@ -1,7 +1,7 @@
 /// <reference path="./types/graphql.d.ts" />
 import express from 'express';
 import { ApolloServer } from 'apollo-server-express';
-import cookieParser from 'cookie-parser'
+import cookieParser from 'cookie-parser';
 
 import './database';
 import { apolloConfig } from './core/config';
@@ -14,12 +14,12 @@ const app = express();
 app.use(cookieParser());
 
 const server = new ApolloServer({
-	typeDefs,
-	resolvers: { Query: queryResolvers, Mutation: mutationResolver },
-	introspection: apolloConfig.introspection,
-	playground: apolloConfig.playground,
-	schemaDirectives: { auth: AuthDirective },
-	context: ({ req, res }) => ({ req, res })
+  typeDefs,
+  resolvers: { Query: queryResolvers, Mutation: mutationResolver },
+  introspection: apolloConfig.introspection,
+  playground: apolloConfig.playground,
+  schemaDirectives: { auth: AuthDirective },
+  context: ({ req, res }) => ({ req, res })
 });
 
 server.applyMiddleware({ app });

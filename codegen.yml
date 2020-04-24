@@ -5,7 +5,7 @@ config:
   typesPrefix: I
 documents: null
 generates:
-  src/graphql/schemaType.ts:
+  src/types/schemaType.ts:
     plugins:
       - "typescript"
       - "typescript-resolvers"
