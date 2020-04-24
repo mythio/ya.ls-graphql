@@ -11,113 +11,104 @@ export type Scalars = {
 };
 
 
-export enum Role {
+export enum IRole {
   Admin = 'ADMIN',
   User = 'USER',
+  UserUnauth = 'USER_UNAUTH',
   Reviewer = 'REVIEWER'
 }
 
-export type UserDetail = {
-   __typename?: 'UserDetail';
+export type IUserDetail = {
   _id: Scalars['ID'];
   name: Scalars['String'];
   emailAddress: Scalars['String'];
-  shortIds?: Maybe<Array<ShortUrl>>;
-  roles?: Maybe<Array<Scalars['String']>>;
+  shortIds?: Maybe<Array<IShortUrl>>;
+  roles?: Maybe<Array<IRole>>;
 };
 
-export type User = {
-   __typename?: 'User';
+export type IUser = {
   _id: Scalars['ID'];
   name: Scalars['String'];
   emailAddress: Scalars['String'];
 };
 
-export type ShortUrlDetail = {
-   __typename?: 'ShortUrlDetail';
-  _id: Scalars['String'];
+export type IShortUrlDetail = {
+  _id: Scalars['ID'];
   originalUrl: Scalars['String'];
-  shareWith?: Maybe<Array<User>>;
-  createdBy?: Maybe<User>;
+  shareWith?: Maybe<Array<IUser>>;
+  createdBy?: Maybe<IUser>;
 };
 
-export type ShortUrl = {
-   __typename?: 'ShortUrl';
-  shortId: Scalars['String'];
+export type IShortUrl = {
+  _id: Scalars['ID'];
   originalUrl: Scalars['String'];
-  shareWith?: Maybe<Array<Scalars['ID']>>;
+  shareWith?: Maybe<Array<IUser>>;
 };
 
-export type CreateUserResp = {
-   __typename?: 'CreateUserResp';
-  user: User;
-  tokens: Tokens;
+export type ICreateUserResp = {
+  user: IUser;
+  tokens: ITokens;
 };
 
-export type LoginUserResp = {
-   __typename?: 'LoginUserResp';
-  user: User;
-  tokens: Tokens;
+export type ILoginUserResp = {
+  user: IUser;
+  tokens: ITokens;
 };
 
-export type MeResp = {
-   __typename?: 'MeResp';
-  user: UserDetail;
+export type IMeResp = {
+  user: IUserDetail;
 };
 
-export type Tokens = {
-   __typename?: 'Tokens';
+export type ITokens = {
   accessToken: Scalars['String'];
   refreshToken: Scalars['String'];
 };
 
-export type Query = {
-   __typename?: 'Query';
-  me: MeResp;
-  login: LoginUserResp;
-  expandUrl: ShortUrlDetail;
+export type IQuery = {
+  me: IMeResp;
+  login: ILoginUserResp;
+  expandUrl: IShortUrlDetail;
 };
 
 
-export type QueryLoginArgs = {
+export type IQueryLoginArgs = {
   emailAddress: Scalars['String'];
   password: Scalars['String'];
 };
 
 
-export type QueryExpandUrlArgs = {
-  shortId: Scalars['String'];
+export type IQueryExpandUrlArgs = {
+  _id: Scalars['String'];
 };
 
-export type Mutation = {
-   __typename?: 'Mutation';
-  createUser: CreateUserResp;
-  shortenUrl: ShortUrl;
-  editRole: UserDetail;
+export type IMutation = {
+  createUser: ICreateUserResp;
+  shortenUrl: IShortUrl;
+  editRole: IUserDetail;
   deleteUser: Scalars['String'];
 };
 
 
-export type MutationCreateUserArgs = {
+export type IMutationCreateUserArgs = {
   name: Scalars['String'];
   emailAddress: Scalars['String'];
   password: Scalars['String'];
 };
 
 
-export type MutationShortenUrlArgs = {
+export type IMutationShortenUrlArgs = {
   originalUrl: Scalars['String'];
-  shareWith?: Maybe<Array<Scalars['ID']>>;
+  shareWith?: Maybe<Array<Scalars['String']>>;
 };
 
 
-export type MutationEditRoleArgs = {
+export type IMutationEditRoleArgs = {
   userId: Scalars['ID'];
-  role: Role;
+  role: IRole;
 };
 
 
-export type MutationDeleteUserArgs = {
+export type IMutationDeleteUserArgs = {
   userId: Scalars['ID'];
 };
 
@@ -193,138 +184,127 @@ export type DirectiveResolverFn<TResult = {}, TParent = {}, TContext = {}, TArgs
 ) => TResult | Promise<TResult>;
 
 /** Mapping between all available schema types and the resolvers types */
-export type ResolversTypes = {
+export type IResolversTypes = {
   String: ResolverTypeWrapper<Scalars['String']>,
   Boolean: ResolverTypeWrapper<Scalars['Boolean']>,
-  Role: Role,
-  UserDetail: ResolverTypeWrapper<UserDetail>,
+  Role: IRole,
+  UserDetail: ResolverTypeWrapper<IUserDetail>,
   ID: ResolverTypeWrapper<Scalars['ID']>,
-  User: ResolverTypeWrapper<User>,
-  ShortUrlDetail: ResolverTypeWrapper<ShortUrlDetail>,
-  ShortUrl: ResolverTypeWrapper<ShortUrl>,
-  CreateUserResp: ResolverTypeWrapper<CreateUserResp>,
-  LoginUserResp: ResolverTypeWrapper<LoginUserResp>,
-  MeResp: ResolverTypeWrapper<MeResp>,
-  Tokens: ResolverTypeWrapper<Tokens>,
+  User: ResolverTypeWrapper<IUser>,
+  ShortUrlDetail: ResolverTypeWrapper<IShortUrlDetail>,
+  ShortUrl: ResolverTypeWrapper<IShortUrl>,
+  CreateUserResp: ResolverTypeWrapper<ICreateUserResp>,
+  LoginUserResp: ResolverTypeWrapper<ILoginUserResp>,
+  MeResp: ResolverTypeWrapper<IMeResp>,
+  Tokens: ResolverTypeWrapper<ITokens>,
   Query: ResolverTypeWrapper<{}>,
   Mutation: ResolverTypeWrapper<{}>,
 };
 
 /** Mapping between all available schema types and the resolvers parents */
-export type ResolversParentTypes = {
+export type IResolversParentTypes = {
   String: Scalars['String'],
   Boolean: Scalars['Boolean'],
-  Role: Role,
-  UserDetail: UserDetail,
+  Role: IRole,
+  UserDetail: IUserDetail,
   ID: Scalars['ID'],
-  User: User,
-  ShortUrlDetail: ShortUrlDetail,
-  ShortUrl: ShortUrl,
-  CreateUserResp: CreateUserResp,
-  LoginUserResp: LoginUserResp,
-  MeResp: MeResp,
-  Tokens: Tokens,
+  User: IUser,
+  ShortUrlDetail: IShortUrlDetail,
+  ShortUrl: IShortUrl,
+  CreateUserResp: ICreateUserResp,
+  LoginUserResp: ILoginUserResp,
+  MeResp: IMeResp,
+  Tokens: ITokens,
   Query: {},
   Mutation: {},
 };
 
-export type AuthDirectiveArgs = {   requires?: Maybe<Role>; };
+export type IAuthDirectiveArgs = {   requires?: Maybe<IRole>; };
 
-export type AuthDirectiveResolver<Result, Parent, ContextType = any, Args = AuthDirectiveArgs> = DirectiveResolverFn<Result, Parent, ContextType, Args>;
+export type IAuthDirectiveResolver<Result, Parent, ContextType = any, Args = IAuthDirectiveArgs> = DirectiveResolverFn<Result, Parent, ContextType, Args>;
 
-export type UserDetailResolvers<ContextType = any, ParentType extends ResolversParentTypes['UserDetail'] = ResolversParentTypes['UserDetail']> = {
-  _id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>,
-  name?: Resolver<ResolversTypes['String'], ParentType, ContextType>,
-  emailAddress?: Resolver<ResolversTypes['String'], ParentType, ContextType>,
-  shortIds?: Resolver<Maybe<Array<ResolversTypes['ShortUrl']>>, ParentType, ContextType>,
-  roles?: Resolver<Maybe<Array<ResolversTypes['String']>>, ParentType, ContextType>,
+export type IUserDetailResolvers<ContextType = any, ParentType extends IResolversParentTypes['UserDetail'] = IResolversParentTypes['UserDetail']> = {
+  _id?: Resolver<IResolversTypes['ID'], ParentType, ContextType>,
+  name?: Resolver<IResolversTypes['String'], ParentType, ContextType>,
+  emailAddress?: Resolver<IResolversTypes['String'], ParentType, ContextType>,
+  shortIds?: Resolver<Maybe<Array<IResolversTypes['ShortUrl']>>, ParentType, ContextType>,
+  roles?: Resolver<Maybe<Array<IResolversTypes['Role']>>, ParentType, ContextType>,
   __isTypeOf?: isTypeOfResolverFn<ParentType>,
 };
 
-export type UserResolvers<ContextType = any, ParentType extends ResolversParentTypes['User'] = ResolversParentTypes['User']> = {
-  _id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>,
-  name?: Resolver<ResolversTypes['String'], ParentType, ContextType>,
-  emailAddress?: Resolver<ResolversTypes['String'], ParentType, ContextType>,
+export type IUserResolvers<ContextType = any, ParentType extends IResolversParentTypes['User'] = IResolversParentTypes['User']> = {
+  _id?: Resolver<IResolversTypes['ID'], ParentType, ContextType>,
+  name?: Resolver<IResolversTypes['String'], ParentType, ContextType>,
+  emailAddress?: Resolver<IResolversTypes['String'], ParentType, ContextType>,
   __isTypeOf?: isTypeOfResolverFn<ParentType>,
 };
 
-export type ShortUrlDetailResolvers<ContextType = any, ParentType extends ResolversParentTypes['ShortUrlDetail'] = ResolversParentTypes['ShortUrlDetail']> = {
-  _id?: Resolver<ResolversTypes['String'], ParentType, ContextType>,
-  originalUrl?: Resolver<ResolversTypes['String'], ParentType, ContextType>,
-  shareWith?: Resolver<Maybe<Array<ResolversTypes['User']>>, ParentType, ContextType>,
-  createdBy?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType>,
+export type IShortUrlDetailResolvers<ContextType = any, ParentType extends IResolversParentTypes['ShortUrlDetail'] = IResolversParentTypes['ShortUrlDetail']> = {
+  _id?: Resolver<IResolversTypes['ID'], ParentType, ContextType>,
+  originalUrl?: Resolver<IResolversTypes['String'], ParentType, ContextType>,
+  shareWith?: Resolver<Maybe<Array<IResolversTypes['User']>>, ParentType, ContextType>,
+  createdBy?: Resolver<Maybe<IResolversTypes['User']>, ParentType, ContextType>,
   __isTypeOf?: isTypeOfResolverFn<ParentType>,
 };
 
-export type ShortUrlResolvers<ContextType = any, ParentType extends ResolversParentTypes['ShortUrl'] = ResolversParentTypes['ShortUrl']> = {
-  shortId?: Resolver<ResolversTypes['String'], ParentType, ContextType>,
-  originalUrl?: Resolver<ResolversTypes['String'], ParentType, ContextType>,
-  shareWith?: Resolver<Maybe<Array<ResolversTypes['ID']>>, ParentType, ContextType>,
+export type IShortUrlResolvers<ContextType = any, ParentType extends IResolversParentTypes['ShortUrl'] = IResolversParentTypes['ShortUrl']> = {
+  _id?: Resolver<IResolversTypes['ID'], ParentType, ContextType>,
+  originalUrl?: Resolver<IResolversTypes['String'], ParentType, ContextType>,
+  shareWith?: Resolver<Maybe<Array<IResolversTypes['User']>>, ParentType, ContextType>,
   __isTypeOf?: isTypeOfResolverFn<ParentType>,
 };
 
-export type CreateUserRespResolvers<ContextType = any, ParentType extends ResolversParentTypes['CreateUserResp'] = ResolversParentTypes['CreateUserResp']> = {
-  user?: Resolver<ResolversTypes['User'], ParentType, ContextType>,
-  tokens?: Resolver<ResolversTypes['Tokens'], ParentType, ContextType>,
+export type ICreateUserRespResolvers<ContextType = any, ParentType extends IResolversParentTypes['CreateUserResp'] = IResolversParentTypes['CreateUserResp']> = {
+  user?: Resolver<IResolversTypes['User'], ParentType, ContextType>,
+  tokens?: Resolver<IResolversTypes['Tokens'], ParentType, ContextType>,
   __isTypeOf?: isTypeOfResolverFn<ParentType>,
 };
 
-export type LoginUserRespResolvers<ContextType = any, ParentType extends ResolversParentTypes['LoginUserResp'] = ResolversParentTypes['LoginUserResp']> = {
-  user?: Resolver<ResolversTypes['User'], ParentType, ContextType>,
-  tokens?: Resolver<ResolversTypes['Tokens'], ParentType, ContextType>,
+export type ILoginUserRespResolvers<ContextType = any, ParentType extends IResolversParentTypes['LoginUserResp'] = IResolversParentTypes['LoginUserResp']> = {
+  user?: Resolver<IResolversTypes['User'], ParentType, ContextType>,
+  tokens?: Resolver<IResolversTypes['Tokens'], ParentType, ContextType>,
   __isTypeOf?: isTypeOfResolverFn<ParentType>,
 };
 
-export type MeRespResolvers<ContextType = any, ParentType extends ResolversParentTypes['MeResp'] = ResolversParentTypes['MeResp']> = {
-  user?: Resolver<ResolversTypes['UserDetail'], ParentType, ContextType>,
+export type IMeRespResolvers<ContextType = any, ParentType extends IResolversParentTypes['MeResp'] = IResolversParentTypes['MeResp']> = {
+  user?: Resolver<IResolversTypes['UserDetail'], ParentType, ContextType>,
   __isTypeOf?: isTypeOfResolverFn<ParentType>,
 };
 
-export type TokensResolvers<ContextType = any, ParentType extends ResolversParentTypes['Tokens'] = ResolversParentTypes['Tokens']> = {
-  accessToken?: Resolver<ResolversTypes['String'], ParentType, ContextType>,
-  refreshToken?: Resolver<ResolversTypes['String'], ParentType, ContextType>,
+export type ITokensResolvers<ContextType = any, ParentType extends IResolversParentTypes['Tokens'] = IResolversParentTypes['Tokens']> = {
+  accessToken?: Resolver<IResolversTypes['String'], ParentType, ContextType>,
+  refreshToken?: Resolver<IResolversTypes['String'], ParentType, ContextType>,
   __isTypeOf?: isTypeOfResolverFn<ParentType>,
 };
 
-export type QueryResolvers<ContextType = any, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = {
-  me?: Resolver<ResolversTypes['MeResp'], ParentType, ContextType>,
-  login?: Resolver<ResolversTypes['LoginUserResp'], ParentType, ContextType, RequireFields<QueryLoginArgs, 'emailAddress' | 'password'>>,
-  expandUrl?: Resolver<ResolversTypes['ShortUrlDetail'], ParentType, ContextType, RequireFields<QueryExpandUrlArgs, 'shortId'>>,
+export type IQueryResolvers<ContextType = any, ParentType extends IResolversParentTypes['Query'] = IResolversParentTypes['Query']> = {
+  me?: Resolver<IResolversTypes['MeResp'], ParentType, ContextType>,
+  login?: Resolver<IResolversTypes['LoginUserResp'], ParentType, ContextType, RequireFields<IQueryLoginArgs, 'emailAddress' | 'password'>>,
+  expandUrl?: Resolver<IResolversTypes['ShortUrlDetail'], ParentType, ContextType, RequireFields<IQueryExpandUrlArgs, '_id'>>,
 };
 
-export type MutationResolvers<ContextType = any, ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']> = {
-  createUser?: Resolver<ResolversTypes['CreateUserResp'], ParentType, ContextType, RequireFields<MutationCreateUserArgs, 'name' | 'emailAddress' | 'password'>>,
-  shortenUrl?: Resolver<ResolversTypes['ShortUrl'], ParentType, ContextType, RequireFields<MutationShortenUrlArgs, 'originalUrl'>>,
-  editRole?: Resolver<ResolversTypes['UserDetail'], ParentType, ContextType, RequireFields<MutationEditRoleArgs, 'userId' | 'role'>>,
-  deleteUser?: Resolver<ResolversTypes['String'], ParentType, ContextType, RequireFields<MutationDeleteUserArgs, 'userId'>>,
+export type IMutationResolvers<ContextType = any, ParentType extends IResolversParentTypes['Mutation'] = IResolversParentTypes['Mutation']> = {
+  createUser?: Resolver<IResolversTypes['CreateUserResp'], ParentType, ContextType, RequireFields<IMutationCreateUserArgs, 'name' | 'emailAddress' | 'password'>>,
+  shortenUrl?: Resolver<IResolversTypes['ShortUrl'], ParentType, ContextType, RequireFields<IMutationShortenUrlArgs, 'originalUrl'>>,
+  editRole?: Resolver<IResolversTypes['UserDetail'], ParentType, ContextType, RequireFields<IMutationEditRoleArgs, 'userId' | 'role'>>,
+  deleteUser?: Resolver<IResolversTypes['String'], ParentType, ContextType, RequireFields<IMutationDeleteUserArgs, 'userId'>>,
 };
 
-export type Resolvers<ContextType = any> = {
-  UserDetail?: UserDetailResolvers<ContextType>,
-  User?: UserResolvers<ContextType>,
-  ShortUrlDetail?: ShortUrlDetailResolvers<ContextType>,
-  ShortUrl?: ShortUrlResolvers<ContextType>,
-  CreateUserResp?: CreateUserRespResolvers<ContextType>,
-  LoginUserResp?: LoginUserRespResolvers<ContextType>,
-  MeResp?: MeRespResolvers<ContextType>,
-  Tokens?: TokensResolvers<ContextType>,
-  Query?: QueryResolvers<ContextType>,
-  Mutation?: MutationResolvers<ContextType>,
-};
-
-
-/**
- * @deprecated
- * Use "Resolvers" root object instead. If you wish to get "IResolvers", add "typesPrefix: I" to your config.
-*/
-export type IResolvers<ContextType = any> = Resolvers<ContextType>;
-export type DirectiveResolvers<ContextType = any> = {
-  auth?: AuthDirectiveResolver<any, any, ContextType>,
+export type IResolvers<ContextType = any> = {
+  UserDetail?: IUserDetailResolvers<ContextType>,
+  User?: IUserResolvers<ContextType>,
+  ShortUrlDetail?: IShortUrlDetailResolvers<ContextType>,
+  ShortUrl?: IShortUrlResolvers<ContextType>,
+  CreateUserResp?: ICreateUserRespResolvers<ContextType>,
+  LoginUserResp?: ILoginUserRespResolvers<ContextType>,
+  MeResp?: IMeRespResolvers<ContextType>,
+  Tokens?: ITokensResolvers<ContextType>,
+  Query?: IQueryResolvers<ContextType>,
+  Mutation?: IMutationResolvers<ContextType>,
 };
 
 
-/**
-* @deprecated
-* Use "DirectiveResolvers" root object instead. If you wish to get "IDirectiveResolvers", add "typesPrefix: I" to your config.
-*/
-export type IDirectiveResolvers<ContextType = any> = DirectiveResolvers<ContextType>;
+export type IDirectiveResolvers<ContextType = any> = {
+  auth?: IAuthDirectiveResolver<any, any, ContextType>,
+};
+

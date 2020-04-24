@@ -1,6 +1,6 @@
 import { SchemaDirectiveVisitor } from "apollo-server-express";
 import { defaultFieldResolver } from "graphql";
-import { ruleStrategy } from "../auth/authUtils";
+import { ruleStrategy } from '../auth/authUtils';
 
 /** Class definition for @auth directive */
 export class AuthDirective extends SchemaDirectiveVisitor {
@@ -46,7 +46,13 @@ export class AuthDirective extends SchemaDirectiveVisitor {
 				}
 
 				const requestData = args[2];
-				await ruleStrategy(requestData, requiredRole);
+				try {
+					await ruleStrategy(requestData, requiredRole);
+				} catch (err) {
+					if (requiredRole !== 'REVIEWER') {
+						throw err;
+					}
+				}
 
 				return resolve.apply(this, args);
 			}.bind(this);

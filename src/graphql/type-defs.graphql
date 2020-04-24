@@ -3,6 +3,7 @@ directive @auth(requires: Role = REVIEWER) on FIELD_DEFINITION | OBJECT
 enum Role {
 	ADMIN
 	USER
+	USER_UNAUTH
 	REVIEWER
 }
 
@@ -11,7 +12,7 @@ type UserDetail {
 	name: String!
 	emailAddress: String!
 	shortIds: [ShortUrl!]
-	roles: [String!]
+	roles: [Role!]
 }
 
 type User {
@@ -21,16 +22,16 @@ type User {
 }
 
 type ShortUrlDetail {
-	_id: String!
+	_id: ID!
 	originalUrl: String!
 	shareWith: [User!]
 	createdBy: User
 }
 
 type ShortUrl {
-	shortId: String!
+	_id: ID!
 	originalUrl: String!
-	shareWith: [ID!]
+	shareWith: [User!]
 }
 
 type CreateUserResp {
@@ -54,7 +55,7 @@ type Tokens {
 
 type Query {
 	
-	me: MeResp! @auth
+	me: MeResp! @auth(requires: USER_UNAUTH)
 
 	login(
 		emailAddress: String!
@@ -62,7 +63,7 @@ type Query {
 	): LoginUserResp!
 
 	expandUrl(
-		shortId: String!
+		_id: String!
 	): ShortUrlDetail! @auth
 }
 
@@ -76,7 +77,7 @@ type Mutation {
 
 	shortenUrl(
 		originalUrl: String!
-		shareWith: [ID!]
+		shareWith: [String!]
 	): ShortUrl! @auth
 
 	editRole(
