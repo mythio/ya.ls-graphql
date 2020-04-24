@@ -5,7 +5,7 @@
 	"main": "index.js",
 	"scripts": {
 		"build": "rm -rf dist && webpack --config webpack.$NODE_ENV.js",
-		"start:dev": "node --require dotenv/config dist/server.js",
+		"start:dev": "node -r dotenv/config  -r source-map-support/register dist/server.js",
 		"start": "node dist/server.js",
 		"codegen": "graphql-codegen --config codegen.yml",
 		"test-ci": "jest --forceExit --detectOpenHandles --coverage --verbose",
@@ -39,6 +39,7 @@
 		"clean-webpack-plugin": "^3.0.0",
 		"dotenv": "^8.2.0",
 		"jest": "^25.3.0",
+		"source-map-support": "^0.5.19",
 		"ts-jest": "^25.4.0",
 		"ts-loader": "^7.0.0",
 		"ts-node": "^8.8.2",

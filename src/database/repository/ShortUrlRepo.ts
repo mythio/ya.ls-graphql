@@ -22,12 +22,12 @@ export default class ShortUrlRepo {
 
   public static async create(
     originalUrl: string,
-    user?: User,
-    shareWith?: Array<Types.ObjectId>
+    userId?: Types.ObjectId,
+    shareWith?: Types.ObjectId[]
   ): Promise<ShortUrl> {
     const createdShortUrl = await ShortUrlModel.create({
       originalUrl: originalUrl,
-      createdBy: user._id,
+      createdBy: userId,
       shareWith: shareWith
     });
     await createdShortUrl.populate({ path: 'shareWith' }).execPopulate();
@@ -38,12 +38,12 @@ export default class ShortUrlRepo {
   public static async update(
     _id: string,
     user?: User,
-    shareWith?: Array<string>
+    shareWith?: string[]
   ): Promise<ShortUrl> {
     let shortUrl = await ShortUrlModel.findById(_id);
     let sharedWith = shortUrl.shareWith;
 
-    let shareWithId: Array<Types.ObjectId>;
+    let shareWithId: Types.ObjectId[];
     if (shareWith)
       shareWithId = await Promise.all(shareWith.map(async emailAddress =>
         new Types.ObjectId((await UserRepo.findByEmail(emailAddress))._id))
