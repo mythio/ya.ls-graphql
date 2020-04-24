@@ -1,5 +1,8 @@
 overwrite: true
 schema: "./src/graphql/type-defs.graphql"
+config:
+  skipTypename: true
+  typesPrefix: I
 documents: null
 generates:
   src/graphql/schemaType.ts:

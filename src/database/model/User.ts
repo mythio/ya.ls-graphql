@@ -1,4 +1,4 @@
-import { Schema, model, Document } from "mongoose";
+import { Schema, model, Document, Types } from 'mongoose';
 
 import Role from "./Role";
 import ShortUrl from './ShortUrl';
@@ -10,8 +10,8 @@ export default interface User extends Document {
 	name: string;
 	emailAddress: string;
 	password: string;
-	roles: Role[];
-	shortIds: ShortUrl[];
+	roles: Role[] | Types.ObjectId[];
+	shortIds: ShortUrl[] | Types.ObjectId[];
 	createdAt: Date;
 	updatedAt: Date;
 };

@@ -2,14 +2,14 @@ import _ from 'lodash';
 import crypto from 'crypto';
 import bcrypt from 'bcrypt';
 
-import { QueryResolvers } from '../schemaType';
+import { IQueryResolvers } from '../schemaType';
+import { createTokens } from '../../auth/authUtils';
 import Role from '../../database/model/Role';
 import UserRepo from '../../database/repository/UserRepo';
 import KeystoreRepo from '../../database/repository/KeystoreRepo';
-import { createTokens } from '../../auth/authUtils';
 import { BadRequestError, AuthFailureError } from '../../core/ApiError';
 
-export const queryResolvers: QueryResolvers = {
+export const queryResolvers: IQueryResolvers = {
 	login: async (_root, args, context) => {
 		const user = await UserRepo.findByEmail(args.emailAddress);
 

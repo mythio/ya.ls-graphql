@@ -4,9 +4,10 @@ export const DOCUMENT_NAME = 'Role';
 export const COLLECTION_NAME = 'roles';
 
 export const enum RoleCode {
-	REVIEWER = 'REVIEWER',
-	USER = 'USER',
-	ADMIN = 'ADMIN',
+	ADMIN = "ADMIN",
+	USER = "USER",
+	USER_UNAUTH = "USER_UNAUTH",
+	REVIEWER = "REVIEWER",
 }
 
 export default interface Role extends Document {
@@ -19,14 +20,17 @@ const schema = new Schema(
 			type: Schema.Types.String,
 			required: true,
 			enum: [
-				RoleCode.REVIEWER,
-				RoleCode.USER,
 				RoleCode.ADMIN,
+				RoleCode.USER,
+				RoleCode.USER_UNAUTH,
+				RoleCode.REVIEWER,
 			]
+		},
+		createdAt: {
+			type: Date,
+			default: Date.now
 		}
-	},
-	{
-		versionKey: false
-	});
+	}
+);
 
 export const RoleModel = model<Role>(DOCUMENT_NAME, schema, COLLECTION_NAME);

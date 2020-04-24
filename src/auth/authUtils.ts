@@ -101,7 +101,6 @@ export const ruleStrategy = async (
 	const givenRoles = (user.roles as Role[]).map(role => role.code);
 
 	const userWithRole = _.intersection(givenRoles, allowedRoles[role]);
-	console.log(userWithRole);
 	if (!userWithRole) throw new AuthFailureError('Role not authorized');
 
 	if (refreshTokenPayload) {

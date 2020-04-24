@@ -2,18 +2,20 @@ import _ from 'lodash';
 import crypto from 'crypto';
 import bcrypt from 'bcrypt';
 
-import { MutationResolvers } from '../schemaType';
+import { IMutationResolvers, IShortUrl } from '../schemaType';
+import { createTokens } from '../../auth/authUtils';
 import User from '../../database/model/User';
 import { RoleCode } from '../../database/model/Role';
 import UserRepo from '../../database/repository/UserRepo';
-import { createTokens } from '../../auth/authUtils';
+import ShortUrlRepo from '../../database/repository/ShortUrlRepo';
 import { BadRequestError } from '../../core/ApiError';
+import { Types } from 'mongoose';
 
-export const mutationResolver: MutationResolvers = {
+export const mutationResolver: IMutationResolvers = {
   createUser: async (_root, args, _context) => {
     const user = await UserRepo.findByEmail(args.emailAddress);
 
-    if (user) throw new BadRequestError('BadRequestError: User already registered');
+    if (user) throw new BadRequestError('User already registered');
 
     const accessTokenKey = crypto.randomBytes(64).toString('hex');
     const refreshTokenKey = crypto.randomBytes(64).toString('hex');
@@ -23,7 +25,7 @@ export const mutationResolver: MutationResolvers = {
       name: args.name,
       emailAddress: args.emailAddress,
       password: passwordHash
-    } as User, accessTokenKey, refreshTokenKey, RoleCode.REVIEWER);
+    } as User, accessTokenKey, refreshTokenKey, RoleCode.USER_UNAUTH);
 
     const tokens = await createTokens(
       createdUser,
@@ -35,5 +37,25 @@ export const mutationResolver: MutationResolvers = {
       user: _.pick(createdUser, ['_id', 'name', 'emailAddress']),
       tokens: tokens
     }
+  },
+
+  shortenUrl: async (root, args, context) => {
+    const shareWithIds = await Promise.all(args.shareWith.map(async emailAddress =>
+      (await UserRepo.findByEmail(emailAddress))._id
+    ));
+    shareWithIds.sort();
+    let shortUrl = await ShortUrlRepo.find(args.originalUrl, context.user._id, shareWithIds);
+    let sharedWith: Types.ObjectId[];
+    if (shortUrl) {
+      sharedWith = (shortUrl.shareWith as User[]).map(user => user._id);
+      sharedWith.sort();
+      if (!_.isEqual(shareWithIds, sharedWith))
+        shortUrl = await ShortUrlRepo.create(args.originalUrl, context.user, shareWithIds);
+
+      console.log(sharedWith, sharedWith);
+    } else
+      shortUrl = await ShortUrlRepo.create(args.originalUrl, context.user, shareWithIds);
+
+    return _.pick((shortUrl as IShortUrl), ['_id', 'originalUrl', 'shareWith']);
   }
 };

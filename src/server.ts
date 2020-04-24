@@ -2,6 +2,7 @@
 import express from 'express';
 import { ApolloServer } from 'apollo-server-express';
 import cookieParser from 'cookie-parser'
+
 import './database';
 import { apolloConfig } from './core/config';
 import * as typeDefs from './graphql/type-defs.graphql';
@@ -10,8 +11,9 @@ import { queryResolvers } from './graphql/resolvers/queryResolvers';
 import { mutationResolver } from './graphql/resolvers/mutationResolvers';
 
 const app = express();
-
 app.use(cookieParser());
+
+// console.log('232');
 
 const server = new ApolloServer({
 	typeDefs,

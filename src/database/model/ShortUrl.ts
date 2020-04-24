@@ -1,4 +1,4 @@
-import { Schema, model, Document } from 'mongoose';
+import { Schema, model, Document, Types } from 'mongoose';
 import shortid from 'shortid';
 import User from './User';
 
@@ -6,40 +6,35 @@ export const DOCUMENT_NAME = 'ShortUrl';
 export const COLLECTION_NAME = 'shortUrls';
 
 export default interface ShortUrl extends Document {
-	shortId: string;
 	originalUrl: string;
-	shareWith: User[];
-	createdBy: User;
+	shareWith: User[] | Types.ObjectId[];
+	createdBy: User | Types.ObjectId;
 	createdAt: Date;
 };
 
 const schema = new Schema(
 	{
-		shortId: {
+		_id: {
 			type: Schema.Types.String,
-			required: true,
-			unique: true,
-			default: shortid.generate,
+			default: shortid.generate
 		},
 		originalUrl: {
 			type: Schema.Types.String,
 			required: true,
 		},
-		shareWith: [
-			{
+		shareWith: {
+			type: [{
 				type: Schema.Types.ObjectId,
-				required: false,
-				ref: "User",
-			}
-		],
+				ref: "User"
+			}]
+		},
 		createdBy: {
 			type: Schema.Types.ObjectId,
-			required: false,
 			ref: "User",
 		},
 		createdAt: {
 			type: Date,
-			required: true,
+			default: Date.now
 		},
 	}
 );

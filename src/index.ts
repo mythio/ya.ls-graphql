@@ -6,7 +6,7 @@ import logger from './core/Logger';
 
 const server = http.createServer(app);
 
-server.listen(config.port, () => { logger.info(`🚀  Server ready at port ${config.port}`) });
+server.listen(config.port, () => { logger.info(`🚀 Server ready at port ${config.port}`) });
 
 if (module.hot) {
 	module.hot.accept();
