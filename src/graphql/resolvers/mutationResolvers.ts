@@ -1,6 +1,7 @@
 import _ from 'lodash';
 import crypto from 'crypto';
 import bcrypt from 'bcrypt';
+import { Types } from 'mongoose';
 
 import { IMutationResolvers, IShortUrl } from '../schemaType';
 import { createTokens } from '../../auth/authUtils';
@@ -9,7 +10,6 @@ import { RoleCode } from '../../database/model/Role';
 import UserRepo from '../../database/repository/UserRepo';
 import ShortUrlRepo from '../../database/repository/ShortUrlRepo';
 import { BadRequestError } from '../../core/ApiError';
-import { Types } from 'mongoose';
 
 export const mutationResolver: IMutationResolvers = {
   createUser: async (_root, args, _context) => {
@@ -51,8 +51,6 @@ export const mutationResolver: IMutationResolvers = {
       sharedWith.sort();
       if (!_.isEqual(shareWithIds, sharedWith))
         shortUrl = await ShortUrlRepo.create(args.originalUrl, context.user, shareWithIds);
-
-      console.log(sharedWith, sharedWith);
     } else
       shortUrl = await ShortUrlRepo.create(args.originalUrl, context.user, shareWithIds);
 

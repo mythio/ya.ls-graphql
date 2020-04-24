@@ -51,7 +51,7 @@ export default class ShortUrlRepo {
 
     let updatedShareWith = [...shareWithId, ...sharedWith as Types.ObjectId[]];
 
-    updatedShareWith = updatedShareWith.filter((item, index) => sharedWith.indexOf(item) == index);
+    // updatedShareWith = updatedShareWith.filter((item, index) => sharedWith.indexOf(item) == index);
 
     return shortUrl;
   }

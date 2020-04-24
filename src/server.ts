@@ -13,8 +13,6 @@ import { mutationResolver } from './graphql/resolvers/mutationResolvers';
 const app = express();
 app.use(cookieParser());
 
-// console.log('232');
-
 const server = new ApolloServer({
 	typeDefs,
 	resolvers: { Query: queryResolvers, Mutation: mutationResolver },
