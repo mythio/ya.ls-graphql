@@ -58,14 +58,14 @@ export const queryResolvers: IQueryResolvers = {
 
 		if (!shortUrl) throw new NotFoundError();
 
-		console.log(shortUrl.shareWith.length);
 		if (shortUrl.shareWith.length > 0 && !user) throw new NotFoundError();
 		else if (shortUrl.shareWith.length > 0) {
 			const isSharedWithUser = (shortUrl.shareWith as User[]).find((sharedWithUser) => {
 				return _.isEqual(sharedWithUser._id, user._id);
 			});
 
-			if (!isSharedWithUser && user._id !== shortUrl.createdBy) throw new NotFoundError();
+			if (!isSharedWithUser && !_.isEqual(user._id, (shortUrl.createdBy as User)._id))
+				throw new NotFoundError();
 		}
 
 		return _.pick(shortUrl as IShortUrlDetail, [`_id`, `originalUrl`, `shareWith`, `createdBy`]);

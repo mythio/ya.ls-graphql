@@ -68,8 +68,6 @@ export const mutationResolver: IMutationResolvers = {
 				shortUrl = await ShortUrlRepo.create(args.originalUrl, userId, shareWithIds, ["shareWith"]);
 		}
 
-		console.log(shortUrl);
-
 		return _.pick(shortUrl as IShortUrl, ["_id", "originalUrl", "shareWith"]);
 	}
 };

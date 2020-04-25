@@ -50,7 +50,6 @@ export default class ShortUrlRepo {
 			user.shortIds = userShortIds as string[];
 			await user.save();
 		}
-		// console.log(createdShortUrl);
 
 		return createdShortUrl;
 	}
