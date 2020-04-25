@@ -1,91 +1,72 @@
 directive @auth(requires: Role = REVIEWER) on FIELD_DEFINITION | OBJECT
 
 enum Role {
-	ADMIN
-	USER
-	USER_UNAUTH
-	REVIEWER
+  ADMIN
+  USER
+  USER_UNAUTH
+  REVIEWER
 }
 
 type UserDetail {
-	_id: ID!
-	name: String!
-	emailAddress: String!
-	shortIds: [ShortUrl!]
-	roles: [Role!]
+  _id: ID!
+  name: String!
+  emailAddress: String!
+  shortIds: [ShortUrl!]
+  roles: [Role!]
 }
 
 type User {
-	_id: ID!
-	name: String!
-	emailAddress: String!
+  _id: ID!
+  name: String!
+  emailAddress: String!
 }
 
 type ShortUrlDetail {
-	_id: ID!
-	originalUrl: String!
-	shareWith: [User!]
-	createdBy: User
+  _id: ID!
+  originalUrl: String!
+  shareWith: [User!]
+  createdBy: User
 }
 
 type ShortUrl {
-	_id: ID!
-	originalUrl: String!
-	shareWith: [User!]
+  _id: ID!
+  originalUrl: String!
+  shareWith: [User!]
 }
 
 type CreateUserResp {
-	user: User!
-	tokens: Tokens!
+  user: User!
+  tokens: Tokens!
 }
 
 type LoginUserResp {
-	user: User!
-	tokens: Tokens!
+  user: User!
+  tokens: Tokens!
 }
 
 type MeResp {
-	user: UserDetail!
+  user: UserDetail!
 }
 
 type Tokens {
-	accessToken: String!
-	refreshToken: String!
+  accessToken: String!
+  refreshToken: String!
 }
 
 type Query {
-	
-	me: MeResp! @auth(requires: USER_UNAUTH)
+  me: MeResp! @auth(requires: USER_UNAUTH)
 
-	login(
-		emailAddress: String!
-		password: String!
-	): LoginUserResp!
+  login(emailAddress: String!, password: String!): LoginUserResp!
 
-	expandUrl(
-		_id: String!
-	): ShortUrlDetail! @auth
+  expandUrl(_id: String!): ShortUrlDetail! @auth
 }
 
 type Mutation {
-	
-	createUser(
-		name: String!
-		emailAddress: String!
-		password: String!
-	): CreateUserResp!
+  createUser(name: String!, emailAddress: String!, password: String!): CreateUserResp!
 
-	shortenUrl(
-		originalUrl: String!
-		shareWith: [String!]
-	): ShortUrl! @auth
+  shortenUrl(originalUrl: String!, shareWith: [String!]): ShortUrl! @auth
 
-	editRole(
-		userId: ID!
-		role: Role!
-	): UserDetail! @auth(requires: ADMIN)
+  editRole(userId: ID!, role: Role!): UserDetail! @auth(requires: ADMIN)
 
-	deleteUser(
-		userId: ID!
-	): String! @auth(requires: USER)
+  deleteUser(userId: ID!): String! @auth(requires: USER)
 }

@@ -1,43 +1,43 @@
-import { Document, Schema, model, Types } from 'mongoose';
+import { Document, Schema, model, Types } from "mongoose";
 
-import User from './User';
+import User from "./User";
 
-export const DOCUMENT_NAME = 'Keystore';
-export const COLLECTION_NAME = 'keystores';
+export const DOCUMENT_NAME = `Keystore`;
+export const COLLECTION_NAME = `keystores`;
 
 export default interface Keystore extends Document {
-  client: User | Types.ObjectId;
-  primaryKey: string;
-  secondaryKey: string;
-  status?: boolean;
-  createdAt?: Date;
-  updatedAt?: Date;
+	client: User | Types.ObjectId;
+	primaryKey: string;
+	secondaryKey: string;
+	status?: boolean;
+	createdAt?: Date;
+	updatedAt?: Date;
 }
 
 const schema = new Schema({
-  client: {
-    type: Schema.Types.ObjectId,
-    required: true,
-    ref: 'User'
-  },
-  primaryKey: {
-    type: Schema.Types.String,
-    required: true
-  },
-  secondaryKey: {
-    type: Schema.Types.String,
-    required: true
-  },
-  createdAt: {
-    type: Date,
-    required: true,
-    select: false
-  },
-  updatedAt: {
-    type: Date,
-    required: true,
-    select: false
-  }
+	client: {
+		type: Schema.Types.ObjectId,
+		required: true,
+		ref: `User`
+	},
+	primaryKey: {
+		type: Schema.Types.String,
+		required: true
+	},
+	secondaryKey: {
+		type: Schema.Types.String,
+		required: true
+	},
+	createdAt: {
+		type: Date,
+		required: true,
+		select: false
+	},
+	updatedAt: {
+		type: Date,
+		required: true,
+		select: false
+	}
 });
 
 schema.index({ client: 1, primaryKey: 1 });
