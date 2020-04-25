@@ -3,11 +3,13 @@ import crypto from "crypto";
 import _ from "lodash";
 
 import { createTokens } from "../../auth/authUtils";
-import { AuthFailureError, BadRequestError } from "../../core/ApiError";
+import { AuthFailureError, BadRequestError, NotFoundError } from "../../core/ApiError";
 import Role from "../../database/model/Role";
 import KeystoreRepo from "../../database/repository/KeystoreRepo";
 import UserRepo from "../../database/repository/UserRepo";
-import { IQueryResolvers } from "../../types/schemaType";
+import { IQueryResolvers, IShortUrlDetail } from "../../types/schemaType";
+import ShortUrlRepo from "../../database/repository/ShortUrlRepo";
+import User from "../../database/model/User";
 
 export const queryResolvers: IQueryResolvers = {
 	login: async (_root, args, context) => {
@@ -37,6 +39,7 @@ export const queryResolvers: IQueryResolvers = {
 			tokens: tokens
 		};
 	},
+
 	me: async (_root, _args, context) => {
 		const user = context.user;
 		let roles = user.roles;
@@ -46,5 +49,25 @@ export const queryResolvers: IQueryResolvers = {
 		return {
 			user: _.pick(user, [`_id`, `name`, `emailAddress`, `shortIds`, `roles`])
 		};
+	},
+
+	expandUrl: async (_root, args, context) => {
+		const user = context.user;
+		const shortUrlId = args._id;
+		const shortUrl = await ShortUrlRepo.findById(shortUrlId, ["createdBy", "shareWith"]);
+
+		if (!shortUrl) throw new NotFoundError();
+
+		console.log(shortUrl.shareWith.length);
+		if (shortUrl.shareWith.length > 0 && !user) throw new NotFoundError();
+		else if (shortUrl.shareWith.length > 0) {
+			const isSharedWithUser = (shortUrl.shareWith as User[]).find((sharedWithUser) => {
+				return _.isEqual(sharedWithUser._id, user._id);
+			});
+
+			if (!isSharedWithUser && user._id !== shortUrl.createdBy) throw new NotFoundError();
+		}
+
+		return _.pick(shortUrl as IShortUrlDetail, [`_id`, `originalUrl`, `shareWith`, `createdBy`]);
 	}
 };

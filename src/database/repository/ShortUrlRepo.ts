@@ -1,21 +1,29 @@
+import _ from "lodash";
 import { Types } from "mongoose";
 
 import ShortUrl, { ShortUrlModel } from "../model/ShortUrl";
-import User from "../model/User";
+import User, { UserModel } from "../model/User";
 import UserRepo from "./UserRepo";
 
 export default class ShortUrlRepo {
-	public static findById(id: Types.ObjectId): Promise<ShortUrl> {
-		return ShortUrlModel.findById(id).populate(`createdBy`).lean<ShortUrl>().exec();
+	public static findById(id: string, populateFields: string[] = []): Promise<ShortUrl> {
+		const populate = _.join(populateFields, " ");
+		return ShortUrlModel.findById(id).populate(populate).lean<ShortUrl>().exec();
 	}
 
-	public static find(originalUrl: string, userId?: Types.ObjectId, shareWithIds?: Types.ObjectId[]): Promise<ShortUrl> {
+	public static find(
+		originalUrl: string,
+		userId?: Types.ObjectId,
+		shareWithIds?: Types.ObjectId[],
+		populateFields: string[] = []
+	): Promise<ShortUrl> {
+		const populate = _.join(populateFields, " ");
 		return ShortUrlModel.findOne({
 			originalUrl: originalUrl,
 			createdBy: userId,
 			shareWith: shareWithIds
 		})
-			.populate(`createdBy shareWith`)
+			.populate(populate)
 			.lean<ShortUrl>()
 			.exec();
 	}
@@ -23,14 +31,23 @@ export default class ShortUrlRepo {
 	public static async create(
 		originalUrl: string,
 		userId?: Types.ObjectId,
-		shareWith?: Types.ObjectId[]
+		shareWith?: Types.ObjectId[],
+		populateFields: string[] = []
 	): Promise<ShortUrl> {
+		const populate = _.join(populateFields, " ");
+
 		const createdShortUrl = await ShortUrlModel.create({
 			originalUrl: originalUrl,
 			createdBy: userId,
 			shareWith: shareWith
 		});
-		await createdShortUrl.populate({ path: `shareWith` }).execPopulate();
+		await createdShortUrl.populate(populate).execPopulate();
+
+		if (userId) {
+			const user = await UserModel.findById(userId);
+			user.shortIds.push(createdShortUrl._id);
+			await user.save();
+		}
 
 		return createdShortUrl;
 	}
@@ -42,7 +59,9 @@ export default class ShortUrlRepo {
 		let shareWithId: Types.ObjectId[];
 		if (shareWith)
 			shareWithId = await Promise.all(
-				shareWith.map(async (emailAddress) => new Types.ObjectId((await UserRepo.findByEmail(emailAddress))._id))
+				shareWith.map(
+					async (emailAddress) => new Types.ObjectId((await UserRepo.findByEmail(emailAddress))._id)
+				)
 			);
 
 		const updatedShareWith = [...shareWithId, ...(sharedWith as Types.ObjectId[])];

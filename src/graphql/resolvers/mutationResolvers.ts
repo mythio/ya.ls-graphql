@@ -44,22 +44,25 @@ export const mutationResolver: IMutationResolvers = {
 	shortenUrl: async (_root, args, context) => {
 		const userId = context.user ? context.user._id : undefined;
 		const shareWith: string[] = args.shareWith ? args.shareWith : [];
-		if (!userId && args.shareWith) throw new BadRequestError("Sign-in to limit the sharability of the URL");
+		if (!userId && args.shareWith)
+			throw new BadRequestError("Sign-in to limit the sharability of the URL");
 
 		const shareWithIds = await Promise.all(
 			shareWith.map(async (emailAddress) => (await UserRepo.findByEmail(emailAddress))._id)
 		);
 		shareWithIds.sort();
-		let shortUrl = await ShortUrlRepo.find(args.originalUrl, userId, shareWithIds);
+		let shortUrl = await ShortUrlRepo.find(args.originalUrl, userId, shareWithIds, ["shareWith"]);
 		let sharedWith: Types.ObjectId[];
 		if (!shortUrl) {
-			shortUrl = await ShortUrlRepo.create(args.originalUrl, userId, shareWithIds);
+			shortUrl = await ShortUrlRepo.create(args.originalUrl, userId, shareWithIds, ["shareWith"]);
 		} else {
 			sharedWith = (shortUrl.shareWith as User[]).map((user) => user._id);
 			sharedWith.sort();
 			if (!_.isEqual(shareWithIds, sharedWith))
-				shortUrl = await ShortUrlRepo.create(args.originalUrl, userId, shareWithIds);
+				shortUrl = await ShortUrlRepo.create(args.originalUrl, userId, shareWithIds, ["shareWith"]);
 		}
+
+		console.log(shortUrl);
 
 		return _.pick(shortUrl as IShortUrl, ["_id", "originalUrl", "shareWith"]);
 	}

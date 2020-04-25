@@ -1,5 +1,4 @@
 import { GraphQLResolveInfo } from "graphql";
-
 export type Maybe<T> = T | null;
 export type RequireFields<T, K extends keyof T> = { [X in Exclude<keyof T, K>]?: T[X] } &
 	{ [P in K]-?: NonNullable<T[P]> };
@@ -77,7 +76,7 @@ export type IQueryLoginArgs = {
 };
 
 export type IQueryExpandUrlArgs = {
-	_id: Scalars["String"];
+	_id: Scalars["ID"];
 };
 
 export type IMutation = {
