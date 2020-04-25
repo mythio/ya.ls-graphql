@@ -48,7 +48,13 @@ export const mutationResolver: IMutationResolvers = {
 			throw new BadRequestError("Sign-in to limit the sharability of the URL");
 
 		const shareWithIds = await Promise.all(
-			shareWith.map(async (emailAddress) => (await UserRepo.findByEmail(emailAddress))._id)
+			shareWith.map(async (emailAddress) => {
+				const userFound = await UserRepo.findByEmail(emailAddress);
+				if (!userFound) {
+					throw new BadRequestError("Bad mail ID");
+				}
+				return userFound._id;
+			})
 		);
 		shareWithIds.sort();
 		let shortUrl = await ShortUrlRepo.find(args.originalUrl, userId, shareWithIds, ["shareWith"]);

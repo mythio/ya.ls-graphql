@@ -7,6 +7,7 @@ export const DOCUMENT_NAME = `ShortUrl`;
 export const COLLECTION_NAME = `shortUrls`;
 
 export default interface ShortUrl extends Document {
+	_id: string;
 	originalUrl: string;
 	shareWith: User[] | Types.ObjectId[];
 	createdBy: User | Types.ObjectId;

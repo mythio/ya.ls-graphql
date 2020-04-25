@@ -45,9 +45,12 @@ export default class ShortUrlRepo {
 
 		if (userId) {
 			const user = await UserModel.findById(userId);
-			user.shortIds.push(createdShortUrl._id);
+			const userShortIds = [...user.shortIds];
+			userShortIds.push(createdShortUrl._id);
+			user.shortIds = userShortIds as string[];
 			await user.save();
 		}
+		// console.log(createdShortUrl);
 
 		return createdShortUrl;
 	}

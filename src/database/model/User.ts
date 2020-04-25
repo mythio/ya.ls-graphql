@@ -11,7 +11,7 @@ export default interface User extends Document {
 	emailAddress: string;
 	password: string;
 	roles: Role[] | Types.ObjectId[];
-	shortIds: ShortUrl[] | Types.ObjectId[];
+	shortIds: string[] | ShortUrl[];
 	createdAt: Date;
 	updatedAt: Date;
 }
@@ -46,7 +46,7 @@ const schema = new Schema({
 	shortIds: {
 		type: [
 			{
-				type: Schema.Types.ObjectId,
+				type: Schema.Types.String,
 				ref: `ShortUrl`
 			}
 		]
