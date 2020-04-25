@@ -1,13 +1,14 @@
-import express from "express";
+import "./database";
+
 import { ApolloServer } from "apollo-server-express";
 import cookieParser from "cookie-parser";
+import express from "express";
 
-import "./database";
 import { apolloConfig } from "./core/config";
-import * as typeDefs from "./graphql/type-defs.graphql";
 import { AuthDirective } from "./graphql/AuthDirective";
-import { queryResolvers } from "./graphql/resolvers/queryResolvers";
 import { mutationResolver } from "./graphql/resolvers/mutationResolvers";
+import { queryResolvers } from "./graphql/resolvers/queryResolvers";
+import * as typeDefs from "./graphql/type-defs.graphql";
 
 const app = express();
 app.use(cookieParser());

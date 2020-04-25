@@ -1,7 +1,7 @@
-import User from "../model/User";
-import Keystore from "../model/Keystore";
-import { KeystoreModel } from "../model/Keystore";
 import { Types } from "mongoose";
+
+import Keystore, { KeystoreModel } from "../model/Keystore";
+import User from "../model/User";
 
 export default class KeystoreRepo {
 	public static find(client: User, primaryKey: string, secondaryKey: string): Promise<Keystore> {

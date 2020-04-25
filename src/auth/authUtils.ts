@@ -1,18 +1,18 @@
-import _ from "lodash";
-import { Types } from "mongoose";
-import { ObjectID } from "mongodb";
 import crypto from "crypto";
+import _ from "lodash";
+import { ObjectID } from "mongodb";
+import { Types } from "mongoose";
 
-import { tokenConfig } from "../core/config";
-import { ITokens } from "../types/schemaType";
-import JWT, { JwtPayload } from "../core/JWT";
-import User from "../database/model/User";
-import Keystore from "../database/model/Keystore";
-import UserRepo from "../database/repository/UserRepo";
-import KeystoreRepo from "../database/repository/KeystoreRepo";
-import logger from "../core/Logger";
 import { AuthFailureError, InternalError, NotFoundError, TokenExpiredError } from "../core/ApiError";
+import { tokenConfig } from "../core/config";
+import JWT, { JwtPayload } from "../core/JWT";
+import logger from "../core/Logger";
+import Keystore from "../database/model/Keystore";
 import Role from "../database/model/Role";
+import User from "../database/model/User";
+import KeystoreRepo from "../database/repository/KeystoreRepo";
+import UserRepo from "../database/repository/UserRepo";
+import { ITokens } from "../types/schemaType";
 
 const allowedRoles = {
 	ADMIN: [`ADMIN`],

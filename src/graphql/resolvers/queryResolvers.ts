@@ -1,13 +1,13 @@
-import _ from "lodash";
-import crypto from "crypto";
 import bcrypt from "bcrypt";
+import crypto from "crypto";
+import _ from "lodash";
 
-import { IQueryResolvers } from "../../types/schemaType";
 import { createTokens } from "../../auth/authUtils";
+import { AuthFailureError, BadRequestError } from "../../core/ApiError";
 import Role from "../../database/model/Role";
-import UserRepo from "../../database/repository/UserRepo";
 import KeystoreRepo from "../../database/repository/KeystoreRepo";
-import { BadRequestError, AuthFailureError } from "../../core/ApiError";
+import UserRepo from "../../database/repository/UserRepo";
+import { IQueryResolvers } from "../../types/schemaType";
 
 export const queryResolvers: IQueryResolvers = {
 	login: async (_root, args, context) => {

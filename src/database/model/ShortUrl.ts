@@ -1,5 +1,6 @@
-import { Schema, model, Document, Types } from "mongoose";
+import { Document, model, Schema, Types } from "mongoose";
 import shortid from "shortid";
+
 import User from "./User";
 
 export const DOCUMENT_NAME = `ShortUrl`;

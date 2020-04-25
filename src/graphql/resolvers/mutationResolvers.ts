@@ -1,16 +1,17 @@
-import _ from "lodash";
-import crypto from "crypto";
 import bcrypt from "bcrypt";
+import crypto from "crypto";
+import _ from "lodash";
+
+import { createTokens } from "../../auth/authUtils";
+import { BadRequestError } from "../../core/ApiError";
+import { RoleCode } from "../../database/model/Role";
+import ShortUrlRepo from "../../database/repository/ShortUrlRepo";
+import UserRepo from "../../database/repository/UserRepo";
+import { IMutationResolvers, IShortUrl } from "../../types/schemaType";
+
 import type { Types } from "mongoose";
 
-import { IMutationResolvers, IShortUrl } from "../../types/schemaType";
-import { createTokens } from "../../auth/authUtils";
 import type User from "../../database/model/User";
-import { RoleCode } from "../../database/model/Role";
-import UserRepo from "../../database/repository/UserRepo";
-import ShortUrlRepo from "../../database/repository/ShortUrlRepo";
-import { BadRequestError } from "../../core/ApiError";
-
 export const mutationResolver: IMutationResolvers = {
 	createUser: async (_root, args, _context) => {
 		const user = await UserRepo.findByEmail(args.emailAddress);

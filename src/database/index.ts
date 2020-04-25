@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 
-import logger from "../core/Logger";
 import { dbConfig } from "../core/config";
+import logger from "../core/Logger";
 
 const options = {
 	useNewUrlParser: true,

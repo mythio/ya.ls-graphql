@@ -1,4 +1,4 @@
-import { createLogger, transports, format } from "winston";
+import { createLogger, format, transports } from "winston";
 import DailyRotateFile from "winston-daily-rotate-file";
 
 import { loggerConfig } from "./config";

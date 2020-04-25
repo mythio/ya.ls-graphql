@@ -1,10 +1,10 @@
 import { Types } from "mongoose";
 
-import KeystoreRepo from "./KeystoreRepo";
-import Keystore from "../model/Keystore";
-import User, { UserModel } from "../model/User";
-import Role, { RoleModel } from "../model/Role";
 import { InternalError } from "../../core/ApiError";
+import Keystore from "../model/Keystore";
+import Role, { RoleModel } from "../model/Role";
+import User, { UserModel } from "../model/User";
+import KeystoreRepo from "./KeystoreRepo";
 
 export default class UserRepo {
 	public static findById(id: Types.ObjectId): Promise<User> {

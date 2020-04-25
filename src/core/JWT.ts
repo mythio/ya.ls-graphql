@@ -1,7 +1,8 @@
 import { readFile } from "fs";
-import { promisify } from "util";
 import { sign, verify } from "jsonwebtoken";
-import { BadTokenError, TokenExpiredError, InternalError } from "./ApiError";
+import { promisify } from "util";
+
+import { BadTokenError, InternalError, TokenExpiredError } from "./ApiError";
 
 export default class JWT {
 	private static readPublicKey(): Promise<string> {

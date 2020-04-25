@@ -1,8 +1,8 @@
 import { Types } from "mongoose";
 
 import ShortUrl, { ShortUrlModel } from "../model/ShortUrl";
-import UserRepo from "./UserRepo";
 import User from "../model/User";
+import UserRepo from "./UserRepo";
 
 export default class ShortUrlRepo {
 	public static findById(id: Types.ObjectId): Promise<ShortUrl> {
@@ -46,6 +46,7 @@ export default class ShortUrlRepo {
 			);
 
 		const updatedShareWith = [...shareWithId, ...(sharedWith as Types.ObjectId[])];
+		console.log(updatedShareWith);
 
 		// updatedShareWith = updatedShareWith.filter((item, index) => sharedWith.indexOf(item) == index);
 
