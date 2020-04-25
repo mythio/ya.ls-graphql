@@ -1,3 +1,3 @@
-import fs from 'fs'
+import fs from "fs";
 
-export const readFileSpy = jest.spyOn(fs, 'readFile')
+export const readFileSpy = jest.spyOn(fs, "readFile");
