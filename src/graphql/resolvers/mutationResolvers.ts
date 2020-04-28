@@ -4,10 +4,10 @@ import _ from "lodash";
 
 import { createTokens } from "../../auth/authUtils";
 import { BadRequestError } from "../../core/ApiError";
-import { RoleCode } from "../../database/model/Role";
+import Role, { RoleCode } from "../../database/model/Role";
 import ShortUrlRepo from "../../database/repository/ShortUrlRepo";
 import UserRepo from "../../database/repository/UserRepo";
-import { IMutationResolvers, IShortUrl, IEditRoleResp } from "../../types/schemaType";
+import { IMutationResolvers, IShortUrl, IUserDetail } from "../../types/schemaType";
 
 import { Types } from "mongoose";
 import User from "../../database/model/User";
@@ -73,6 +73,15 @@ export const mutationResolver: IMutationResolvers = {
 
 	editRole: async (_root, args, _context) => {
 		const updatedUser = await UserRepo.elevateRole(new Types.ObjectId(args.userId), args.role);
-		return updatedUser as IEditRoleResp;
+		let roles = updatedUser.roles;
+
+		roles = (roles as Role[]).map((role: Role): string => role.code);
+		console.log(updatedUser.roles);
+		console.log(roles);
+		updatedUser.roles = roles;
+		console.log(updatedUser);
+		return {
+			user: _.pick(updatedUser as IUserDetail, ["_id", "name", "emailAddress", "shortIds", "roles"])
+		};
 	}
 };

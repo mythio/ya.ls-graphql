@@ -1,17 +1,17 @@
 enum ErrorType {
-	BAD_TOKEN = `BadTokenError`,
-	TOKEN_EXPIRED = `TokenExpiredError`,
-	UNAUTHORIZED = `AuthFailureError`,
-	ACCESS_TOKEN = `AccessTokenError`,
-	INTERNAL = `InternalError`,
-	NOT_FOUND = `NotFoundError`,
-	NO_ENTRY = `NoEntryError`,
-	BAD_REQUEST = `BadRequestError`,
-	FORBIDDEN = `ForbiddenError`
+	BAD_TOKEN = "BadTokenError",
+	TOKEN_EXPIRED = "TokenExpiredError",
+	UNAUTHORIZED = "AuthFailureError",
+	ACCESS_TOKEN = "AccessTokenError",
+	INTERNAL = "InternalError",
+	NOT_FOUND = "NotFoundError",
+	NO_ENTRY = "NoEntryError",
+	BAD_REQUEST = "BadRequestError",
+	FORBIDDEN = "ForbiddenError"
 }
 
 export abstract class ApiError extends Error {
-	constructor(public type: ErrorType, public message: string = `error`) {
+	constructor(public type: ErrorType, public message: string = "error") {
 		super(type);
 
 		Object.setPrototypeOf(this, ApiError.prototype);
@@ -19,7 +19,7 @@ export abstract class ApiError extends Error {
 }
 
 export class AuthFailureError extends ApiError {
-	constructor(message = `Invalid Credentials`) {
+	constructor(message = "Invalid Credentials") {
 		super(ErrorType.UNAUTHORIZED, message);
 
 		Object.setPrototypeOf(this, AuthFailureError.prototype);
@@ -27,7 +27,7 @@ export class AuthFailureError extends ApiError {
 }
 
 export class InternalError extends ApiError {
-	constructor(message = `Internal error`) {
+	constructor(message = "Internal error") {
 		super(ErrorType.INTERNAL, message);
 
 		Object.setPrototypeOf(this, InternalError.prototype);
@@ -35,7 +35,7 @@ export class InternalError extends ApiError {
 }
 
 export class NotFoundError extends ApiError {
-	constructor(message = `Not Found`) {
+	constructor(message = "Not Found") {
 		super(ErrorType.NOT_FOUND, message);
 
 		Object.setPrototypeOf(this, NotFoundError.prototype);
@@ -43,7 +43,7 @@ export class NotFoundError extends ApiError {
 }
 
 export class ForbiddenError extends ApiError {
-	constructor(message = `Permission denied`) {
+	constructor(message = "Permission denied") {
 		super(ErrorType.FORBIDDEN, message);
 
 		Object.setPrototypeOf(this, ForbiddenError.prototype);
@@ -51,7 +51,7 @@ export class ForbiddenError extends ApiError {
 }
 
 export class NoEntryError extends ApiError {
-	constructor(message = `Entry don't exists`) {
+	constructor(message = "Entry don't exists") {
 		super(ErrorType.NO_ENTRY, message);
 
 		Object.setPrototypeOf(this, NoEntryError.prototype);
@@ -59,7 +59,7 @@ export class NoEntryError extends ApiError {
 }
 
 export class BadTokenError extends ApiError {
-	constructor(message = `Token is not valid`) {
+	constructor(message = "Token is not valid") {
 		super(ErrorType.BAD_TOKEN, message);
 
 		Object.setPrototypeOf(this, BadTokenError.prototype);
@@ -67,7 +67,7 @@ export class BadTokenError extends ApiError {
 }
 
 export class TokenExpiredError extends ApiError {
-	constructor(message = `Token is expired`) {
+	constructor(message = "Token is expired") {
 		super(ErrorType.TOKEN_EXPIRED, message);
 
 		Object.setPrototypeOf(this, TokenExpiredError.prototype);
@@ -75,7 +75,7 @@ export class TokenExpiredError extends ApiError {
 }
 
 export class BadRequestError extends ApiError {
-	constructor(message = `Check the request data`) {
+	constructor(message = "Check the request data") {
 		super(ErrorType.BAD_REQUEST, message);
 
 		Object.setPrototypeOf(this, BadRequestError.prototype);
@@ -83,7 +83,7 @@ export class BadRequestError extends ApiError {
 }
 
 export class AccessTokenError extends ApiError {
-	constructor(message = `Invalid access token`) {
+	constructor(message = "Invalid access token") {
 		super(ErrorType.ACCESS_TOKEN, message);
 
 		Object.setPrototypeOf(this, AccessTokenError.prototype);

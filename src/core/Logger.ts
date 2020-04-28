@@ -11,7 +11,7 @@ const logger = createLogger({
 	],
 	exceptionHandlers: [
 		new DailyRotateFile({
-			filename: `./logs/%DATE%.log`,
+			filename: "./logs/%DATE%.log",
 			datePattern: loggerConfig.date,
 			zippedArchive: true,
 			maxSize: loggerConfig.maxSize,

@@ -1,13 +1,13 @@
 import { Document, model, Schema } from "mongoose";
 
-export const DOCUMENT_NAME = `Role`;
-export const COLLECTION_NAME = `roles`;
+export const DOCUMENT_NAME = "Role";
+export const COLLECTION_NAME = "roles";
 
 export const enum RoleCode {
-	ADMIN = `ADMIN`,
-	USER = `USER`,
-	USER_UNAUTH = `USER_UNAUTH`,
-	REVIEWER = `REVIEWER`
+	ADMIN = "ADMIN",
+	USER = "USER",
+	USER_UNAUTH = "USER_UNAUTH",
+	REVIEWER = "REVIEWER"
 }
 
 export default interface Role extends Document {

@@ -3,8 +3,8 @@ import shortid from "shortid";
 
 import User from "./User";
 
-export const DOCUMENT_NAME = `ShortUrl`;
-export const COLLECTION_NAME = `shortUrls`;
+export const DOCUMENT_NAME = "ShortUrl";
+export const COLLECTION_NAME = "shortUrls";
 
 export default interface ShortUrl extends Document {
 	_id: string;
@@ -27,13 +27,13 @@ const schema = new Schema({
 		type: [
 			{
 				type: Schema.Types.ObjectId,
-				ref: `User`
+				ref: "User"
 			}
 		]
 	},
 	createdBy: {
 		type: Schema.Types.ObjectId,
-		ref: `User`
+		ref: "User"
 	},
 	createdAt: {
 		type: Date,

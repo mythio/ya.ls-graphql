@@ -3,8 +3,8 @@ import { Document, model, Schema, Types } from "mongoose";
 import Role from "./Role";
 import ShortUrl from "./ShortUrl";
 
-export const DOCUMENT_NAME = `User`;
-export const COLLECTION_NAME = `users`;
+export const DOCUMENT_NAME = "User";
+export const COLLECTION_NAME = "users";
 
 export default interface User extends Document {
 	name: string;
@@ -37,17 +37,16 @@ const schema = new Schema({
 		type: [
 			{
 				type: Schema.Types.ObjectId,
-				ref: `Role`
+				ref: "Role"
 			}
 		],
-		required: true,
-		select: false
+		required: true
 	},
 	shortIds: {
 		type: [
 			{
 				type: Schema.Types.String,
-				ref: `ShortUrl`
+				ref: "ShortUrl"
 			}
 		]
 	},

@@ -15,27 +15,27 @@ export const queryResolvers: IQueryResolvers = {
 	login: async (_root, args, context) => {
 		const user = await UserRepo.findByEmail(args.emailAddress);
 
-		if (!user) throw new BadRequestError(`User not registered`);
+		if (!user) throw new BadRequestError("User not registered");
 
 		const match = await bcrypt.compare(args.password, user.password);
 
 		if (!match) throw new AuthFailureError();
 
-		const accessTokenKey = crypto.randomBytes(64).toString(`hex`);
-		const refreshTokenKey = crypto.randomBytes(64).toString(`hex`);
+		const accessTokenKey = crypto.randomBytes(64).toString("hex");
+		const refreshTokenKey = crypto.randomBytes(64).toString("hex");
 
 		await KeystoreRepo.create(user._id, accessTokenKey, refreshTokenKey);
 		const tokens = await createTokens(user, accessTokenKey, refreshTokenKey);
 
-		context.res.cookie(`refresh-token`, tokens.refreshToken, {
+		context.res.cookie("refresh-token", tokens.refreshToken, {
 			maxAge: 7 * 24 * 60 * 60 * 1000
 		});
-		context.res.cookie(`access-token`, tokens.accessToken, {
+		context.res.cookie("access-token", tokens.accessToken, {
 			maxAge: 30 * 24 * 60 * 60 * 1000
 		});
 
 		return {
-			user: _.pick(user, [`_id`, `name`, `emailAddress`]),
+			user: _.pick(user, ["_id", "name", "emailAddress"]),
 			tokens: tokens
 		};
 	},
@@ -47,7 +47,7 @@ export const queryResolvers: IQueryResolvers = {
 		roles = (roles as Role[]).map((role: Role): string => role.code);
 		user.roles = roles;
 		return {
-			user: _.pick(user as IUserDetail, [`_id`, `name`, `emailAddress`, `shortIds`, `roles`])
+			user: _.pick(user as IUserDetail, ["_id", "name", "emailAddress", "shortIds", "roles"])
 		};
 	},
 
@@ -68,6 +68,6 @@ export const queryResolvers: IQueryResolvers = {
 				throw new NotFoundError();
 		}
 
-		return _.pick(shortUrl as IShortUrlDetail, [`_id`, `originalUrl`, `shareWith`, `createdBy`]);
+		return _.pick(shortUrl as IShortUrlDetail, ["_id", "originalUrl", "shareWith", "createdBy"]);
 	}
 };

@@ -49,7 +49,7 @@ export class AuthDirective extends SchemaDirectiveVisitor {
 				try {
 					await ruleStrategy(requestData, requiredRole);
 				} catch (err) {
-					if (requiredRole !== `REVIEWER`) {
+					if (requiredRole !== "REVIEWER") {
 						throw err;
 					}
 				}

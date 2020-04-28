@@ -7,7 +7,7 @@ import app from "./server";
 const server = http.createServer(app);
 
 server.listen(config.port, () => {
-	logger.info(`🚀 Server ready at port ${config.port}`);
+	logger.info("🚀 Server ready at port ${config.port}");
 });
 
 if (module.hot) {

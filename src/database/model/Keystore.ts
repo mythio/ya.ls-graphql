@@ -2,8 +2,8 @@ import { Document, model, Schema, Types } from "mongoose";
 
 import User from "./User";
 
-export const DOCUMENT_NAME = `Keystore`;
-export const COLLECTION_NAME = `keystores`;
+export const DOCUMENT_NAME = "Keystore";
+export const COLLECTION_NAME = "keystores";
 
 export default interface Keystore extends Document {
 	client: User | Types.ObjectId;
@@ -18,7 +18,7 @@ const schema = new Schema({
 	client: {
 		type: Schema.Types.ObjectId,
 		required: true,
-		ref: `User`
+		ref: "User"
 	},
 	primaryKey: {
 		type: Schema.Types.String,

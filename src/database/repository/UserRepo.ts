@@ -39,27 +39,20 @@ export default class UserRepo {
 		};
 	}
 
-	public static async elevateRole(
-		userId: Types.ObjectId,
-		roleCode: string
-	): Promise<{ user: User }> {
+	public static async elevateRole(userId: Types.ObjectId, roleCode: string): Promise<User> {
 		const role = await RoleModel.findOne({ code: roleCode }).lean<Role>().exec();
 		if (!role) throw new InternalError("Role must be defined");
 
 		const user = await UserModel.findById(userId);
 		const userRoles = user.roles as Types.ObjectId[];
-
 		const isAssigned = userRoles.find((userRole) => _.isEqual(userRole, role._id));
 
 		if (isAssigned) throw new InternalError("Role is already defined");
 
 		userRoles.push(role._id);
 		await user.save();
+		const updatedUser = await (await user.populate("roles").execPopulate()).toObject();
 
-		const updatedUser = await user.populate("roles").execPopulate();
-
-		return {
-			user: updatedUser
-		};
+		return updatedUser as User;
 	}
 }

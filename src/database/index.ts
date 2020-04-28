@@ -16,28 +16,28 @@ const options = {
 mongoose
 	.connect(dbConfig.dbURI, options)
 	.then(() => {
-		logger.info(`Mongoose connected`);
+		logger.info("Mongoose connected");
 	})
 	.catch((err) => {
-		logger.info(`Mongoose failed to connect`);
+		logger.info("Mongoose failed to connect");
 		logger.error(err);
 	});
 
-mongoose.connection.on(`connected`, () => {
-	logger.info(`Mongoose default connection open to ${dbConfig.dbURI}`);
+mongoose.connection.on("connected", () => {
+	logger.info("Mongoose default connection open to ${dbConfig.dbURI}");
 });
 
-mongoose.connection.on(`error`, (err) => {
-	logger.error(`Mongoose default connection error ${err}`);
+mongoose.connection.on("error", () => {
+	logger.error("Mongoose default connection error ${err}");
 });
 
-mongoose.connection.on(`disconnected`, () => {
-	logger.info(`Mongoose default connection disconnected`);
+mongoose.connection.on("disconnected", () => {
+	logger.info("Mongoose default connection disconnected");
 });
 
-process.on(`SIGINT`, () => {
+process.on("SIGINT", () => {
 	mongoose.connection.close(() => {
-		logger.info(`Mongoose connection terminated`);
+		logger.info("Mongoose connection terminated");
 		process.exit(0);
 	});
 });
