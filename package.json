@@ -5,11 +5,13 @@
 	"main": "index.js",
 	"scripts": {
 		"build": "rm -rf dist && webpack --config webpack.$NODE_ENV.js",
-		"start:dev": "node --require dotenv/config dist/server.js",
+		"start:dev": "node -r dotenv/config  -r source-map-support/register dist/server.js",
 		"start": "node dist/server.js",
 		"codegen": "graphql-codegen --config codegen.yml",
+		"test": "jest --detectOpenHandles --verbose --watch",
 		"test-ci": "jest --forceExit --detectOpenHandles --coverage --verbose",
-		"heroku-postbuild": "sh addons/init.sh && npm run build"
+		"heroku-postbuild": "sh addons/init.sh && npm run build",
+		"lint": "tsc --noEmit && eslint 'src/**/*.{js,ts,tsx}' --quiet --fix"
 	},
 	"repository": {
 		"type": "git",
@@ -36,9 +38,17 @@
 		"@types/node": "^13.13.0",
 		"@types/shortid": "0.0.29",
 		"@types/webpack-env": "^1.15.1",
+		"@typescript-eslint/eslint-plugin": "^2.29.0",
+		"@typescript-eslint/parser": "^2.29.0",
 		"clean-webpack-plugin": "^3.0.0",
 		"dotenv": "^8.2.0",
+		"eslint": "^6.8.0",
+		"eslint-config-google": "^0.14.0",
+		"eslint-config-prettier": "^6.11.0",
+		"eslint-plugin-prettier": "^3.1.3",
 		"jest": "^25.3.0",
+		"prettier": "^2.0.5",
+		"source-map-support": "^0.5.19",
 		"ts-jest": "^25.4.0",
 		"ts-loader": "^7.0.0",
 		"ts-node": "^8.8.2",
@@ -62,14 +72,5 @@
 		"util": "^0.12.2",
 		"winston": "^3.2.1",
 		"winston-daily-rotate-file": "^4.4.2"
-	},
-	"prettier": {
-		"bracketSpacing": true,
-		"singleQuote": true,
-		"jsxBracketSameLine": true,
-		"trailingComma": "all",
-		"printWidth": 80,
-		"semi": false,
-		"useTabs": true
 	}
 }

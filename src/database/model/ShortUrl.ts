@@ -1,47 +1,44 @@
-import { Schema, model, Document } from 'mongoose';
-import shortid from 'shortid';
-import User from './User';
+import { Document, model, Schema, Types } from "mongoose";
+import shortid from "shortid";
 
-export const DOCUMENT_NAME = 'ShortUrl';
-export const COLLECTION_NAME = 'shortUrls';
+import User from "./User";
+
+export const DOCUMENT_NAME = "ShortUrl";
+export const COLLECTION_NAME = "shortUrls";
 
 export default interface ShortUrl extends Document {
-	shortId: string;
+	_id: string;
 	originalUrl: string;
-	shareWith: User[];
-	createdBy: User;
+	shareWith: User[] | Types.ObjectId[];
+	createdBy: User | Types.ObjectId;
 	createdAt: Date;
-};
+}
 
-const schema = new Schema(
-	{
-		shortId: {
-			type: Schema.Types.String,
-			required: true,
-			unique: true,
-			default: shortid.generate,
-		},
-		originalUrl: {
-			type: Schema.Types.String,
-			required: true,
-		},
-		shareWith: [
+const schema = new Schema({
+	_id: {
+		type: Schema.Types.String,
+		default: shortid.generate
+	},
+	originalUrl: {
+		type: Schema.Types.String,
+		required: true
+	},
+	shareWith: {
+		type: [
 			{
 				type: Schema.Types.ObjectId,
-				required: false,
-				ref: "User",
+				ref: "User"
 			}
-		],
-		createdBy: {
-			type: Schema.Types.ObjectId,
-			required: false,
-			ref: "User",
-		},
-		createdAt: {
-			type: Date,
-			required: true,
-		},
+		]
+	},
+	createdBy: {
+		type: Schema.Types.ObjectId,
+		ref: "User"
+	},
+	createdAt: {
+		type: Date,
+		default: Date.now
 	}
-);
+});
 
 export const ShortUrlModel = model<ShortUrl>(DOCUMENT_NAME, schema, COLLECTION_NAME);

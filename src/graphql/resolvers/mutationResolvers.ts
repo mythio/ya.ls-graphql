@@ -1,39 +1,87 @@
-import _ from 'lodash';
-import crypto from 'crypto';
-import bcrypt from 'bcrypt';
+import bcrypt from "bcrypt";
+import crypto from "crypto";
+import _ from "lodash";
 
-import { MutationResolvers } from '../schemaType';
-import User from '../../database/model/User';
-import { RoleCode } from '../../database/model/Role';
-import UserRepo from '../../database/repository/UserRepo';
-import { createTokens } from '../../auth/authUtils';
-import { BadRequestError } from '../../core/ApiError';
+import { createTokens } from "../../auth/authUtils";
+import { BadRequestError } from "../../core/ApiError";
+import Role, { RoleCode } from "../../database/model/Role";
+import ShortUrlRepo from "../../database/repository/ShortUrlRepo";
+import UserRepo from "../../database/repository/UserRepo";
+import { IMutationResolvers, IShortUrl, IUserDetail } from "../../types/schemaType";
 
-export const mutationResolver: MutationResolvers = {
-  createUser: async (_root, args, _context) => {
-    const user = await UserRepo.findByEmail(args.emailAddress);
+import { Types } from "mongoose";
+import User from "../../database/model/User";
 
-    if (user) throw new BadRequestError('BadRequestError: User already registered');
+export const mutationResolver: IMutationResolvers = {
+	createUser: async (_root, args, _context) => {
+		const user = await UserRepo.findByEmail(args.emailAddress);
 
-    const accessTokenKey = crypto.randomBytes(64).toString('hex');
-    const refreshTokenKey = crypto.randomBytes(64).toString('hex');
-    const passwordHash = await bcrypt.hash(args.password, 10);
+		if (user) throw new BadRequestError("User already registered");
 
-    const { user: createdUser, keystore } = await UserRepo.create({
-      name: args.name,
-      emailAddress: args.emailAddress,
-      password: passwordHash
-    } as User, accessTokenKey, refreshTokenKey, RoleCode.REVIEWER);
+		const accessTokenKey = crypto.randomBytes(64).toString("hex");
+		const refreshTokenKey = crypto.randomBytes(64).toString("hex");
+		const passwordHash = await bcrypt.hash(args.password, 10);
 
-    const tokens = await createTokens(
-      createdUser,
-      keystore.primaryKey,
-      keystore.secondaryKey
-    );
+		const { user: createdUser, keystore } = await UserRepo.create(
+			{
+				name: args.name,
+				emailAddress: args.emailAddress,
+				password: passwordHash
+			} as User,
+			accessTokenKey,
+			refreshTokenKey,
+			RoleCode.USER_UNAUTH
+		);
 
-    return {
-      user: _.pick(createdUser, ['_id', 'name', 'emailAddress']),
-      tokens: tokens
-    }
-  }
+		const tokens = await createTokens(createdUser, keystore.primaryKey, keystore.secondaryKey);
+
+		return {
+			user: _.pick(createdUser, ["_id", "name", "emailAddress"]),
+			tokens: tokens
+		};
+	},
+
+	shortenUrl: async (_root, args, context) => {
+		const userId = context.user ? context.user._id : undefined;
+		const shareWith: string[] = args.shareWith ? args.shareWith : [];
+		if (!userId && args.shareWith)
+			throw new BadRequestError("Sign-in to limit the sharability of the URL");
+
+		const shareWithIds = await Promise.all(
+			shareWith.map(async (emailAddress) => {
+				const userFound = await UserRepo.findByEmail(emailAddress);
+				if (!userFound) {
+					throw new BadRequestError("Bad mail ID");
+				}
+				return userFound._id;
+			})
+		);
+		shareWithIds.sort();
+		let shortUrl = await ShortUrlRepo.find(args.originalUrl, userId, shareWithIds, ["shareWith"]);
+		let sharedWith: Types.ObjectId[];
+		if (!shortUrl) {
+			shortUrl = await ShortUrlRepo.create(args.originalUrl, userId, shareWithIds, ["shareWith"]);
+		} else {
+			sharedWith = (shortUrl.shareWith as User[]).map((user) => user._id);
+			sharedWith.sort();
+			if (!_.isEqual(shareWithIds, sharedWith))
+				shortUrl = await ShortUrlRepo.create(args.originalUrl, userId, shareWithIds, ["shareWith"]);
+		}
+
+		return _.pick(shortUrl as IShortUrl, ["_id", "originalUrl", "shareWith"]);
+	},
+
+	editRole: async (_root, args, _context) => {
+		const updatedUser = await UserRepo.elevateRole(new Types.ObjectId(args.userId), args.role);
+		let roles = updatedUser.roles;
+
+		roles = (roles as Role[]).map((role: Role): string => role.code);
+		console.log(updatedUser.roles);
+		console.log(roles);
+		updatedUser.roles = roles;
+		console.log(updatedUser);
+		return {
+			user: _.pick(updatedUser as IUserDetail, ["_id", "name", "emailAddress", "shortIds", "roles"])
+		};
+	}
 };

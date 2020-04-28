@@ -1,46 +1,55 @@
-import { readFile } from 'fs';
-import { promisify } from "util";
+import { readFile } from "fs";
 import { sign, verify } from "jsonwebtoken";
-import logger from "./Logger";
-import { BadTokenError, TokenExpiredError, InternalError } from './ApiError';
+import { promisify } from "util";
+
+import { BadTokenError, InternalError, TokenExpiredError } from "./ApiError";
 
 export default class JWT {
 	private static readPublicKey(): Promise<string> {
-		return promisify(readFile)('keys/jwtRS256.key.pub', 'utf8');
+		return promisify(readFile)("keys/jwtRS256.key.pub", "utf8");
 	}
 
 	private static readPrivateKey(): Promise<string> {
-		return promisify(readFile)('keys/jwtRS256.key', 'utf8');
+		return promisify(readFile)("keys/jwtRS256.key", "utf8");
 	}
 
 	public static async encode(payload: JwtPayload): Promise<string> {
 		const cert = await this.readPrivateKey();
-		if (!cert)
-			throw new InternalError('Token generation failed');
-		// @ts-ignore
-		return promisify(sign)({ ...payload }, cert, { algorithm: 'RS256' });
+		if (!cert) throw new InternalError("Token generation failed");
+		return new Promise((resolve, reject) => {
+			try {
+				const res = sign({ ...payload }, cert, { algorithm: "RS256" });
+				resolve(res);
+			} catch (err) {
+				reject(err);
+			}
+		});
 	}
 
 	public static async validate(token: string): Promise<JwtPayload> {
 		const cert = await this.readPublicKey();
-		try {
-			// @ts-ignore
-			return await promisify(verify)(token, cert) as JwtPayload;
-		} catch (err) {
-			if (err && err.name === 'TokenExpiredError') throw new TokenExpiredError();
-			throw new BadTokenError();
-		}
+		return new Promise(async (resolve, reject) => {
+			try {
+				const res = verify(token, cert) as JwtPayload;
+				resolve(res);
+			} catch (err) {
+				if (err && err.name === "TokenExpiredError") throw new TokenExpiredError();
+				reject(new BadTokenError());
+			}
+		});
 	}
 
 	public static async decode(token: string): Promise<JwtPayload> {
 		const cert = await this.readPublicKey();
-		try {
-			// @ts-ignore
-			return await promisify(verify)(token, cert, { ignoreExpiration: true }) as JwtPayload;
-		} catch (e) {
-			logger.debug(e);
-			throw new BadTokenError();
-		}
+
+		return new Promise(async (resolve, reject) => {
+			try {
+				const res = verify(token, cert, { ignoreExpiration: true }) as JwtPayload;
+				resolve(res);
+			} catch (err) {
+				reject(new BadTokenError());
+			}
+		});
 	}
 }
 
@@ -57,7 +66,7 @@ export class JwtPayload {
 		this.aud = audience;
 		this.sub = subject;
 		this.iat = Math.floor(Date.now() / 1000);
-		this.exp = this.iat + (validity * 24 * 60 * 60);
+		this.exp = this.iat + validity * 24 * 60 * 60;
 		this.prm = param;
 	}
 }

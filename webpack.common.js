@@ -1,4 +1,5 @@
-const path = require('path')
+/* eslint-disable @typescript-eslint/no-var-requires */
+const path = require("path");
 
 module.exports = {
 	module: {
@@ -6,21 +7,21 @@ module.exports = {
 			{
 				exclude: /node_modules/,
 				test: /\.ts$/,
-				use: 'ts-loader',
+				use: "ts-loader"
 			},
 			{
 				exclude: /node_modules/,
-				loader: 'graphql-tag/loader',
-				test: /\.(graphql|gql)$/,
-			},
-		],
+				loader: "graphql-tag/loader",
+				test: /\.(graphql|gql)$/
+			}
+		]
 	},
 	output: {
-		filename: 'server.js',
-		path: path.resolve(__dirname, 'dist'),
+		filename: "server.js",
+		path: path.resolve(__dirname, "dist")
 	},
 	resolve: {
-		extensions: ['.ts', '.js', '.graphql'],
+		extensions: [".ts", ".js", ".graphql"]
 	},
-	target: 'node',
-}
+	target: "node"
+};
