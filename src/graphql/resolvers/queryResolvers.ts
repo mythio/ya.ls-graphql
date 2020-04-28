@@ -7,7 +7,7 @@ import { AuthFailureError, BadRequestError, NotFoundError } from "../../core/Api
 import Role from "../../database/model/Role";
 import KeystoreRepo from "../../database/repository/KeystoreRepo";
 import UserRepo from "../../database/repository/UserRepo";
-import { IQueryResolvers, IShortUrlDetail } from "../../types/schemaType";
+import { IQueryResolvers, IShortUrlDetail, IUserDetail } from "../../types/schemaType";
 import ShortUrlRepo from "../../database/repository/ShortUrlRepo";
 import User from "../../database/model/User";
 
@@ -41,13 +41,13 @@ export const queryResolvers: IQueryResolvers = {
 	},
 
 	me: async (_root, _args, context) => {
-		const user = context.user;
+		const user = await UserRepo.findById(context.user._id, ["roles"]);
 		let roles = user.roles;
-		roles = roles.map((role: Role): string => role.code);
-		user.roles = roles;
 
+		roles = (roles as Role[]).map((role: Role): string => role.code);
+		user.roles = roles;
 		return {
-			user: _.pick(user, [`_id`, `name`, `emailAddress`, `shortIds`, `roles`])
+			user: _.pick(user as IUserDetail, [`_id`, `name`, `emailAddress`, `shortIds`, `roles`])
 		};
 	},
 

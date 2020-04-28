@@ -16,7 +16,11 @@ const logger = createLogger({
 			zippedArchive: true,
 			maxSize: loggerConfig.maxSize,
 			maxFiles: loggerConfig.maxFiles,
-			format: format.combine(format.errors({ stack: true }), format.prettyPrint(), format.colorize())
+			format: format.combine(
+				format.errors({ stack: true }),
+				format.prettyPrint(),
+				format.colorize()
+			)
 		})
 	],
 	exitOnError: false

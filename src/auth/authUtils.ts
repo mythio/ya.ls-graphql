@@ -3,7 +3,12 @@ import _ from "lodash";
 import { ObjectID } from "mongodb";
 import { Types } from "mongoose";
 
-import { AuthFailureError, InternalError, NotFoundError, TokenExpiredError } from "../core/ApiError";
+import {
+	AuthFailureError,
+	InternalError,
+	NotFoundError,
+	TokenExpiredError
+} from "../core/ApiError";
 import { tokenConfig } from "../core/config";
 import JWT, { JwtPayload } from "../core/JWT";
 import logger from "../core/Logger";
@@ -15,13 +20,13 @@ import UserRepo from "../database/repository/UserRepo";
 import { ITokens } from "../types/schemaType";
 
 const allowedRoles = {
-	ADMIN: [`ADMIN`],
-	USER: [`USER`],
-	USER_UNAUTH: [`USER`, `USER_UNAUTH`],
-	REVIWER: [`USER`, `USER_UNAUTH`]
+	ADMIN: ["ADMIN"],
+	USER: ["USER"],
+	USER_UNAUTH: ["USER", "USER_UNAUTH"],
+	REVIWER: ["USER", "USER_UNAUTH"]
 };
 
-const validateTokenData = (payload: JwtPayload): boolean => {
+export const validateTokenData = (payload: JwtPayload): boolean => {
 	if (
 		!payload ||
 		!payload.iss ||
@@ -32,17 +37,15 @@ const validateTokenData = (payload: JwtPayload): boolean => {
 		payload.aud !== tokenConfig.audience ||
 		!Types.ObjectId.isValid(payload.sub)
 	)
-		throw new AuthFailureError(`Invalid Access Token`);
+		throw new AuthFailureError("Invalid Access Token");
 	return true;
 };
 
-export const getAccessToken = (authorization: string) => {
-	if (!authorization) return undefined;
-	if (!authorization.startsWith(`Bearer `)) throw new AuthFailureError(`Invalid authorization`);
-	return authorization.split(` `)[1];
-};
-
-export const createTokens = async (user: User, accessTokenKey: string, refreshTokenKey: string): Promise<ITokens> => {
+export const createTokens = async (
+	user: User,
+	accessTokenKey: string,
+	refreshTokenKey: string
+): Promise<ITokens> => {
 	const accessToken = await JWT.encode(
 		new JwtPayload(
 			tokenConfig.issuer,
@@ -74,21 +77,23 @@ export const createTokens = async (user: User, accessTokenKey: string, refreshTo
 export const ruleStrategy = async (
 	requestData: {
 		req: {
-			cookies: {
-				"refresh-token": string;
-				"access-token": string;
+			cookies?: {
+				"refresh-token"?: string;
+				"access-token"?: string;
 			};
 		};
-		res: any;
+		res: {
+			cookie: Function;
+		};
 		user: User;
 		keystore: Keystore;
 	},
 	role: string
 ): Promise<void> => {
-	const accessToken = requestData.req.cookies[`access-token`];
-	const refreshToken = requestData.req.cookies[`refresh-token`];
+	const accessToken = requestData.req.cookies["access-token"];
+	const refreshToken = requestData.req.cookies["refresh-token"];
 
-	if (!accessToken || !refreshToken) throw new AuthFailureError(`Not Authorized`);
+	if (!accessToken || !refreshToken) throw new AuthFailureError("Not Authorized");
 
 	let accessTokenPayload: JwtPayload;
 	let refreshTokenPayload: JwtPayload;
@@ -97,7 +102,6 @@ export const ruleStrategy = async (
 	try {
 		accessTokenPayload = await JWT.validate(accessToken);
 	} catch (err) {
-		logger.info(err);
 		if (err instanceof TokenExpiredError) {
 			accessTokenPayload = await JWT.decode(accessToken);
 			refreshTokenPayload = await JWT.validate(refreshToken);
@@ -105,17 +109,17 @@ export const ruleStrategy = async (
 	}
 
 	if (refreshTokenPayload && accessTokenPayload.sub !== refreshTokenPayload.sub)
-		throw new AuthFailureError(`Invalid access token`);
+		throw new AuthFailureError("Invalid access token");
 
 	validateTokenData(accessTokenPayload);
 
-	const user = await UserRepo.findById(new ObjectID(accessTokenPayload.sub));
-	if (!user) throw new NotFoundError(`user not found`);
+	const user = await UserRepo.findById(new ObjectID(accessTokenPayload.sub), ["roles"]);
+	if (!user) throw new NotFoundError("user not found");
 
 	const givenRoles = (user.roles as Role[]).map((role) => role.code);
 
 	const userWithRole = _.intersection(givenRoles, allowedRoles[role]);
-	if (!userWithRole) throw new AuthFailureError(`Role not authorized`);
+	if (!userWithRole) throw new AuthFailureError("Role not authorized");
 
 	if (refreshTokenPayload) {
 		const refreshTokenTime = new Date(refreshTokenPayload.exp * 1000);
@@ -125,24 +129,24 @@ export const ruleStrategy = async (
 
 		keystore = await KeystoreRepo.find(user._id, accessTokenPayload.prm, refreshTokenPayload.prm);
 
-		if (!keystore) throw new AuthFailureError(`Invalid access token`);
+		if (!keystore) throw new AuthFailureError("Invalid access token");
 
-		const accessTokenKey = crypto.randomBytes(64).toString(`hex`);
-		const refreshTokenKey = crypto.randomBytes(64).toString(`hex`);
+		const accessTokenKey = crypto.randomBytes(64).toString("hex");
+		const refreshTokenKey = crypto.randomBytes(64).toString("hex");
 
 		await KeystoreRepo.create(user._id, accessTokenKey, refreshTokenKey);
 		const tokens = await createTokens(user, accessTokenKey, refreshTokenKey);
 
-		requestData.res.cookie(`refresh-token`, tokens.refreshToken, {
+		requestData.res.cookie("refresh-token", tokens.refreshToken, {
 			maxAge: accessTokenPayload.exp
 		});
-		requestData.res.cookie(`access-token`, tokens.accessToken, {
+		requestData.res.cookie("access-token", tokens.accessToken, {
 			maxAge: refreshTokenPayload.exp
 		});
 	} else {
 		keystore = await KeystoreRepo.findforKey(user._id, accessTokenPayload.prm);
 
-		if (!keystore) throw new AuthFailureError(`Invalid access token`);
+		if (!keystore) throw new AuthFailureError("Invalid access token");
 	}
 
 	requestData.user = user;

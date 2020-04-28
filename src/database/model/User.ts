@@ -10,7 +10,7 @@ export default interface User extends Document {
 	name: string;
 	emailAddress: string;
 	password: string;
-	roles: Role[] | Types.ObjectId[];
+	roles: Role[] | Types.ObjectId[] | string[];
 	shortIds: string[] | ShortUrl[];
 	createdAt: Date;
 	updatedAt: Date;

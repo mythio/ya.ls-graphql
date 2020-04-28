@@ -22,7 +22,11 @@ export default class KeystoreRepo {
 		return KeystoreModel.findByIdAndRemove(id).lean<Keystore>().exec();
 	}
 
-	public static async create(client: User, primaryKey: string, secondaryKey: string): Promise<Keystore> {
+	public static async create(
+		client: User,
+		primaryKey: string,
+		secondaryKey: string
+	): Promise<Keystore> {
 		const now = new Date();
 		const keystore = await KeystoreModel.create({
 			client: client,

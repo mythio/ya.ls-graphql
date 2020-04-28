@@ -7,11 +7,11 @@ import { BadRequestError } from "../../core/ApiError";
 import { RoleCode } from "../../database/model/Role";
 import ShortUrlRepo from "../../database/repository/ShortUrlRepo";
 import UserRepo from "../../database/repository/UserRepo";
-import { IMutationResolvers, IShortUrl } from "../../types/schemaType";
+import { IMutationResolvers, IShortUrl, IEditRoleResp } from "../../types/schemaType";
 
-import type { Types } from "mongoose";
+import { Types } from "mongoose";
+import User from "../../database/model/User";
 
-import type User from "../../database/model/User";
 export const mutationResolver: IMutationResolvers = {
 	createUser: async (_root, args, _context) => {
 		const user = await UserRepo.findByEmail(args.emailAddress);
@@ -69,5 +69,10 @@ export const mutationResolver: IMutationResolvers = {
 		}
 
 		return _.pick(shortUrl as IShortUrl, ["_id", "originalUrl", "shareWith"]);
+	},
+
+	editRole: async (_root, args, _context) => {
+		const updatedUser = await UserRepo.elevateRole(new Types.ObjectId(args.userId), args.role);
+		return updatedUser as IEditRoleResp;
 	}
 };

@@ -1,14 +1,16 @@
+import _ from "lodash";
 import { Types } from "mongoose";
 
-import { InternalError } from "../../core/ApiError";
+import { InternalError, BadRequestError } from "../../core/ApiError";
 import Keystore from "../model/Keystore";
-import Role, { RoleModel } from "../model/Role";
+import Role, { RoleModel, RoleCode } from "../model/Role";
 import User, { UserModel } from "../model/User";
 import KeystoreRepo from "./KeystoreRepo";
 
 export default class UserRepo {
-	public static findById(id: Types.ObjectId): Promise<User> {
-		return UserModel.findById(id).populate(`roles`).lean<User>().exec();
+	public static findById(id: Types.ObjectId, populateFields: string[]): Promise<User> {
+		const populate = _.join(populateFields, " ");
+		return UserModel.findById(id).populate(populate).lean<User>().exec();
 	}
 
 	public static findByEmail(emailAddress: string): Promise<User> {
@@ -24,7 +26,7 @@ export default class UserRepo {
 		const now = new Date();
 
 		const role = await RoleModel.findOne({ code: roleCode }).lean<Role>().exec();
-		if (!role) throw new InternalError(`Role must be defined`);
+		if (!role) throw new InternalError("Role must be defined");
 
 		user.roles = [role._id];
 		user.createdAt = user.updatedAt = now;
@@ -34,6 +36,30 @@ export default class UserRepo {
 		return {
 			user: createdUser.toObject(),
 			keystore: keystore
+		};
+	}
+
+	public static async elevateRole(
+		userId: Types.ObjectId,
+		roleCode: string
+	): Promise<{ user: User }> {
+		const role = await RoleModel.findOne({ code: roleCode }).lean<Role>().exec();
+		if (!role) throw new InternalError("Role must be defined");
+
+		const user = await UserModel.findById(userId);
+		const userRoles = user.roles as Types.ObjectId[];
+
+		const isAssigned = userRoles.find((userRole) => _.isEqual(userRole, role._id));
+
+		if (isAssigned) throw new InternalError("Role is already defined");
+
+		userRoles.push(role._id);
+		await user.save();
+
+		const updatedUser = await user.populate("roles").execPopulate();
+
+		return {
+			user: updatedUser
 		};
 	}
 }

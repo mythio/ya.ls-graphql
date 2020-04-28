@@ -31,7 +31,7 @@ export default class ShortUrlRepo {
 	public static async create(
 		originalUrl: string,
 		userId?: Types.ObjectId,
-		shareWith?: Types.ObjectId[],
+		shareWith: Types.ObjectId[] = [],
 		populateFields: string[] = []
 	): Promise<ShortUrl> {
 		const populate = _.join(populateFields, " ");
@@ -47,7 +47,7 @@ export default class ShortUrlRepo {
 			const user = await UserModel.findById(userId);
 			const userShortIds = [...user.shortIds];
 			userShortIds.push(createdShortUrl._id);
-			user.shortIds = userShortIds as string[];
+			// user.shortIds = userShortIds as string[];
 			await user.save();
 		}
 

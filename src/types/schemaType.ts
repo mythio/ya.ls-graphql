@@ -22,8 +22,8 @@ export type IUserDetail = {
 	_id: Scalars["ID"];
 	name: Scalars["String"];
 	emailAddress: Scalars["String"];
-	shortIds?: Maybe<Array<IShortUrl>>;
-	roles?: Maybe<Array<IRole>>;
+	shortIds: Array<Scalars["String"]>;
+	roles: Array<IRole>;
 };
 
 export type IUser = {
@@ -45,6 +45,11 @@ export type IShortUrl = {
 	shareWith?: Maybe<Array<IUser>>;
 };
 
+export type ITokens = {
+	accessToken: Scalars["String"];
+	refreshToken: Scalars["String"];
+};
+
 export type ICreateUserResp = {
 	user: IUser;
 	tokens: ITokens;
@@ -59,9 +64,8 @@ export type IMeResp = {
 	user: IUserDetail;
 };
 
-export type ITokens = {
-	accessToken: Scalars["String"];
-	refreshToken: Scalars["String"];
+export type IEditRoleResp = {
+	user: IUserDetail;
 };
 
 export type IQuery = {
@@ -82,7 +86,7 @@ export type IQueryExpandUrlArgs = {
 export type IMutation = {
 	createUser: ICreateUserResp;
 	shortenUrl: IShortUrl;
-	editRole: IUserDetail;
+	editRole: IEditRoleResp;
 	deleteUser: Scalars["String"];
 };
 
@@ -138,7 +142,13 @@ export type SubscriptionResolveFn<TResult, TParent, TContext, TArgs> = (
 	info: GraphQLResolveInfo
 ) => TResult | Promise<TResult>;
 
-export interface SubscriptionSubscriberObject<TResult, TKey extends string, TParent, TContext, TArgs> {
+export interface SubscriptionSubscriberObject<
+	TResult,
+	TKey extends string,
+	TParent,
+	TContext,
+	TArgs
+> {
 	subscribe: SubscriptionSubscribeFn<{ [key in TKey]: TResult }, TParent, TContext, TArgs>;
 	resolve?: SubscriptionResolveFn<TResult, { [key in TKey]: TResult }, TContext, TArgs>;
 }
@@ -152,7 +162,13 @@ export type SubscriptionObject<TResult, TKey extends string, TParent, TContext, 
 	| SubscriptionSubscriberObject<TResult, TKey, TParent, TContext, TArgs>
 	| SubscriptionResolverObject<TResult, TParent, TContext, TArgs>;
 
-export type SubscriptionResolver<TResult, TKey extends string, TParent = {}, TContext = {}, TArgs = {}> =
+export type SubscriptionResolver<
+	TResult,
+	TKey extends string,
+	TParent = {},
+	TContext = {},
+	TArgs = {}
+> =
 	| ((...args: any[]) => SubscriptionObject<TResult, TKey, TParent, TContext, TArgs>)
 	| SubscriptionObject<TResult, TKey, TParent, TContext, TArgs>;
 
@@ -162,7 +178,10 @@ export type TypeResolveFn<TTypes, TParent = {}, TContext = {}> = (
 	info: GraphQLResolveInfo
 ) => Maybe<TTypes> | Promise<Maybe<TTypes>>;
 
-export type isTypeOfResolverFn<T = {}> = (obj: T, info: GraphQLResolveInfo) => boolean | Promise<boolean>;
+export type isTypeOfResolverFn<T = {}> = (
+	obj: T,
+	info: GraphQLResolveInfo
+) => boolean | Promise<boolean>;
 
 export type NextResolverFn<T> = () => Promise<T>;
 
@@ -184,10 +203,11 @@ export type IResolversTypes = {
 	User: ResolverTypeWrapper<IUser>;
 	ShortUrlDetail: ResolverTypeWrapper<IShortUrlDetail>;
 	ShortUrl: ResolverTypeWrapper<IShortUrl>;
+	Tokens: ResolverTypeWrapper<ITokens>;
 	CreateUserResp: ResolverTypeWrapper<ICreateUserResp>;
 	LoginUserResp: ResolverTypeWrapper<ILoginUserResp>;
 	MeResp: ResolverTypeWrapper<IMeResp>;
-	Tokens: ResolverTypeWrapper<ITokens>;
+	EditRoleResp: ResolverTypeWrapper<IEditRoleResp>;
 	Query: ResolverTypeWrapper<{}>;
 	Mutation: ResolverTypeWrapper<{}>;
 };
@@ -202,22 +222,23 @@ export type IResolversParentTypes = {
 	User: IUser;
 	ShortUrlDetail: IShortUrlDetail;
 	ShortUrl: IShortUrl;
+	Tokens: ITokens;
 	CreateUserResp: ICreateUserResp;
 	LoginUserResp: ILoginUserResp;
 	MeResp: IMeResp;
-	Tokens: ITokens;
+	EditRoleResp: IEditRoleResp;
 	Query: {};
 	Mutation: {};
 };
 
 export type IAuthDirectiveArgs = { requires?: Maybe<IRole> };
 
-export type IAuthDirectiveResolver<Result, Parent, ContextType = any, Args = IAuthDirectiveArgs> = DirectiveResolverFn<
+export type IAuthDirectiveResolver<
 	Result,
 	Parent,
-	ContextType,
-	Args
->;
+	ContextType = any,
+	Args = IAuthDirectiveArgs
+> = DirectiveResolverFn<Result, Parent, ContextType, Args>;
 
 export type IUserDetailResolvers<
 	ContextType = any,
@@ -226,8 +247,8 @@ export type IUserDetailResolvers<
 	_id?: Resolver<IResolversTypes["ID"], ParentType, ContextType>;
 	name?: Resolver<IResolversTypes["String"], ParentType, ContextType>;
 	emailAddress?: Resolver<IResolversTypes["String"], ParentType, ContextType>;
-	shortIds?: Resolver<Maybe<Array<IResolversTypes["ShortUrl"]>>, ParentType, ContextType>;
-	roles?: Resolver<Maybe<Array<IResolversTypes["Role"]>>, ParentType, ContextType>;
+	shortIds?: Resolver<Array<IResolversTypes["String"]>, ParentType, ContextType>;
+	roles?: Resolver<Array<IResolversTypes["Role"]>, ParentType, ContextType>;
 	__isTypeOf?: isTypeOfResolverFn<ParentType>;
 };
 
@@ -262,6 +283,15 @@ export type IShortUrlResolvers<
 	__isTypeOf?: isTypeOfResolverFn<ParentType>;
 };
 
+export type ITokensResolvers<
+	ContextType = any,
+	ParentType extends IResolversParentTypes["Tokens"] = IResolversParentTypes["Tokens"]
+> = {
+	accessToken?: Resolver<IResolversTypes["String"], ParentType, ContextType>;
+	refreshToken?: Resolver<IResolversTypes["String"], ParentType, ContextType>;
+	__isTypeOf?: isTypeOfResolverFn<ParentType>;
+};
+
 export type ICreateUserRespResolvers<
 	ContextType = any,
 	ParentType extends IResolversParentTypes["CreateUserResp"] = IResolversParentTypes["CreateUserResp"]
@@ -288,12 +318,11 @@ export type IMeRespResolvers<
 	__isTypeOf?: isTypeOfResolverFn<ParentType>;
 };
 
-export type ITokensResolvers<
+export type IEditRoleRespResolvers<
 	ContextType = any,
-	ParentType extends IResolversParentTypes["Tokens"] = IResolversParentTypes["Tokens"]
+	ParentType extends IResolversParentTypes["EditRoleResp"] = IResolversParentTypes["EditRoleResp"]
 > = {
-	accessToken?: Resolver<IResolversTypes["String"], ParentType, ContextType>;
-	refreshToken?: Resolver<IResolversTypes["String"], ParentType, ContextType>;
+	user?: Resolver<IResolversTypes["UserDetail"], ParentType, ContextType>;
 	__isTypeOf?: isTypeOfResolverFn<ParentType>;
 };
 
@@ -333,7 +362,7 @@ export type IMutationResolvers<
 		RequireFields<IMutationShortenUrlArgs, "originalUrl">
 	>;
 	editRole?: Resolver<
-		IResolversTypes["UserDetail"],
+		IResolversTypes["EditRoleResp"],
 		ParentType,
 		ContextType,
 		RequireFields<IMutationEditRoleArgs, "userId" | "role">
@@ -351,10 +380,11 @@ export type IResolvers<ContextType = any> = {
 	User?: IUserResolvers<ContextType>;
 	ShortUrlDetail?: IShortUrlDetailResolvers<ContextType>;
 	ShortUrl?: IShortUrlResolvers<ContextType>;
+	Tokens?: ITokensResolvers<ContextType>;
 	CreateUserResp?: ICreateUserRespResolvers<ContextType>;
 	LoginUserResp?: ILoginUserRespResolvers<ContextType>;
 	MeResp?: IMeRespResolvers<ContextType>;
-	Tokens?: ITokensResolvers<ContextType>;
+	EditRoleResp?: IEditRoleRespResolvers<ContextType>;
 	Query?: IQueryResolvers<ContextType>;
 	Mutation?: IMutationResolvers<ContextType>;
 };

@@ -11,8 +11,8 @@ type UserDetail {
 	_id: ID!
 	name: String!
 	emailAddress: String!
-	shortIds: [ShortUrl!]
-	roles: [Role!]
+	shortIds: [String!]!
+	roles: [Role!]!
 }
 
 type User {
@@ -34,6 +34,11 @@ type ShortUrl {
 	shareWith: [User!]
 }
 
+type Tokens {
+	accessToken: String!
+	refreshToken: String!
+}
+
 type CreateUserResp {
 	user: User!
 	tokens: Tokens!
@@ -48,9 +53,8 @@ type MeResp {
 	user: UserDetail!
 }
 
-type Tokens {
-	accessToken: String!
-	refreshToken: String!
+type EditRoleResp {
+	user: UserDetail!
 }
 
 type Query {
@@ -66,7 +70,7 @@ type Mutation {
 
 	shortenUrl(originalUrl: String!, shareWith: [String!]): ShortUrl! @auth
 
-	editRole(userId: ID!, role: Role!): UserDetail! @auth(requires: ADMIN)
+	editRole(userId: ID!, role: Role!): EditRoleResp! @auth(requires: ADMIN)
 
 	deleteUser(userId: ID!): String! @auth(requires: USER)
 }
