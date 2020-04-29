@@ -11,7 +11,6 @@ import {
 } from "../core/ApiError";
 import { tokenConfig } from "../core/config";
 import JWT, { JwtPayload } from "../core/JWT";
-import logger from "../core/Logger";
 import Keystore from "../database/model/Keystore";
 import Role from "../database/model/Role";
 import User from "../database/model/User";
