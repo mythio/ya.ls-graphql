@@ -76,10 +76,8 @@ export const mutationResolver: IMutationResolvers = {
 		let roles = updatedUser.roles;
 
 		roles = (roles as Role[]).map((role: Role): string => role.code);
-		console.log(updatedUser.roles);
-		console.log(roles);
 		updatedUser.roles = roles;
-		console.log(updatedUser);
+
 		return {
 			user: _.pick(updatedUser as IUserDetail, ["_id", "name", "emailAddress", "shortIds", "roles"])
 		};
