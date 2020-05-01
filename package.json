@@ -8,8 +8,8 @@
 		"start:dev": "node -r dotenv/config  -r source-map-support/register dist/server.js",
 		"start": "node dist/server.js",
 		"codegen": "graphql-codegen --config codegen.yml",
-		"test": "jest --detectOpenHandles --verbose --watch",
-		"test-ci": "jest --forceExit --detectOpenHandles --coverage --verbose",
+		"test": "jest --detectOpenHandles --verbose --watchAll --coverage",
+		"test-ci": "jest --forceExit --detectOpenHandles --verbose",
 		"heroku-postbuild": "sh addons/init.sh && npm run build",
 		"lint": "tsc --noEmit && eslint 'src/**/*.{js,ts,tsx}' --quiet --fix"
 	},

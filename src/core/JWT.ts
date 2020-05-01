@@ -5,6 +5,10 @@ import { promisify } from "util";
 import { BadTokenError, InternalError, TokenExpiredError } from "./ApiError";
 
 export default class JWT {
+	public static pp(): void {
+		return;
+	}
+
 	private static readPublicKey(): Promise<string> {
 		return promisify(readFile)("keys/jwtRS256.key.pub", "utf8");
 	}

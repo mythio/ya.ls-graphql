@@ -14,7 +14,7 @@ export default class KeystoreRepo {
 			.exec();
 	}
 
-	public static findforKey(client: User, key: string): Promise<Keystore> {
+	public static findForKey(client: User, key: string): Promise<Keystore> {
 		return KeystoreModel.findOne({ client: client, primaryKey: key }).lean<Keystore>().exec();
 	}
 

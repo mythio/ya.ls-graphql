@@ -1,14 +1,14 @@
 import _ from "lodash";
 import { Types } from "mongoose";
 
-import { InternalError, BadRequestError } from "../../core/ApiError";
+import { InternalError } from "../../core/ApiError";
 import Keystore from "../model/Keystore";
-import Role, { RoleModel, RoleCode } from "../model/Role";
+import Role, { RoleModel } from "../model/Role";
 import User, { UserModel } from "../model/User";
 import KeystoreRepo from "./KeystoreRepo";
 
 export default class UserRepo {
-	public static findById(id: Types.ObjectId, populateFields: string[]): Promise<User> {
+	public static findById(id: string, populateFields: string[]): Promise<User> {
 		const populate = _.join(populateFields, " ");
 		return UserModel.findById(id).populate(populate).lean<User>().exec();
 	}

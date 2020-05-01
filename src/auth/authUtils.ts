@@ -89,6 +89,8 @@ export const ruleStrategy = async (
 	},
 	role: string
 ): Promise<void> => {
+	JWT.pp();
+
 	const accessToken = requestData.req.cookies["access-token"];
 	const refreshToken = requestData.req.cookies["refresh-token"];
 
@@ -107,12 +109,14 @@ export const ruleStrategy = async (
 		}
 	}
 
-	if (refreshTokenPayload && accessTokenPayload.sub !== refreshTokenPayload.sub)
+	if (refreshTokenPayload && accessTokenPayload.sub != refreshTokenPayload.sub)
 		throw new AuthFailureError("Invalid access token");
 
 	validateTokenData(accessTokenPayload);
 
-	const user = await UserRepo.findById(new ObjectID(accessTokenPayload.sub), ["roles"]);
+	console.log(22);
+	const user = await UserRepo.findById(accessTokenPayload.sub, ["roles"]);
+	console.log("22");
 	if (!user) throw new NotFoundError("user not found");
 
 	const givenRoles = (user.roles as Role[]).map((role) => role.code);
@@ -143,7 +147,7 @@ export const ruleStrategy = async (
 			maxAge: refreshTokenPayload.exp
 		});
 	} else {
-		keystore = await KeystoreRepo.findforKey(user._id, accessTokenPayload.prm);
+		keystore = await KeystoreRepo.findForKey(user._id, accessTokenPayload.prm);
 
 		if (!keystore) throw new AuthFailureError("Invalid access token");
 	}
