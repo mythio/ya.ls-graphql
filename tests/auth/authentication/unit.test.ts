@@ -61,6 +61,20 @@ describe("authentication", () => {
 			expect(spies.JWT.validate).toBeCalledTimes(2);
 		});
 
+		it("Should throw error if generated access-token is not valid", async () => {
+			spies.JWT.validate.mockReturnValue(payload);
+			spies.authUtils.validateTokenData.mockReturnValue(false);
+
+			try {
+				await ruleStrategy(requestData, "USER");
+			} catch (err) {
+				expect(err).toBeInstanceOf(AuthFailureError);
+			}
+
+			expect(spies.JWT.validate).toBeCalledTimes(1);
+			expect(spies.authUtils.validateTokenData).toBeCalledTimes(1);
+		});
+
 		it("Should throw error if user is not found", async () => {
 			spies.JWT.validate.mockResolvedValue(payload as any);
 			spies.authUtils.validateTokenData.mockResolvedValue(undefined as never);
@@ -114,7 +128,7 @@ describe("authentication", () => {
 		});
 
 		it("Should return without errors iff role is authorized", async () => {
-			spies.JWT.validate.mockReturnValue(payload as any);
+			spies.JWT.validate.mockReturnValue(payload);
 			spies.authUtils.validateTokenData.mockReturnValue(true);
 			spies.UserRepo.findById.mockReturnValue(user);
 			spies.KeystoreRepo.findForKey.mockReturnValue(keystore);
