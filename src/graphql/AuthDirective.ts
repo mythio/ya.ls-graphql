@@ -1,7 +1,6 @@
 import { SchemaDirectiveVisitor } from "apollo-server-express";
 import { defaultFieldResolver } from "graphql";
-
-import { ruleStrategy } from "../auth/authUtils";
+import { ruleStrategy } from "../auth/authentication";
 
 /** Class definition for @auth directive */
 export class AuthDirective extends SchemaDirectiveVisitor {

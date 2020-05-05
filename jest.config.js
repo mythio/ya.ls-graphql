@@ -3,5 +3,10 @@ module.exports = {
 	testEnvironment: "node",
 	roots: ["<rootDir>/tests"],
 	setupFiles: ["<rootDir>/tests/init.ts"],
-	collectCoverageFrom: ["<rootDir>/src/**/*.ts", "!**/node_modules/**"]
+	collectCoverageFrom: [
+		"<rootDir>/src/**/*.ts",
+		"!**/node_modules/**",
+		"!**/coverage/**",
+		"!webpack.**.js"
+	]
 };

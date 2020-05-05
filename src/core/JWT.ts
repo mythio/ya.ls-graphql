@@ -3,6 +3,7 @@ import { sign, verify } from "jsonwebtoken";
 import { promisify } from "util";
 
 import { BadTokenError, InternalError, TokenExpiredError } from "./ApiError";
+import { tokenConfig } from "./config";
 
 export default class JWT {
 	private static readPublicKey(): Promise<string> {
