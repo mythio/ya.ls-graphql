@@ -4,7 +4,12 @@ import { BadTokenError } from "../../../src/core/ApiError";
 
 describe("JWT class tests", () => {
 	beforeEach(() => {
-		readFileSpy.mockClear();
+		jest.clearAllMocks();
+	});
+
+	afterAll(() => {
+		jest.clearAllMocks();
+		jest.restoreAllMocks();
 	});
 
 	const issuer = "issuer";

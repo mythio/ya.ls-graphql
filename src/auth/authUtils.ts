@@ -1,7 +1,7 @@
 import _ from "lodash";
 import { Types } from "mongoose";
 
-import { AuthFailureError, InternalError } from "../core/ApiError";
+import { InternalError } from "../core/ApiError";
 import { tokenConfig } from "../core/config";
 import JWT, { JwtPayload } from "../core/JWT";
 import User from "../database/model/User";
@@ -18,7 +18,7 @@ export const validateTokenData = (payload: JwtPayload): boolean => {
 		payload.aud !== tokenConfig.audience ||
 		!Types.ObjectId.isValid(payload.sub)
 	)
-		throw new AuthFailureError("Invalid Access Token");
+		return false;
 	return true;
 };
 

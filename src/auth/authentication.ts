@@ -44,7 +44,6 @@ export const ruleStrategy = async (
 	try {
 		accessTokenPayload = await JWT.validate(accessToken);
 	} catch (err) {
-		console.log(err);
 		if (err instanceof TokenExpiredError) {
 			accessTokenPayload = await JWT.decode(accessToken);
 			refreshTokenPayload = await JWT.validate(refreshToken);
@@ -56,7 +55,9 @@ export const ruleStrategy = async (
 	if (refreshTokenPayload && accessTokenPayload.sub != refreshTokenPayload.sub)
 		throw new AuthFailureError();
 
-	validateTokenData(accessTokenPayload);
+	const isValidToken = validateTokenData(accessTokenPayload);
+	if (!isValidToken) throw new AuthFailureError("Invalid Access Token");
+
 	const user = await UserRepo.findById(accessTokenPayload.sub, ["roles"]);
 	if (!user) throw new NotFoundError("User not found");
 
